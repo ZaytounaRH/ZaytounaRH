@@ -19,15 +19,14 @@ public class MyDatabase {
             String password = "";
 
             cnx = DriverManager.getConnection(url, username, password);
-            System.out.println("✅ Connexion réussie à la base de données !");
+            System.out.println("Connexion réussie à la base de données !");
         } catch (ClassNotFoundException e) {
-            System.out.println("❌ Driver MySQL introuvable !");
+            System.out.println("Driver MySQL introuvable !");
         } catch (SQLException e) {
-            System.out.println("❌ Erreur SQL : " + e.getMessage());
+            System.out.println("Erreur SQL : " + e.getMessage());
         }
     }
 
-    // Synchronisation pour éviter les problèmes multi-thread
     public static synchronized MyDatabase getInstance() {
         if (instance == null) {
             instance = new MyDatabase();

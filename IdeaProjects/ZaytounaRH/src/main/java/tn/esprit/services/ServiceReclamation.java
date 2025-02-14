@@ -1,6 +1,6 @@
 package tn.esprit.services;
 
-import tn.esprit.interfaces.IServiceReclamation;
+import tn.esprit.interfaces.IService;
 import tn.esprit.models.Reclamation;
 import tn.esprit.utils.MyDatabase;
 
@@ -9,7 +9,7 @@ import java.util.List;
 
 import java.sql.*;
 
-public class ServiceReclamation implements IServiceReclamation<Reclamation> {
+public class ServiceReclamation implements IService<Reclamation> {
     private Connection cnx ;
 
     public ServiceReclamation(){
@@ -25,7 +25,7 @@ public class ServiceReclamation implements IServiceReclamation<Reclamation> {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setString(1,reclamation.getTitre());
             pstm.setString(2, reclamation.getDescription());
-            pstm.setDate(3,new Date (reclamation.getDateSoumission().getTime()));
+            pstm.setDate(3, Date.valueOf(reclamation.getDateSoumission()));
             pstm.setString(4,reclamation.getStatut().name());
             pstm.setString(5, reclamation.getPriorite().name());
             pstm.setString(6,reclamation.getPieceJointe());
@@ -59,7 +59,7 @@ public class ServiceReclamation implements IServiceReclamation<Reclamation> {
                 //p.setTitre(rs.getString(2));
                 p.setTitre(rs.getString("titre"));
                 p.setDescription(rs.getString("description"));
-                p.setDateSoumission(rs.getDate("dateSoumission"));
+                p.setDateSoumission(rs.getDate("dateSoumission").toLocalDate());
                 p.setStatut(Reclamation.StatutReclamation.valueOf(rs.getString("statut")));
                 p.setPriorite(Reclamation.PrioriteReclamation.valueOf(rs.getString("priorite")));
                 p.setPieceJointe(rs.getString("pieceJointe"));
@@ -76,16 +76,34 @@ public class ServiceReclamation implements IServiceReclamation<Reclamation> {
         return reclamations;
     }
 
-    /*
     @Override
-    public void update(Recalamtion reclamation) {
-
+    public void update(Reclamation reclamation) {
+        String qry = "UPDATE `reclamation` SET `titre`=?, `description`=?, `dateSoumission`=?, `statut`=?, `priorite`=?, `pieceJointe`=? WHERE `idR`=?";
+        try {
+            PreparedStatement pstm = cnx.prepareStatement(qry);
+            pstm.setString(1, reclamation.getTitre());
+            pstm.setString(2, reclamation.getDescription());
+            pstm.setDate(3, Date.valueOf(reclamation.getDateSoumission()));
+            pstm.setString(4, reclamation.getStatut().name());
+            pstm.setString(5, reclamation.getPriorite().name());
+            pstm.setString(6, reclamation.getPieceJointe());
+            pstm.setInt(7, reclamation.getIdR());
+            pstm.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void delete(Recalamtion reclamation) {
-
+    public void delete(Reclamation reclamation) {
+        String qry = "DELETE FROM `reclamation` WHERE `idR`=?";
+        try {
+            PreparedStatement pstm = cnx.prepareStatement(qry);
+            pstm.setInt(1, reclamation.getIdR());
+            pstm.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-     */
 }

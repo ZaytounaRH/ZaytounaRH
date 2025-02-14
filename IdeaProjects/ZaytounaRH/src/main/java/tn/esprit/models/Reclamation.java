@@ -1,6 +1,7 @@
 package tn.esprit.models;
 
-import java.util.Date;
+import java.sql.Date;
+import java.time.LocalDate;
 
 public class Reclamation {
 
@@ -9,24 +10,28 @@ public class Reclamation {
         EN_COURS,
         RESOLU
     }
+
     public enum PrioriteReclamation {
         FAIBLE,
         MOYENNE,
         ELEVEE
     }
 
-    private int idR ;
-    private String titre, description  , pieceJointe ;
-    private StatutReclamation statut;  // Utilisation de l'enum
-    private PrioriteReclamation priorite;  // Utilisation de l'enum
-    private Date dateSoumission ;
+    private int idR;
+    private String titre;
+    private String description;
+    private String pieceJointe;
+    private StatutReclamation statut;
+    private PrioriteReclamation priorite;
+    private LocalDate dateSoumission; // Utilisation de LocalDate pour une gestion plus précise des dates.
 
-
+    // Constructeur par défaut
     public Reclamation() {
     }
 
-    public Reclamation( String titre, String description, Date dateSoumission,
-                        StatutReclamation statut, PrioriteReclamation priorite, String pieceJointe) {
+    // Constructeur avec tous les attributs
+    public Reclamation(String titre, String description, LocalDate dateSoumission,
+                       StatutReclamation statut, PrioriteReclamation priorite, String pieceJointe) {
         this.titre = titre;
         this.description = description;
         this.dateSoumission = dateSoumission;
@@ -35,8 +40,8 @@ public class Reclamation {
         this.pieceJointe = pieceJointe;
     }
 
-
-    public Reclamation(int idR, String titre, String description, Date dateSoumission,
+    // Constructeur avec id
+    public Reclamation(int idR, String titre, String description, LocalDate dateSoumission,
                        StatutReclamation statut, PrioriteReclamation priorite, String pieceJointe) {
         this.idR = idR;
         this.titre = titre;
@@ -47,59 +52,60 @@ public class Reclamation {
         this.pieceJointe = pieceJointe;
     }
 
+    // Getters et Setters
     public int getIdR() {
         return idR;
-    }
-
-    public String getTitre() {
-        return titre;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getPieceJointe() {
-        return pieceJointe;
-    }
-
-    public StatutReclamation getStatut() {
-        return statut;
-    }
-
-    public PrioriteReclamation getPriorite() {
-        return priorite;
-    }
-
-    public Date getDateSoumission() {
-        return dateSoumission;
     }
 
     public void setIdR(int idR) {
         this.idR = idR;
     }
 
+    public String getTitre() {
+        return titre;
+    }
+
     public void setTitre(String titre) {
         this.titre = titre;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
+    public String getPieceJointe() {
+        return pieceJointe;
+    }
+
     public void setPieceJointe(String pieceJointe) {
         this.pieceJointe = pieceJointe;
+    }
+
+    public StatutReclamation getStatut() {
+        return statut;
     }
 
     public void setStatut(StatutReclamation statut) {
         this.statut = statut;
     }
 
+    public PrioriteReclamation getPriorite() {
+        return priorite;
+    }
+
     public void setPriorite(PrioriteReclamation priorite) {
         this.priorite = priorite;
     }
 
-    public void setDateSoumission(Date dateSoumission) {
+    public LocalDate getDateSoumission() {
+        return dateSoumission;
+    }
+
+    public void setDateSoumission(LocalDate dateSoumission) {
         this.dateSoumission = dateSoumission;
     }
 
@@ -107,13 +113,12 @@ public class Reclamation {
     public String toString() {
         return "Reclamation{" +
                 "idR=" + idR +
-                ", titre=" + titre +
+                ", titre='" + titre + '\'' +
                 ", description='" + description + '\'' +
-                ", dateSoumission='" + dateSoumission + '\'' +
-                ", statut='" + statut + '\'' +
-                ", priorite='" + priorite + '\'' +
+                ", dateSoumission=" + dateSoumission +
+                ", statut=" + statut +
+                ", priorite=" + priorite +
                 ", pieceJointe='" + pieceJointe + '\'' +
-                "}\n";
+                '}';
     }
 }
-
