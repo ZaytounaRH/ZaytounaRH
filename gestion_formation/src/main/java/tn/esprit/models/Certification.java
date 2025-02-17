@@ -11,6 +11,9 @@ public class Certification {
     public Certification() {
 
     }
+    public Certification(int idCertif) {
+        this.idCertif = idCertif;
+    }
     public Certification(int idCertif, String titreCertif, Date dateCertif, int idFormation) {
         this.idCertif = idCertif;
         this.titreCertif = titreCertif;

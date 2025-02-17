@@ -5,30 +5,30 @@ public class Formation {
     private String nomFormation;
     private String descriptionFormation;
     private String dureeFormation;
-    private int idEmploye;
-    private int idRH;
-
+    private Employe employe; // Relation avec un employé
+    private Rh rh; // Relation avec un RH
+    private Certification certification; // Une seule certification par formation
 
     public Formation() {
-
     }
 
-    public Formation(int idFormation, String nomFormation, String descriptionFormation, String dureeFormation, int idEmploye, int idRH) {
+    public Formation(int idFormation, String nomFormation, String descriptionFormation, String dureeFormation, Employe employe, Rh rh, Certification certification) {
         this.idFormation = idFormation;
         this.nomFormation = nomFormation;
         this.descriptionFormation = descriptionFormation;
         this.dureeFormation = dureeFormation;
-        this.idEmploye = idEmploye;
-        this.idRH = idRH;
+        this.employe = employe;
+        this.rh = rh;
+        this.certification = certification;
     }
 
-    public Formation(String nomFormation, String descriptionFormation, String dureeFormation, int idEmploye, int idRH) {
-
+    public Formation(String nomFormation, String descriptionFormation, String dureeFormation, Employe employe, Rh rh, Certification certification) {
         this.nomFormation = nomFormation;
         this.descriptionFormation = descriptionFormation;
         this.dureeFormation = dureeFormation;
-        this.idEmploye = idEmploye;
-        this.idRH = idRH;
+        this.employe = employe;
+        this.rh = rh;
+        this.certification = certification;
     }
 
     public int getIdFormation() {
@@ -63,31 +63,40 @@ public class Formation {
         this.dureeFormation = dureeFormation;
     }
 
-    public int getIdEmploye() {
-        return idEmploye;
+    public Employe getEmploye() {
+        return employe;
     }
 
-    public void setIdEmploye(int idEmploye) {
-        this.idEmploye = idEmploye;
+    public void setEmploye(Employe employe) {
+        this.employe = employe;
     }
 
-    public int getIdRH() {
-        return idRH;
+    public Rh getRh() {
+        return rh;
     }
 
-    public void setIdRH(int idRH) {
-        this.idRH = idRH;
+    public void setRh(Rh rh) {
+        this.rh = rh;
     }
+
+    public Certification getCertification() {
+        return certification;
+    }
+
+    public void setCertification(Certification certification) {
+        this.certification = certification;
+    }
+
     @Override
     public String toString() {
         return "Formation{" +
                 "id=" + idFormation +
                 ", nom=" + nomFormation +
                 ", description='" + descriptionFormation +
-                ", duree ='" + dureeFormation  +
-                ", idEmploye=" + idEmploye+
-                ", idRH=" + idRH +
+                ", duree='" + dureeFormation +
+                ", employe=" + (employe != null ? employe.getIdEmploye() : "null") +
+                ", rh=" + (rh != null ? rh.getIdRh() : "null") +
+                ", certification=" + (certification != null ? certification.getTitreCertif() : "null") +
                 "}\n";
     }
-
 }

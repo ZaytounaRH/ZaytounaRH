@@ -3,6 +3,9 @@ package tn.esprit.test;
 import tn.esprit.models.Formation;
 import tn.esprit.services.ServiceFormation;
 import tn.esprit.utils.MyDatabase;
+import tn.esprit.models.Rh;
+import tn.esprit.models.Employe;
+
 
 import tn.esprit.services.ServiceCertification;
 import tn.esprit.models.Certification;
@@ -13,15 +16,21 @@ public class Main {
     public static void main(String[] args) {
 
         ServiceFormation serviceFormation = new ServiceFormation();
+        Employe employe = new Employe(1);  // Ici, tu passes l'objet employé avec son ID
+        Rh rh = new Rh(2);  // Ici, tu passes l'objet RH avec son ID
+        Certification certification = new Certification(4);
 
         //AJOUT
-        serviceFormation.add(new Formation("Java Avancé", "Formation complète sur Java", "3 mois", 4, 4));
-        serviceFormation.add(new Formation("test","unix","15 jours",1,1));
+        Formation formation = new Formation("Formation UML", "Formation complète sur UML", "2 mois",employe, rh, certification);
 
 
-        //UPDATE
-        Formation formation = new Formation("test","unix","1 jour",1,1);
-        formation.setIdFormation(1);
+        serviceFormation.add(formation);
+
+
+/*
+//UPDATE
+        Formation formationnn = new Formation("Formation UML", "Formation complète sur UML", "2 mois", employe.getIdEmploye(), rh.getIdRh(), formation.getIdFormation());
+        formationnn.setIdFormation(1);
         serviceFormation.update(formation);
 
 
@@ -64,4 +73,6 @@ public class Main {
 
 
     }
-}
+ */
+
+}}

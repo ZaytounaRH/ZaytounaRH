@@ -32,6 +32,7 @@ public class ServiceCertification implements IService<Certification> {
 
 
     }
+    /*
     @Override
     public List<Certification> getAll() {
         List< Certification > certifications  = new ArrayList<>();
@@ -102,6 +103,8 @@ public class ServiceCertification implements IService<Certification> {
 
 
 
+
+     */
 
 
 }
