@@ -84,9 +84,6 @@ public class ServiceFormation implements IService<Formation> {
 
                     if (rsRh.next()) {
                        rh = new Rh(idRH, rsRh.getString("nom"));
-                        System.out.println("RH trouvé: " + rh.getNom());
-                    }else {
-                        System.out.println("Aucun RH trouvé pour ID: " + idRH);
                     }
                 }
 
@@ -120,7 +117,7 @@ public class ServiceFormation implements IService<Formation> {
 
         return formations;
     }
-/*
+
     @Override
     public void update(Formation formation) {
         String qry = "UPDATE `formation` SET `nomFormation` = ?, `descriptionFormation` = ?, `dureeFormation` = ?, `idEmploye` = ?, `idRH` = ? WHERE `idFormation` = ?";
@@ -133,6 +130,7 @@ public class ServiceFormation implements IService<Formation> {
             // Ici on récupère les IDs des objets Employe et RH
             pstm.setInt(4, formation.getEmploye().getIdEmploye());
             pstm.setInt(5, formation.getRh().getIdRh());
+            pstm.setInt(6, formation.getCertification().getIdCertif());
             pstm.setInt(6, formation.getIdFormation());
 
             int rowsUpdated = pstm.executeUpdate();
@@ -164,5 +162,5 @@ public class ServiceFormation implements IService<Formation> {
         }
     }
 
- */
+
 }

@@ -5,8 +5,7 @@ import java.sql.Date;
 public class Certification {
     private int idCertif;
     private String titreCertif;
-    private Date dateCertif;
-    private int idFormation;
+    private String organismeCertif;
 
     public Certification() {
 
@@ -14,18 +13,16 @@ public class Certification {
     public Certification(int idCertif) {
         this.idCertif = idCertif;
     }
-    public Certification(int idCertif, String titreCertif, Date dateCertif, int idFormation) {
+    public Certification(int idCertif, String titreCertif, String organismeCertif) {
         this.idCertif = idCertif;
         this.titreCertif = titreCertif;
-        this.dateCertif = dateCertif;
-        this.idFormation = idFormation;
+       this.organismeCertif = organismeCertif;
     }
 
-    public Certification( String titreCertif, Date dateCertif, int idFormation) {
+    public Certification( String titreCertif, String organismeCertif) {
 
         this.titreCertif = titreCertif;
-        this.dateCertif = dateCertif;
-        this.idFormation = idFormation;
+        this.organismeCertif = organismeCertif;
     }
 
     public Certification(int idCertif, String titreCertif) {
@@ -49,29 +46,21 @@ public class Certification {
         this.titreCertif = titreCertif;
     }
 
-    public Date getDateCertif() {
-        return dateCertif;
+    public String getOrganismeCertif() {
+        return organismeCertif;
     }
 
-    public void setDateCertif(Date dateCertif) {
-        this.dateCertif = dateCertif;
-    }
-
-    public int getIdFormation() {
-        return idFormation;
-    }
-
-    public void setIdFormation(int idFormation) {
-        this.idFormation = idFormation;
+    public void setOrganismeCertif(String organismeCertif) {
+        this.organismeCertif = organismeCertif;
     }
     @Override
     public String toString() {
         return "Certification{" +
                 "id=" + idCertif +
                 ", titre=" + titreCertif +
-                ", date='" + dateCertif +
-                ", idFormation=" + idFormation+
-
+                ", organisme='" + organismeCertif +
                 "}\n";
     }
+
+
 }

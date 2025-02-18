@@ -16,63 +16,65 @@ public class Main {
     public static void main(String[] args) {
 
         ServiceFormation serviceFormation = new ServiceFormation();
-
-        Employe employe = new Employe(1);  // Ici, tu passes l'objet employé avec son ID
-        Rh rh = new Rh(3);  // Ici, tu passes l'objet RH avec son ID
-        Certification certification = new Certification(6);
-
-
-
-        //AJOUT
-        Formation formation = new Formation("Formation finance", "Formation complète sur finance", "15 jours",employe, rh, certification);
-
-
-       //serviceFormation.add(formation);
-        System.out.println(serviceFormation.getAll());
-
 /*
+//AJOUT
+        Employe employe = new Employe(1);
+        Rh rh = new Rh(3);
+        Certification certification = new Certification(6);
+        Formation formation = new Formation("Formation finance", "Formation complète sur finance", "15 jours",employe, rh, certification);
+       serviceFormation.add(formation);
+
 //UPDATE
-        Formation formationnn = new Formation("Formation UML", "Formation complète sur UML", "2 mois", employe.getIdEmploye(), rh.getIdRh(), formation.getIdFormation());
-        formationnn.setIdFormation(1);
+        Employe employe = new Employe(2, "Nouveau Employé");
+        Rh rh = new Rh(3, "Nouveau RH");
+        Certification certif = new Certification(1, "Certif Updated");
+        Formation formation = new Formation("Formation updated", "description modifiee", "2 jours", employe, rh, certif);
+        formation.setIdFormation(2);
         serviceFormation.update(formation);
+//DELETE
 
+        Formation formation = new Formation();
+        formation.setIdFormation(7);
+        serviceFormation.delete(formation);
+        System.out.println(serviceFormation.getAll());
+ */
 
-        //DELETE
-
-        Formation formationn = new Formation();
-        formationn.setIdFormation(1);
-        serviceFormation.delete(formationn);
-
-        //AFFICHAGE
-
-
-
-
-
-
-
-        //CERTIFICATION
+//CERTIFICATION
         ServiceCertification serviceCertification = new ServiceCertification();
-
+/*
         //AJOUT
-        Date dateCertiff = Date.valueOf("2025-01-11");
-        serviceCertification.add(new Certification("testing",dateCertiff,2));
 
+        serviceCertification.add(new Certification("machine_learning","nvidia"));
         //AFFICHAGE
-        System.out.println(serviceCertification.getAll());
 
         //UPDATE
-        Date dateCertif = Date.valueOf("2024-01-11");
-        Certification certification = new Certification("updateing",dateCertif,2);
-        certification.setIdCertif(3);
+
+        Certification certification = new Certification("modified","google");
+        certification.setIdCertif(8);
         serviceCertification.update(certification);
 
 
+ */
+
 
         //DELETE
-       Certification certificationn = new Certification();
-        certificationn.setIdCertif(3);
-        serviceCertification.delete(certificationn);
+        Certification certification = new Certification();
+        certification.setIdCertif(5);
+        serviceCertification.delete(certification);
+        System.out.println(serviceCertification.getAll());
+/*
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     }
