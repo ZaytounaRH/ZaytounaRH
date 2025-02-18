@@ -32,7 +32,7 @@ public class ServiceCertification implements IService<Certification> {
 
 
     }
-    /*
+
     @Override
     public List<Certification> getAll() {
         List< Certification > certifications  = new ArrayList<>();
@@ -56,6 +56,7 @@ public class ServiceCertification implements IService<Certification> {
         }
         return certifications;
     }
+    /*
     @Override
     public void update(Certification certification) {
         String qry = "UPDATE `certification` SET `titreCertif`=?,`dateCertif`=?,`idFormation`=? WHERE `idCertif`=?";

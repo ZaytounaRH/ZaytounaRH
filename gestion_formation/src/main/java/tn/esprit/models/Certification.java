@@ -28,12 +28,17 @@ public class Certification {
         this.idFormation = idFormation;
     }
 
+    public Certification(int idCertif, String titreCertif) {
+        this.idCertif = idCertif;
+        this.titreCertif = titreCertif;
+    }
+
     public int getIdCertif() {
         return idCertif;
     }
 
-    public void setIdCertif(int idCerttif) {
-        this.idCertif = idCerttif;
+    public void setIdCertif(int idCertif) {
+        this.idCertif = idCertif;
     }
 
     public String getTitreCertif() {

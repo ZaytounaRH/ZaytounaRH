@@ -16,16 +16,19 @@ public class Main {
     public static void main(String[] args) {
 
         ServiceFormation serviceFormation = new ServiceFormation();
+
         Employe employe = new Employe(1);  // Ici, tu passes l'objet employé avec son ID
-        Rh rh = new Rh(2);  // Ici, tu passes l'objet RH avec son ID
-        Certification certification = new Certification(4);
+        Rh rh = new Rh(3);  // Ici, tu passes l'objet RH avec son ID
+        Certification certification = new Certification(6);
+
+
 
         //AJOUT
-        Formation formation = new Formation("Formation UML", "Formation complète sur UML", "2 mois",employe, rh, certification);
+        Formation formation = new Formation("Formation finance", "Formation complète sur finance", "15 jours",employe, rh, certification);
 
 
-        serviceFormation.add(formation);
-
+       //serviceFormation.add(formation);
+        System.out.println(serviceFormation.getAll());
 
 /*
 //UPDATE
@@ -41,7 +44,7 @@ public class Main {
         serviceFormation.delete(formationn);
 
         //AFFICHAGE
-        System.out.println(serviceFormation.getAll());
+
 
 
 

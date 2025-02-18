@@ -1,5 +1,6 @@
 package tn.esprit.services;
 import tn.esprit.interfaces.IService;
+import tn.esprit.models.Certification;
 import tn.esprit.models.Formation;
 import tn.esprit.models.Employe;
 import tn.esprit.models.Rh;
@@ -34,7 +35,7 @@ public class ServiceFormation implements IService<Formation> {
             System.out.println(e.getMessage());
         }
     }
-/*
+
     @Override
     public List<Formation> getAll() {
         List<Formation> formations = new ArrayList<>();
@@ -51,26 +52,75 @@ public class ServiceFormation implements IService<Formation> {
                 formation.setDescriptionFormation(rs.getString("descriptionFormation"));
                 formation.setDureeFormation(rs.getString("dureeFormation"));
 
-                // Récupérer les objets Employe et RH
+
                 int idEmploye = rs.getInt("idEmploye");
                 int idRH = rs.getInt("idRH");
+                int idCertif = rs.getInt("idCertif");
 
-                // Créer des objets Employe et RH (tu peux aussi les récupérer depuis la base si tu les as dans d'autres tables)
-                Employe employe = new Employe(idEmploye);
+
+
+                Employe employe = null;
                 Rh rh = new Rh(idRH);
+                Certification certification = null;
+
+                if (idEmploye > 0) {
+                    String employeQry = "SELECT nom FROM employe WHERE idEmploye = ?";
+                    PreparedStatement pstmtEmploye = cnx.prepareStatement(employeQry);
+                    pstmtEmploye.setInt(1, idEmploye);
+                    ResultSet rsEmploye = pstmtEmploye.executeQuery();
+
+                    if (rsEmploye.next()) {
+                        employe = new Employe(idEmploye, rsEmploye.getString("nom"));
+                    }
+
+
+                }
+
+                if (idRH > 0) {
+                    String rhQry = "SELECT nom FROM rh WHERE idRH = ?";
+                    PreparedStatement pstmtRh = cnx.prepareStatement(rhQry);
+                    pstmtRh.setInt(1, idRH);
+                    ResultSet rsRh = pstmtRh.executeQuery();
+
+                    if (rsRh.next()) {
+                       rh = new Rh(idRH, rsRh.getString("nom"));
+                        System.out.println("RH trouvé: " + rh.getNom());
+                    }else {
+                        System.out.println("Aucun RH trouvé pour ID: " + idRH);
+                    }
+                }
+
+                if (idCertif > 0) {
+                    // Récupérer l'objet Certification complet depuis la base de données
+                    String certifQry = "SELECT * FROM certification WHERE idCertif = ?";
+                    PreparedStatement pstmt = cnx.prepareStatement(certifQry);
+                    pstmt.setInt(1, idCertif);
+                    ResultSet rsCertif = pstmt.executeQuery();
+
+                    if (rsCertif.next()) {
+                        certification = new Certification(
+                                rsCertif.getInt("idCertif"),
+                                rsCertif.getString("titreCertif") // Assurez-vous que ce champ existe bien
+                        );
+                    }
+                }
+
 
                 formation.setEmploye(employe);
                 formation.setRh(rh);
+                formation.setCertification(certification);
 
                 formations.add(formation);
             }
+            rs.close();
+            stm.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
 
         return formations;
     }
-
+/*
     @Override
     public void update(Formation formation) {
         String qry = "UPDATE `formation` SET `nomFormation` = ?, `descriptionFormation` = ?, `dureeFormation` = ?, `idEmploye` = ?, `idRH` = ? WHERE `idFormation` = ?";

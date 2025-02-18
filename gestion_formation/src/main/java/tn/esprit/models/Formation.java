@@ -94,8 +94,8 @@ public class Formation {
                 ", nom=" + nomFormation +
                 ", description='" + descriptionFormation +
                 ", duree='" + dureeFormation +
-                ", employe=" + (employe != null ? employe.getIdEmploye() : "null") +
-                ", rh=" + (rh != null ? rh.getIdRh() : "null") +
+                ", employe=" + (employe != null ? employe.getNom() : "null") +
+                ", rh=" + (rh != null ? rh.getNom() : "null") +
                 ", certification=" + (certification != null ? certification.getTitreCertif() : "null") +
                 "}\n";
     }
