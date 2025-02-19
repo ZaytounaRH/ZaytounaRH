@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
+
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="tn.esprit.test.MainController"
+            fx:controller="tn.esprit.controllers.GestionFormation"
             prefHeight="400.0" prefWidth="600.0">
-
+<children>
+    <TextField fx:id="tfNomFormation" layoutX="180.0" layoutY="151.0" promptText="Nom :" />
+    <TextField fx:id="tfDescriptionFormation" layoutX="180.0" layoutY="151.0" promptText="Description:" />
+    <TextField fx:id="tfDureeFormation" layoutX="180.0" layoutY="151.0" promptText="Duree:" />
+    <Label layoutX="180.0" layoutY="91.0" text="Nom" textFill="BLUE" />
+    <Label layoutX="180.0" layoutY="222.0" text="Description"/>
+    <Label layoutX="180.0" layoutY="222.0" text="Duree" />
+    <Button layoutX="229.0" layoutY="584.0" mnemonicParsing="false" onAction="#ajouterFormation" text="Submit" />
+    <Label fx:id="lbFormations" layoutX="520.0" layoutY="100.0" prefHeight="367.0" prefWidth="488.0" />
+    <Button layoutX="738.0" layoutY="584.0" mnemonicParsing="false" onAction="#afficherFormation" text="Show" />
+</children>
 </AnchorPane>
