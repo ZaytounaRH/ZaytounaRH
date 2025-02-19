@@ -36,11 +36,5 @@ public class Employe {
         return nom;
     }
 
-    public String getNomById (Employe e,int idEmploye) {
-        if (e.getIdEmploye() == idEmploye) {
-            return e.getNom();
-        }
 
-        return "Employé introuvable";
-    }
 }

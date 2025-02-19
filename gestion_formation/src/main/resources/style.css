@@ -1,0 +1,80 @@
+/* Style général */
+.root {
+    -fx-background-color: #f0f5f9; /* Fond gris clair */
+    -fx-font-family: "Segoe UI", sans-serif; /* Police moderne */
+}
+
+/* Carte */
+.card {
+    -fx-background-color: #ffffff; /* Blanc pour l'arrière-plan de la carte */
+    -fx-background-radius: 10px; /* Coins arrondis */
+    -fx-border-color: #bdc3c7; /* Bordure subtile */
+    -fx-border-width: 1px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, #34495e, 10, 0, 0, 10); /* Ombre douce pour un effet de carte */
+    -fx-spacing: 10px; /* Espacement entre les éléments dans la carte */
+}
+
+/* Titre de la carte */
+.card-title {
+    -fx-font-size: 24px;
+    -fx-text-fill: #2c3e50; /* Couleur sombre pour le titre */
+    -fx-font-weight: bold;
+}
+
+/* Labels dans la carte */
+.form-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #34495e; /* Couleur subtile */
+    -fx-font-weight: bold;
+}
+
+/* Champs de texte */
+.text-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #2980b9; /* Bleu doux */
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-padding: 8px;
+    -fx-font-size: 14px;
+    -fx-focus-color: #2980b9; /* Couleur d'accentuation au focus */
+}
+
+/* Boutons */
+.button {
+    -fx-background-color: #3498db; /* Bleu vif */
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-transition: background-color 0.3s;
+    -fx-effect: dropshadow(gaussian, #34495e, 5, 0, 0, 3); /* Ombre douce par défaut */
+}
+
+.button:hover {
+    -fx-background-color: #2980b9; /* Bleu plus foncé au survol */
+    -fx-effect: dropshadow(gaussian, #2980b9, 5, 0, 0, 3); /* Ombre au survol */
+}
+
+/* Couleur spécifique pour les boutons */
+.submit-button {
+    -fx-background-color: #2ecc71; /* Vert pour le bouton Ajouter */
+}
+
+.show-button {
+    -fx-background-color: #e67e22; /* Orange pour le bouton Afficher */
+}
+
+/* Zone de texte pour afficher les formations */
+.formations-list {
+    -fx-background-color: #ecf0f1;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1px;
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+    -fx-alignment: center;
+    -fx-pref-height: 200px;
+    -fx-scroll-bar-width: 10px;
+}

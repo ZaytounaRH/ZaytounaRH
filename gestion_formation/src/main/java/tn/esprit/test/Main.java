@@ -17,13 +17,14 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
-    //int idEmploye = 1; // ID de l'employé à récupérer
+
         ServiceEmployeCertification employeCertification = new ServiceEmployeCertification();
+        int idEmploye =1;
+        String nomEmploye = employeCertification.getNomEmployeById(idEmploye);
 
-        Employe employe = new Employe();
-        List<Certification> certifications = employeCertification.getCertificationsByEmploye(1);
+        List<Certification> certifications = employeCertification.getCertificationsByEmploye(idEmploye);
 
-        System.out.println("Certifications de l'employé " + employe.getNomById(employe,1) + " :");
+        System.out.println("Certifications de l'employé " + nomEmploye + ":" );
         for (Certification certif : certifications) {
             System.out.println(certif.getTitreCertif());
         }

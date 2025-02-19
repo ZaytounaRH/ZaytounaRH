@@ -32,6 +32,22 @@ public class ServiceEmployeCertification {
         }
         return certifications;
     }
+    public String getNomEmployeById(int idEmploye) {
+        String qry = "SELECT nom FROM employe WHERE idEmploye = ?";
+        String nom = "Inconnu"; // Valeur par défaut si l'employé n'est pas trouvé
 
+        try {
+            PreparedStatement pstmt = cnx.prepareStatement(qry);
+            pstmt.setInt(1, idEmploye);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                nom = rs.getString("nom");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération du nom de l'employé : " + e.getMessage());
+        }
+        return nom;
+    }
 
 }

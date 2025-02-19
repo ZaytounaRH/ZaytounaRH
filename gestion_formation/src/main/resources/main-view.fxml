@@ -1,24 +1,67 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.GestionFormation"
+            prefHeight="720.0" prefWidth="1080.0">
+ <children>
+
+  <!-- Card view contenant le formulaire -->
+  <VBox fx:id="cardContainer" layoutX="150.0" layoutY="100.0" alignment="CENTER" spacing="15"
+        prefWidth="700" prefHeight="500" styleClass="card">
+
+   <!-- Titre de la carte -->
+   <Label text="Ajouter une Formation" styleClass="card-title"/>
+
+   <!-- Formulaire de saisie -->
+   <Label text="Nom" styleClass="form-label"/>
+   <TextField fx:id="tfNomFormation" promptText="Nom" />
+
+   <Label text="Description" styleClass="form-label"/>
+   <TextField fx:id="tfDescriptionFormation" promptText="Description" />
+
+   <Label text="Durée" styleClass="form-label"/>
+   <TextField fx:id="tfDureeFormation" promptText="Durée" />
+
+   <!-- Boutons sous le formulaire -->
+   <HBox spacing="20" alignment="CENTER">
+    <Button fx:id="btnSubmit" text="Ajouter" onAction="#ajouterFormation" styleClass="submit-button"/>
+    <Button fx:id="btnShow" text="Afficher" onAction="#afficherFormation" styleClass="show-button"/>
+   </HBox>
+
+   <!-- Zone de texte pour afficher les formations -->
+   <Label fx:id="lbFormations" styleClass="formations-list"/>
+  </VBox>
+
+ </children>
+</AnchorPane>
+        <!--
+ <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 
 <AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="tn.esprit.controllers.GestionFormation"
-            prefHeight="400.0" prefWidth="600.0">
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="tn.esprit.controllers.GestionFormation"
+           prefHeight="720.0" prefWidth="1080.0">
 <children>
-    <TextField fx:id="tfNomFormation" layoutX="180.0" layoutY="151.0" promptText="Nom :" />
-    <TextField fx:id="tfDescriptionFormation" layoutX="180.0" layoutY="151.0" promptText="Description:" />
-    <TextField fx:id="tfDureeFormation" layoutX="180.0" layoutY="151.0" promptText="Duree:" />
-    <Label layoutX="180.0" layoutY="91.0" text="Nom" textFill="BLUE" />
-    <Label layoutX="180.0" layoutY="222.0" text="Description"/>
-    <Label layoutX="180.0" layoutY="222.0" text="Duree" />
-    <Button layoutX="229.0" layoutY="584.0" mnemonicParsing="false" onAction="#ajouterFormation" text="Submit" />
-    <Label fx:id="lbFormations" layoutX="520.0" layoutY="100.0" prefHeight="367.0" prefWidth="488.0" />
-    <Button layoutX="738.0" layoutY="584.0" mnemonicParsing="false" onAction="#afficherFormation" text="Show" />
+
+  <TextField fx:id="tfNomFormation" layoutX="180.0" layoutY="151.0" promptText="Nom :" />
+   <TextField fx:id="tfDescriptionFormation" layoutX="180.0" layoutY="265.0" promptText="Description:" />
+   <TextField fx:id="tfDureeFormation" layoutX="180.0" layoutY="389.0" promptText="Duree:" />
+
+   <Label layoutX="180.0" layoutY="91.0" text="Nom" textFill="BLUE" />
+   <Label layoutX="180.0" layoutY="222.0" text="Description"/>
+   <Label layoutX="180.0" layoutY="343.0" text="Duree" />
+   <Button layoutX="229.0" layoutY="584.0" mnemonicParsing="false" onAction="#ajouterFormation" text="Submit" />
+   <Label fx:id="lbFormations" layoutX="520.0" layoutY="100.0" prefHeight="367.0" prefWidth="488.0" />
+   <Button layoutX="738.0" layoutY="584.0" mnemonicParsing="false" onAction="#afficherFormation" text="Show" />
+
 </children>
 </AnchorPane>
+ -->
