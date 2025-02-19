@@ -5,17 +5,36 @@ import tn.esprit.services.ServiceFormation;
 import tn.esprit.utils.MyDatabase;
 import tn.esprit.models.Rh;
 import tn.esprit.models.Employe;
+import tn.esprit.services.ServiceEmployeCertification;
 
 
 import tn.esprit.services.ServiceCertification;
 import tn.esprit.models.Certification;
 
 import java.sql.Date;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
 
+    //int idEmploye = 1; // ID de l'employé à récupérer
+        ServiceEmployeCertification employeCertification = new ServiceEmployeCertification();
+
+        Employe employe = new Employe();
+        List<Certification> certifications = employeCertification.getCertificationsByEmploye(1);
+
+        System.out.println("Certifications de l'employé " + employe.getNomById(employe,1) + " :");
+        for (Certification certif : certifications) {
+            System.out.println(certif.getTitreCertif());
+        }
+
+
+
+
         ServiceFormation serviceFormation = new ServiceFormation();
+        System.out.println(serviceFormation.getAll());
+
+
 /*
 //AJOUT
         Employe employe = new Employe(1);
@@ -52,32 +71,30 @@ public class Main {
         Certification certification = new Certification("modified","google");
         certification.setIdCertif(8);
         serviceCertification.update(certification);
-
-
- */
-
-
-        //DELETE
+ //DELETE
         Certification certification = new Certification();
         certification.setIdCertif(5);
         serviceCertification.delete(certification);
         System.out.println(serviceCertification.getAll());
-/*
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    }
  */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }}
