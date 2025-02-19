@@ -9,7 +9,13 @@ public class RH extends User {
 
     public RH() {}
 
-    public RH(int id, int numTel, String joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance, List<Integer> employeeList, List<Integer> candidatList) {
+    public RH(int numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance, List<Integer> employeeList, List<Integer> candidatList) {
+        super(numTel, joursOuvrables, nom, prenom, address, email, gender, department, designation, dateDeNaissance);
+        this.employeeList = employeeList;
+        this.candidatList = candidatList;
+    }
+
+    public RH(int id, int numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance, List<Integer> employeeList, List<Integer> candidatList) {
         super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, department, designation, dateDeNaissance);
         this.employeeList = employeeList;
         this.candidatList = candidatList;
@@ -19,4 +25,6 @@ public class RH extends User {
     public void setEmployeeList(List<Integer> employeeList) { this.employeeList = employeeList; }
     public List<Integer> getCandidatList() { return candidatList; }
     public void setCandidatList(List<Integer> candidatList) { this.candidatList = candidatList; }
+
+
 }

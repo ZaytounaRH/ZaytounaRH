@@ -131,4 +131,21 @@ public class User {
     public void setDateDeNaissance(Date dateDeNaissance) {
         this.dateDeNaissance = dateDeNaissance;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", numTel=" + numTel +
+                ", joursOuvrables=" + joursOuvrables +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", address='" + address + '\'' +
+                ", email='" + email + '\'' +
+                ", gender='" + gender + '\'' +
+                ", department='" + department + '\'' +
+                ", designation='" + designation + '\'' +
+                ", dateDeNaissance=" + dateDeNaissance +
+                '}';
+    }
 }

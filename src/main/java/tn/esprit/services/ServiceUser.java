@@ -30,20 +30,22 @@ public class ServiceUser<T extends User> implements IService<T> {
             pstm.setString(8, user.getDepartment());
             pstm.setString(9, user.getDesignation());
             pstm.setDate(10, new java.sql.Date(user.getDateDeNaissance().getTime()));
-            pstm.setString(11, user.getClass().getSimpleName()); // User type (Admin, RH, Employee, Candidat)
+            pstm.setString(11, user.getClass().getSimpleName());
 
             int affectedRows = pstm.executeUpdate();
             if (affectedRows > 0) {
                 ResultSet generatedKeys = pstm.getGeneratedKeys();
                 if (generatedKeys.next()) {
-                    user.setId(generatedKeys.getInt(1)); // Set the generated ID
-                    System.out.println("User ajouté avec succès. ID: " + user.getId());
+                    int generatedId = generatedKeys.getInt(1);
+                    user.setId(generatedId);  // **Fix: Set the generated ID**
+                    System.out.println("User ajouté avec succès. ID: " + generatedId);
                 }
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'ajout de l'utilisateur: " + e.getMessage());
         }
     }
+
 
     @Override
     public List<T> getAll() {
@@ -58,16 +60,16 @@ public class ServiceUser<T extends User> implements IService<T> {
                 T user = null;
                 switch (userType) {
                     case "Admin":
-                        user = (T) new Admin(rs.getInt("id"), rs.getInt("numTel"), rs.getString("joursOuvrables"), rs.getString("nom"), rs.getString("prenom"), rs.getString("address"), rs.getString("email"), rs.getString("gender"), rs.getString("department"), rs.getString("designation"), rs.getDate("dateDeNaissance"));
+                        user = (T) new Admin(rs.getInt("id"), rs.getInt("numTel"), rs.getInt("joursOuvrables"), rs.getString("nom"), rs.getString("prenom"), rs.getString("address"), rs.getString("email"), rs.getString("gender"), rs.getString("department"), rs.getString("designation"), rs.getDate("dateDeNaissance"));
                         break;
                     case "RH":
-                        user = (T) new RH(rs.getInt("id"), rs.getInt("numTel"), rs.getString("joursOuvrables"), rs.getString("nom"), rs.getString("prenom"), rs.getString("address"), rs.getString("email"), rs.getString("gender"), rs.getString("department"), rs.getString("designation"), rs.getDate("dateDeNaissance"), null, null);
+                        user = (T) new RH(rs.getInt("id"), rs.getInt("numTel"), rs.getInt("joursOuvrables"), rs.getString("nom"), rs.getString("prenom"), rs.getString("address"), rs.getString("email"), rs.getString("gender"), rs.getString("department"), rs.getString("designation"), rs.getDate("dateDeNaissance"), null, null);
                         break;
                     case "Employee":
-                        user = (T) new Employee(rs.getInt("id"), rs.getInt("numTel"), rs.getString("joursOuvrables"), rs.getString("nom"), rs.getString("prenom"), rs.getString("address"), rs.getString("email"), rs.getString("gender"), rs.getString("department"), rs.getString("designation"), rs.getDate("dateDeNaissance"), rs.getInt("responsable_id"));
+                        user = (T) new Employee(rs.getInt("id"), rs.getInt("numTel"), rs.getInt("joursOuvrables"), rs.getString("nom"), rs.getString("prenom"), rs.getString("address"), rs.getString("email"), rs.getString("gender"), rs.getString("department"), rs.getString("designation"), rs.getDate("dateDeNaissance"), rs.getInt("responsable_id"));
                         break;
                     case "Candidat":
-                        user = (T) new Candidat(rs.getInt("id"), rs.getInt("numTel"), rs.getString("joursOuvrables"), rs.getString("nom"), rs.getString("prenom"), rs.getString("address"), rs.getString("email"), rs.getString("gender"), rs.getString("department"), rs.getString("designation"), rs.getDate("dateDeNaissance"), rs.getInt("intervieweur_id"));
+                        user = (T) new Candidat(rs.getInt("id"), rs.getInt("numTel"), rs.getInt("joursOuvrables"), rs.getString("nom"), rs.getString("prenom"), rs.getString("address"), rs.getString("email"), rs.getString("gender"), rs.getString("department"), rs.getString("designation"), rs.getDate("dateDeNaissance"), rs.getInt("intervieweur_id"));
                         break;
                 }
                 users.add(user);
@@ -98,11 +100,14 @@ public class ServiceUser<T extends User> implements IService<T> {
             int rowsUpdated = pstm.executeUpdate();
             if (rowsUpdated > 0) {
                 System.out.println("Update Success for User ID: " + user.getId());
+            } else {
+                System.out.println("Update Failed: No rows updated. Check if ID exists in the database.");
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la mise à jour de l'utilisateur: " + e.getMessage());
         }
     }
+
 
     @Override
     public void delete(T user) {

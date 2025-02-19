@@ -7,11 +7,18 @@ public class Employee extends User {
 
     public Employee() {}
 
-    public Employee(int id, int numTel, String joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance, int responsableId) {
+    public Employee(int numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance, int responsableId) {
+        super(numTel, joursOuvrables, nom, prenom, address, email, gender, department, designation, dateDeNaissance);
+        this.responsableId = responsableId;
+    }
+
+    public Employee(int id, int numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance, int responsableId) {
         super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, department, designation, dateDeNaissance);
         this.responsableId = responsableId;
     }
 
     public int getResponsableId() { return responsableId; }
     public void setResponsableId(int responsableId) { this.responsableId = responsableId; }
+
+
 }

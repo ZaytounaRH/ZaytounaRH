@@ -6,7 +6,13 @@ public class Admin extends User {
 
     public Admin() {}
 
-    public Admin(int id, int numTel, String joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance) {
+    public Admin(int numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance) {
+        super(numTel, joursOuvrables, nom, prenom, address, email, gender, department, designation, dateDeNaissance);
+    }
+
+    public Admin(int id, int numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance) {
         super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, department, designation, dateDeNaissance);
     }
+
+
 }
