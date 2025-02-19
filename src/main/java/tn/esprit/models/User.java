@@ -5,7 +5,7 @@ import java.sql.Date;
 public class User {
     private int id;
     private int numTel;
-    private String joursOuvrables;
+    private int joursOuvrables;
     private String nom;
     private String prenom;
     private String address;
@@ -17,7 +17,7 @@ public class User {
 
     public User() {}
 
-    public User(int numTel, String joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance) {
+    public User(int numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance) {
         this.numTel = numTel;
         this.joursOuvrables = joursOuvrables;
         this.nom = nom;
@@ -30,7 +30,7 @@ public class User {
         this.dateDeNaissance = dateDeNaissance;
     }
 
-    public User(int id, int numTel, String joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance) {
+    public User(int id, int numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance) {
         this.id = id;
         this.numTel = numTel;
         this.joursOuvrables = joursOuvrables;
@@ -60,11 +60,11 @@ public class User {
         this.numTel = numTel;
     }
 
-    public String getJoursOuvrables() {
+    public int getJoursOuvrables() {
         return joursOuvrables;
     }
 
-    public void setJoursOuvrables(String joursOuvrables) {
+    public void setJoursOuvrables(int joursOuvrables) {
         this.joursOuvrables = joursOuvrables;
     }
 

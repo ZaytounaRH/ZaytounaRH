@@ -21,7 +21,7 @@ public class ServiceUser<T extends User> implements IService<T> {
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry, Statement.RETURN_GENERATED_KEYS);
             pstm.setInt(1, user.getNumTel());
-            pstm.setString(2, user.getJoursOuvrables());
+            pstm.setInt(2, user.getJoursOuvrables());
             pstm.setString(3, user.getNom());
             pstm.setString(4, user.getPrenom());
             pstm.setString(5, user.getAddress());
@@ -84,7 +84,7 @@ public class ServiceUser<T extends User> implements IService<T> {
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setInt(1, user.getNumTel());
-            pstm.setString(2, user.getJoursOuvrables());
+            pstm.setInt(2, user.getJoursOuvrables());
             pstm.setString(3, user.getNom());
             pstm.setString(4, user.getPrenom());
             pstm.setString(5, user.getAddress());
