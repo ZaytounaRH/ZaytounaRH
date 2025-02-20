@@ -5,6 +5,8 @@ import tn.esprit.utils.MyDatabase;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Date;
+
 
 public class ServiceEmployeCertification {
 
@@ -32,6 +34,33 @@ public class ServiceEmployeCertification {
         }
         return certifications;
     }
+
+    public void ajouterCertificationAEmploye(int idEmploye, int idCertif, Date dateObtention) {
+        if (!controleSaisieCertification(idEmploye, idCertif, dateObtention)) {
+            System.out.println("Erreur : données invalides, insertion annulée !");
+            return;
+        }
+        
+
+        String qry = "INSERT INTO employe_certification (idEmploye, idCertif, dateObtention) VALUES (?, ?, ?)";
+
+        try {
+            PreparedStatement pstm = cnx.prepareStatement(qry);
+            pstm.setInt(1, idEmploye);
+            pstm.setInt(2, idCertif);
+            pstm.setDate(3, dateObtention); // Date d'obtention de la certification
+
+            int rowsAffected = pstm.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Certification ajoutée avec succès !");
+            } else {
+                System.out.println("Erreur lors de l'ajout de la certification.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de l'ajout de la certification : " + e.getMessage());
+        }
+    }
+
     public String getNomEmployeById(int idEmploye) {
         String qry = "SELECT nom FROM employe WHERE idEmploye = ?";
         String nom = "Inconnu"; // Valeur par défaut si l'employé n'est pas trouvé
@@ -49,5 +78,36 @@ public class ServiceEmployeCertification {
         }
         return nom;
     }
+
+    public boolean controleSaisieCertification(int idEmploye, int idCertif, Date dateObtention) {
+
+        if (idEmploye <= 0) {
+            System.out.println("L'ID de l'employé doit être un entier positif.");
+            return false;
+        }
+
+
+        if (idCertif <= 0) {
+            System.out.println("L'ID de la certification doit être un entier positif.");
+            return false;
+        }
+
+        if (dateObtention == null) {
+            System.out.println("La date d'obtention est obligatoire.");
+            return false;
+        }
+
+        Date currentDate = new Date(System.currentTimeMillis());
+        if (dateObtention.after(currentDate)) {
+            System.out.println("La date d'obtention ne peut pas être dans le futur.");
+            return false;
+        }
+
+
+        return true;
+    }
+
+
+
 
 }

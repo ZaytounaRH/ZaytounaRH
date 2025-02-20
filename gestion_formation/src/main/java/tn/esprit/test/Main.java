@@ -24,8 +24,9 @@ public class Main {
         ServiceCertification serviceCertification = new ServiceCertification();
 /*
        //certification des employes
+//AFFICHAGE
 
-        int idEmploye =1;
+        int idEmploye =4;
         String nomEmploye = employeCertification.getNomEmployeById(idEmploye);
 
         List<Certification> certifications = employeCertification.getCertificationsByEmploye(idEmploye);
@@ -35,12 +36,22 @@ public class Main {
             System.out.println(certif.getTitreCertif());
         }
 
-
-
  */
+//AJOUT
+        int idemploye = 2;  // ID de l'employé
+        int idCertif = 8;   // ID de la certification
+        Date dateObtention = Date.valueOf("2025-01-20");
+
+
+        employeCertification.ajouterCertificationAEmploye(idemploye, idCertif, dateObtention);
 
 
 
+
+
+        Formation formation = new Formation();
+        formation.setIdFormation(12);
+        serviceFormation.delete(formation);
 
         System.out.println(serviceFormation.getAll());
         System.out.println(serviceCertification.getAll());
