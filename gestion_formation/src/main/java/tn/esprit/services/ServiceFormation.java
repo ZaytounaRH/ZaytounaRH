@@ -19,6 +19,11 @@ public class ServiceFormation implements IService<Formation> {
 
     @Override
     public void add(Formation formation) {
+        if (!isValidFormation(formation)) {
+            System.out.println("Erreur : données invalides, insertion annulée !");
+            return;
+        }
+
         String qry = "INSERT INTO `formation`( `nomFormation`, `descriptionFormation`, `dureeFormation`, `idEmploye`, `idCertif`,`idRH`  ) VALUES (?,?,?,?,?,?)";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
@@ -64,7 +69,7 @@ public class ServiceFormation implements IService<Formation> {
                 Certification certification = null;
 
                 if (idEmploye > 0) {
-                    String employeQry = "SELECT nom FROM employe WHERE idEmploye = ?";
+                    String employeQry = "SELECT nom FROM employe WHERE idEmploye = ?"; //table employe n'a pas de nom tbale user a le nom prenom etc donc pour recupere le nom de l'employe il faut verifier que id_user==id_employe
                     PreparedStatement pstmtEmploye = cnx.prepareStatement(employeQry);
                     pstmtEmploye.setInt(1, idEmploye);
                     ResultSet rsEmploye = pstmtEmploye.executeQuery();
@@ -120,18 +125,22 @@ public class ServiceFormation implements IService<Formation> {
 
     @Override
     public void update(Formation formation) {
-        String qry = "UPDATE `formation` SET `nomFormation` = ?, `descriptionFormation` = ?, `dureeFormation` = ?, `idEmploye` = ?, `idRH` = ? WHERE `idFormation` = ?";
+        if (!isValidFormation(formation)) {
+            System.out.println("Erreur : données invalides, update annulé !");
+            return;
+        }
+        String qry = "UPDATE `formation` SET `nomFormation` = ?, `descriptionFormation` = ?, `dureeFormation` = ?, `idEmploye` = ?, `idCertif`= ?, `idRH` = ? WHERE `idFormation` = ?";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setString(1, formation.getNomFormation());
             pstm.setString(2, formation.getDescriptionFormation());
             pstm.setString(3, formation.getDureeFormation());
 
-            // Ici on récupère les IDs des objets Employe et RH
+
             pstm.setInt(4, formation.getEmploye().getIdEmploye());
-            pstm.setInt(5, formation.getRh().getIdRh());
-            pstm.setInt(6, formation.getCertification().getIdCertif());
-            pstm.setInt(6, formation.getIdFormation());
+            pstm.setInt(5, formation.getCertification().getIdCertif());
+            pstm.setInt(6, formation.getRh().getIdRh());
+            pstm.setInt(7, formation.getIdFormation());
 
             int rowsUpdated = pstm.executeUpdate();
             if (rowsUpdated > 0) {
@@ -146,7 +155,7 @@ public class ServiceFormation implements IService<Formation> {
 
     @Override
     public void delete(Formation formation) {
-        String qry = "DELETE FROM `formation` WHERE `idFormation` = ?";
+        String qry = "DELETE FROM formation WHERE idFormation = ?";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setInt(1, formation.getIdFormation());
@@ -163,4 +172,27 @@ public class ServiceFormation implements IService<Formation> {
     }
 
 
+    public static boolean isValidFormation(Formation formation) {
+        if (formation.getNomFormation() == null || formation.getNomFormation().isEmpty()) {
+            System.out.println("Le nom de la formation ne peut pas être vide !");
+            return false;
+        }
+        if (formation.getDescriptionFormation() == null || formation.getDescriptionFormation().length() < 10) {
+            System.out.println("La description doit contenir au moins 10 caractères !");
+            return false;
+        }
+        if (!formation.getDureeFormation().matches("\\d+ jours")) {
+            System.out.println("La durée doit être au format 'X jours' !");
+            return false;
+        }
+
+        if (formation.getRh().getIdRh() <= 0) {
+            System.out.println("rh responsable manquant ! ");
+        }
+        if  (formation.getEmploye().getIdEmploye() <= 0) {
+            System.out.println("employe participant manquant ! ");
+        }
+
+        return true;
+    }
 }

@@ -1,6 +1,7 @@
 package tn.esprit.services;
 import tn.esprit.interfaces.IService;
 import tn.esprit.models.Certification;
+import tn.esprit.models.Formation;
 import tn.esprit.utils.MyDatabase;
 
 import java.sql.*;
@@ -15,6 +16,10 @@ public class ServiceCertification implements IService<Certification> {
     }
     @Override
     public void add(Certification certification) {
+        if (!isValidCertification(certification)) {
+            System.out.println("Erreur : données invalides, insertion annulée !");
+            return;
+        }
         String qry ="INSERT INTO `certification`(`titreCertif`, `organismeCertif`) VALUES(?,?)";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
@@ -55,6 +60,10 @@ public class ServiceCertification implements IService<Certification> {
 
     @Override
     public void update(Certification certification) {
+        if (!isValidCertification(certification)) {
+            System.out.println("Erreur : données invalides, update annulé !");
+            return;
+        }
         String qry = "UPDATE `certification` SET `titreCertif`=?,`organismeCertif`=? WHERE `idCertif`=?";
 
         try {
@@ -95,7 +104,19 @@ public class ServiceCertification implements IService<Certification> {
         }
 
     }
+    public static boolean isValidCertification(Certification certification) {
+        if (certification.getTitreCertif() == null || certification.getTitreCertif().isEmpty()) {
+            System.out.println("Le titre de la certification ne peut pas être vide !");
+            return false;
+        }
+        if (certification.getOrganismeCertif() == null || certification.getOrganismeCertif().isEmpty()) {
+            System.out.println("L'organisme de la certification ne peut pas être vide !");
+            return false;
+        }
 
+
+        return true;
+    }
 
 
 

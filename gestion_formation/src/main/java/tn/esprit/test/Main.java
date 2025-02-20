@@ -14,11 +14,17 @@ import tn.esprit.models.Certification;
 import java.sql.Date;
 import java.util.List;
 
+import static tn.esprit.services.ServiceFormation.isValidFormation;
+
 public class Main {
     public static void main(String[] args) {
 
-
+        ServiceFormation serviceFormation = new ServiceFormation();
         ServiceEmployeCertification employeCertification = new ServiceEmployeCertification();
+        ServiceCertification serviceCertification = new ServiceCertification();
+/*
+       //certification des employes
+
         int idEmploye =1;
         String nomEmploye = employeCertification.getNomEmployeById(idEmploye);
 
@@ -31,36 +37,45 @@ public class Main {
 
 
 
+ */
+        //DELETE
 
-        ServiceFormation serviceFormation = new ServiceFormation();
-        System.out.println(serviceFormation.getAll());
+        Formation formation = new Formation();
+        formation.setIdFormation(5);
+        serviceFormation.delete(formation);
+
+
+
+     System.out.println(serviceFormation.getAll());
+    }
+
+
+
 
 
 /*
-//AJOUT
+ //AJOUT
         Employe employe = new Employe(1);
         Rh rh = new Rh(3);
         Certification certification = new Certification(6);
-        Formation formation = new Formation("Formation finance", "Formation complète sur finance", "15 jours",employe, rh, certification);
-       serviceFormation.add(formation);
+        Formation formation = new Formation("controle", "Formation controlee", "15 jours",employe, rh, certification);
+        serviceFormation.add(formation);
 
 //UPDATE
-        Employe employe = new Employe(2, "Nouveau Employé");
-        Rh rh = new Rh(3, "Nouveau RH");
-        Certification certif = new Certification(1, "Certif Updated");
-        Formation formation = new Formation("Formation updated", "description modifiee", "2 jours", employe, rh, certif);
-        formation.setIdFormation(2);
+        Employe employe = new Employe(2);
+        Rh rh = new Rh(3);
+        Certification certif = new Certification(7);
+        Formation formation = new Formation("update controle", "description modifiee", "2 jours", employe, rh, certif);
+        formation.setIdFormation(6);
         serviceFormation.update(formation);
-//DELETE
 
-        Formation formation = new Formation();
-        formation.setIdFormation(7);
-        serviceFormation.delete(formation);
-        System.out.println(serviceFormation.getAll());
+
+
+
  */
 
 //CERTIFICATION
-        ServiceCertification serviceCertification = new ServiceCertification();
+
 /*
         //AJOUT
 
@@ -98,4 +113,4 @@ public class Main {
 
 
 
-}}
+}
