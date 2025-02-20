@@ -4,6 +4,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.ComboBox?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="tn.esprit.controllers.GestionFormation"
@@ -12,7 +13,7 @@
 
   <!-- Card view contenant le formulaire -->
   <VBox fx:id="cardContainer" layoutX="150.0" layoutY="100.0" alignment="CENTER" spacing="15"
-        prefWidth="700" prefHeight="500" styleClass="card">
+        prefWidth="700" prefHeight="1000" styleClass="card">
 
    <!-- Titre de la carte -->
    <Label text="Ajouter une Formation" styleClass="card-title"/>
@@ -26,6 +27,13 @@
 
    <Label text="Durée" styleClass="form-label"/>
    <TextField fx:id="tfDureeFormation" promptText="Durée" />
+
+   <ComboBox fx:id="comboBoxEmploye" onAction="#handleEmployeSelection"/>
+   <ComboBox fx:id="comboBoxRH" onAction="#handleRhSelection"/>
+   <ComboBox fx:id="comboBoxCertification" onAction="#handleCertificationSelection"/>
+
+
+
 
    <!-- Boutons sous le formulaire -->
    <HBox spacing="20" alignment="CENTER">

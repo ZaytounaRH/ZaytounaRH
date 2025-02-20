@@ -40,7 +40,7 @@ public class ServiceEmployeCertification {
             System.out.println("Erreur : données invalides, insertion annulée !");
             return;
         }
-        
+
 
         String qry = "INSERT INTO employe_certification (idEmploye, idCertif, dateObtention) VALUES (?, ?, ?)";
 

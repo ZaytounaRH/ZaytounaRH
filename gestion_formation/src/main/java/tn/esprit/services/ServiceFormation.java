@@ -215,4 +215,61 @@ public class ServiceFormation implements IService<Formation> {
         return false;
     }
 
+    public List<Employe> getAllEmployes() {
+        List<Employe> employes = new ArrayList<>();
+        String query = "SELECT * FROM employe";
+
+        try (Statement stmt = cnx.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                Employe employe = new Employe();
+                employe.setIdEmploye(rs.getInt("idEmploye"));
+                employe.setNom(rs.getString("nom"));
+                employes.add(employe);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employes;
+    }
+
+    public List<Rh> getAllRH() {
+        List<Rh> rhList = new ArrayList<>();
+        String query = "SELECT * FROM rh"; // Table RH
+
+        try (Statement stmt = cnx.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                Rh rh = new Rh();
+                rh.setIdRh(rs.getInt("idRH"));
+                rh.setNom(rs.getString("nom"));
+                rhList.add(rh);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rhList;
+    }
+
+    public List<Certification> getAllCertifications() {
+        List<Certification> certifications = new ArrayList<>();
+        String query = "SELECT * FROM certification";
+
+        try (Statement stmt = cnx.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                Certification certif = new Certification();
+                certif.setIdCertif(rs.getInt("idCertif"));
+                certif.setTitreCertif(rs.getString("titreCertif"));
+                certifications.add(certif);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return certifications;
+    }
+
 }
