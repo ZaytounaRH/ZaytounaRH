@@ -23,6 +23,10 @@ public class ServiceFormation implements IService<Formation> {
             System.out.println("Erreur : données invalides, insertion annulée !");
             return;
         }
+        if(isFormationExists(formation.getNomFormation(), formation.getDescriptionFormation())){
+            System.out.println("Erreur : Une formation avec le même nom et la même description existe déjà !");
+            return;
+        }
 
         String qry = "INSERT INTO `formation`( `nomFormation`, `descriptionFormation`, `dureeFormation`, `idEmploye`, `idCertif`,`idRH`  ) VALUES (?,?,?,?,?,?)";
         try {
@@ -195,4 +199,20 @@ public class ServiceFormation implements IService<Formation> {
 
         return true;
     }
+    public boolean isFormationExists(String nomFormation, String descriptionFormation) {
+        String qry = "SELECT COUNT(*) FROM formation WHERE nomFormation = ? AND descriptionFormation = ?";
+        try {
+            PreparedStatement pstm = cnx.prepareStatement(qry);
+            pstm.setString(1, nomFormation);
+            pstm.setString(2, descriptionFormation);
+            ResultSet rs = pstm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur SQL : " + e.getMessage());
+        }
+        return false;
+    }
+
 }

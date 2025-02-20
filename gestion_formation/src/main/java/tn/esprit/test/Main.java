@@ -38,15 +38,12 @@ public class Main {
 
 
  */
-        //DELETE
-
-        Formation formation = new Formation();
-        formation.setIdFormation(5);
-        serviceFormation.delete(formation);
 
 
 
-     System.out.println(serviceFormation.getAll());
+
+        System.out.println(serviceFormation.getAll());
+        System.out.println(serviceCertification.getAll());
     }
 
 
@@ -54,13 +51,14 @@ public class Main {
 
 
 /*
+System.out.println(serviceFormation.getAll());
  //AJOUT
-        Employe employe = new Employe(1);
+
+ Employe employe = new Employe(1);
         Rh rh = new Rh(3);
         Certification certification = new Certification(6);
-        Formation formation = new Formation("controle", "Formation controlee", "15 jours",employe, rh, certification);
+        Formation formation = new Formation("testing", "Formation controlee", "15 jours",employe, rh, certification);
         serviceFormation.add(formation);
-
 //UPDATE
         Employe employe = new Employe(2);
         Rh rh = new Rh(3);
@@ -69,6 +67,11 @@ public class Main {
         formation.setIdFormation(6);
         serviceFormation.update(formation);
 
+//DELETE
+
+        Formation formation = new Formation();
+        formation.setIdFormation(5);
+        serviceFormation.delete(formation);
 
 
 
@@ -77,21 +80,23 @@ public class Main {
 //CERTIFICATION
 
 /*
+
+
+
         //AJOUT
 
         serviceCertification.add(new Certification("machine_learning","nvidia"));
-        //AFFICHAGE
+//UPDATE
 
-        //UPDATE
-
-        Certification certification = new Certification("modified","google");
-        certification.setIdCertif(8);
+        Certification certification = new Certification("controle saisie","esprit");
+        certification.setIdCertif(7);
         serviceCertification.update(certification);
- //DELETE
+
+//DELETE
+
         Certification certification = new Certification();
-        certification.setIdCertif(5);
+        certification.setIdCertif(4);
         serviceCertification.delete(certification);
-        System.out.println(serviceCertification.getAll());
 
  */
 

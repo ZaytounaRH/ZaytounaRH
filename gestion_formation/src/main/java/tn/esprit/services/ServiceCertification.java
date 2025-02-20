@@ -20,6 +20,12 @@ public class ServiceCertification implements IService<Certification> {
             System.out.println("Erreur : données invalides, insertion annulée !");
             return;
         }
+
+        if (isCertificationExists(certification.getTitreCertif(), certification.getOrganismeCertif())) {
+            System.out.println("Erreur : Une certification avec le même titre et le même organisme existe déjà !");
+            return;
+        }
+
         String qry ="INSERT INTO `certification`(`titreCertif`, `organismeCertif`) VALUES(?,?)";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
@@ -116,7 +122,25 @@ public class ServiceCertification implements IService<Certification> {
 
 
         return true;
+
     }
+
+    public boolean isCertificationExists(String titreCertif, String organismeCertif) {
+        String qry = "SELECT COUNT(*) FROM certification WHERE titreCertif = ? AND organismeCertif = ?";
+        try {
+            PreparedStatement pstm = cnx.prepareStatement(qry);
+            pstm.setString(1, titreCertif);
+            pstm.setString(2, organismeCertif);
+            ResultSet rs = pstm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Retourne true si la certification existe déjà
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur SQL : " + e.getMessage());
+        }
+        return false;
+    }
+
 
 
 
