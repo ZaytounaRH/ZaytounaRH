@@ -1,30 +1,32 @@
 package tn.esprit.models;
 
 import java.sql.Date;
-import java.util.List;
 
 public class RH extends User {
-    private List<Integer> employeeList; // List of Employee IDs
-    private List<Integer> candidatList; // List of Candidat IDs
+    private String employeeListJson;
+    private String candidatListJson;
 
     public RH() {}
 
-    public RH(int numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance, List<Integer> employeeList, List<Integer> candidatList) {
-        super(numTel, joursOuvrables, nom, prenom, address, email, gender, department, designation, dateDeNaissance);
-        this.employeeList = employeeList;
-        this.candidatList = candidatList;
-    }
-
-    public RH(int id, int numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance, List<Integer> employeeList, List<Integer> candidatList) {
+    public RH(int id, int numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance, String employeeListJson, String candidatListJson) {
         super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, department, designation, dateDeNaissance);
-        this.employeeList = employeeList;
-        this.candidatList = candidatList;
+        this.employeeListJson = employeeListJson;
+        this.candidatListJson = candidatListJson;
     }
 
-    public List<Integer> getEmployeeList() { return employeeList; }
-    public void setEmployeeList(List<Integer> employeeList) { this.employeeList = employeeList; }
-    public List<Integer> getCandidatList() { return candidatList; }
-    public void setCandidatList(List<Integer> candidatList) { this.candidatList = candidatList; }
+    public String getEmployeeListJson() {
+        return employeeListJson;
+    }
 
+    public void setEmployeeListJson(String employeeListJson) {
+        this.employeeListJson = employeeListJson;
+    }
 
+    public String getCandidatListJson() {
+        return candidatListJson;
+    }
+
+    public void setCandidatListJson(String candidatListJson) {
+        this.candidatListJson = candidatListJson;
+    }
 }

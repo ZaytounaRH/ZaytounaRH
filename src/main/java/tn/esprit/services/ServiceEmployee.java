@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServiceEmployee extends ServiceUser<Employee> {
 
@@ -15,29 +17,40 @@ public class ServiceEmployee extends ServiceUser<Employee> {
             System.out.println("Erreur: responsableId invalide.");
             return;
         }
-        String qry = "INSERT INTO Users (numTel, joursOuvrables, nom, prenom, address, email, gender, department, designation, dateDeNaissance, user_type, responsable_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry, Statement.RETURN_GENERATED_KEYS);
-            pstm.setInt(1, employee.getNumTel());
-            pstm.setInt(2, employee.getJoursOuvrables());
-            pstm.setString(3, employee.getNom());
-            pstm.setString(4, employee.getPrenom());
-            pstm.setString(5, employee.getAddress());
-            pstm.setString(6, employee.getEmail());
-            pstm.setString(7, employee.getGender());
-            pstm.setString(8, employee.getDepartment());
-            pstm.setString(9, employee.getDesignation());
-            pstm.setDate(10, new java.sql.Date(employee.getDateDeNaissance().getTime()));
-            pstm.setString(11, employee.getClass().getSimpleName()); // User type (Employee)
-            pstm.setInt(12, employee.getResponsableId()); // Set the responsable_id
 
-            int affectedRows = pstm.executeUpdate();
+        // Insert into users table
+        String userQry = "INSERT INTO users (numTel, joursOuvrables, nom, prenom, address, email, gender, department, designation, dateDeNaissance, user_type) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement userPstm = cnx.prepareStatement(userQry, Statement.RETURN_GENERATED_KEYS)) {
+            userPstm.setInt(1, employee.getNumTel());
+            userPstm.setInt(2, employee.getJoursOuvrables());
+            userPstm.setString(3, employee.getNom());
+            userPstm.setString(4, employee.getPrenom());
+            userPstm.setString(5, employee.getAddress());
+            userPstm.setString(6, employee.getEmail());
+            userPstm.setString(7, employee.getGender());
+            userPstm.setString(8, employee.getDepartment());
+            userPstm.setString(9, employee.getDesignation());
+            userPstm.setDate(10, new java.sql.Date(employee.getDateDeNaissance().getTime()));
+            userPstm.setString(11, "Employee");
+
+            int affectedRows = userPstm.executeUpdate();
             if (affectedRows > 0) {
-                ResultSet generatedKeys = pstm.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    int generatedId = generatedKeys.getInt(1);
-                    employee.setId(generatedId); // Set the generated ID
-                    System.out.println("Employee ajouté avec succès. ID: " + generatedId);
+                try (ResultSet generatedKeys = userPstm.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int generatedId = generatedKeys.getInt(1);
+                        employee.setId(generatedId);
+
+                        // Insert into employee table
+                        String employeeQry = "INSERT INTO employee (employee_id, responsable_id) VALUES (?, ?)";
+                        try (PreparedStatement employeePstm = cnx.prepareStatement(employeeQry)) {
+                            employeePstm.setInt(1, generatedId);
+                            employeePstm.setInt(2, employee.getResponsableId());
+                            employeePstm.executeUpdate();
+                        }
+
+                        System.out.println("Employee ajouté avec succès. ID: " + generatedId);
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -48,66 +61,43 @@ public class ServiceEmployee extends ServiceUser<Employee> {
     @Override
     public void update(Employee employee) {
         if (employee.getId() <= 0) {
-            System.out.println("Error: Employee ID is not set for update!");
+            System.out.println("Erreur: ID employé non valide pour la mise à jour !");
             return;
         }
 
-        String qry = "UPDATE Users SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, department=?, designation=?, dateDeNaissance=?, responsable_id=? WHERE id=?";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry);
-            pstm.setInt(1, employee.getNumTel());
-            pstm.setInt(2, employee.getJoursOuvrables());
-            pstm.setString(3, employee.getNom());
-            pstm.setString(4, employee.getPrenom());
-            pstm.setString(5, employee.getAddress());
-            pstm.setString(6, employee.getEmail());
-            pstm.setString(7, employee.getGender());
-            pstm.setString(8, employee.getDepartment());
-            pstm.setString(9, employee.getDesignation());
-            pstm.setDate(10, new java.sql.Date(employee.getDateDeNaissance().getTime()));
-            pstm.setInt(11, employee.getResponsableId()); // Update responsable_id
-            pstm.setInt(12, employee.getId());
+        // Update users table
+        String userQry = "UPDATE users SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, department=?, designation=?, dateDeNaissance=? WHERE id=?";
+        try (PreparedStatement userPstm = cnx.prepareStatement(userQry)) {
+            userPstm.setInt(1, employee.getNumTel());
+            userPstm.setInt(2, employee.getJoursOuvrables());
+            userPstm.setString(3, employee.getNom());
+            userPstm.setString(4, employee.getPrenom());
+            userPstm.setString(5, employee.getAddress());
+            userPstm.setString(6, employee.getEmail());
+            userPstm.setString(7, employee.getGender());
+            userPstm.setString(8, employee.getDepartment());
+            userPstm.setString(9, employee.getDesignation());
+            userPstm.setDate(10, new java.sql.Date(employee.getDateDeNaissance().getTime()));
+            userPstm.setInt(11, employee.getId());
 
-            int rowsUpdated = pstm.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Update Success for Employee ID: " + employee.getId());
-            } else {
-                System.out.println("Update Failed: No rows updated. Check if ID exists in the database.");
+            int userRowsUpdated = userPstm.executeUpdate();
+
+            // Update employee table
+            String employeeQry = "UPDATE employee SET responsable_id=? WHERE employee_id=?";
+            try (PreparedStatement employeePstm = cnx.prepareStatement(employeeQry)) {
+                employeePstm.setInt(1, employee.getResponsableId());
+                employeePstm.setInt(2, employee.getId());
+                int employeeRowsUpdated = employeePstm.executeUpdate();
+
+                if (userRowsUpdated > 0 && employeeRowsUpdated > 0) {
+                    System.out.println("Mise à jour réussie pour l'employé ID: " + employee.getId());
+                } else {
+                    System.out.println("Échec de la mise à jour: ID inexistant.");
+                }
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la mise à jour de l'employé: " + e.getMessage());
         }
-    }
-
-
-    public boolean isValidResponsableId(int responsableId) {
-        String qry = "SELECT COUNT(*) FROM Users WHERE id = ? AND user_type = 'RH'";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry);
-            pstm.setInt(1, responsableId);
-            ResultSet rs = pstm.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 0; // Returns true if the responsableId exists and is an RH
-            }
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de la vérification du responsableId: " + e.getMessage());
-        }
-        return false;
-    }
-
-    public boolean isResponsableForOthers(int employeeId) {
-        String qry = "SELECT COUNT(*) FROM Users WHERE responsable_id = ?";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry);
-            pstm.setInt(1, employeeId);
-            ResultSet rs = pstm.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 0; // Returns true if the employee is a responsable for others
-            }
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de la vérification du responsable: " + e.getMessage());
-        }
-        return false;
     }
 
     @Override
@@ -117,18 +107,89 @@ public class ServiceEmployee extends ServiceUser<Employee> {
             return;
         }
 
-        String qry = "DELETE FROM Users WHERE id=?";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry);
-            pstm.setInt(1, employee.getId());
+        // Delete from employee table
+        String employeeQry = "DELETE FROM employee WHERE employee_id=?";
+        try (PreparedStatement employeePstm = cnx.prepareStatement(employeeQry)) {
+            employeePstm.setInt(1, employee.getId());
+            int employeeRowsDeleted = employeePstm.executeUpdate();
 
-            int rowsDeleted = pstm.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("Employee supprimé avec succès! ID: " + employee.getId());
+            // Delete from users table
+            String userQry = "DELETE FROM users WHERE id=?";
+            try (PreparedStatement userPstm = cnx.prepareStatement(userQry)) {
+                userPstm.setInt(1, employee.getId());
+                int userRowsDeleted = userPstm.executeUpdate();
+
+                if (employeeRowsDeleted > 0 && userRowsDeleted > 0) {
+                    System.out.println("Employé supprimé avec succès! ID: " + employee.getId());
+                } else {
+                    System.out.println("Aucun employé trouvé avec cet ID.");
+                }
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la suppression de l'employé: " + e.getMessage());
         }
     }
 
+    @Override
+    public List<Employee> getAll() {
+        List<Employee> employees = new ArrayList<>();
+        String qry = "SELECT u.*, e.responsable_id FROM users u " +
+                "JOIN employee e ON u.id = e.employee_id " +
+                "WHERE u.user_type = 'Employee'";
+        try {
+            Statement stm = cnx.createStatement();
+            ResultSet rs = stm.executeQuery(qry);
+            while (rs.next()) {
+                Employee employee = new Employee(
+                        rs.getInt("id"),
+                        rs.getInt("numTel"),
+                        rs.getInt("joursOuvrables"),
+                        rs.getString("nom"),
+                        rs.getString("prenom"),
+                        rs.getString("address"),
+                        rs.getString("email"),
+                        rs.getString("gender"),
+                        rs.getString("department"),
+                        rs.getString("designation"),
+                        rs.getDate("dateDeNaissance"),
+                        rs.getInt("responsable_id"), // Fetch responsable_id from the employee table
+                        null // responsable_name is not stored in the database
+                );
+                employees.add(employee);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des employés: " + e.getMessage());
+        }
+        return employees;
+    }
+
+    public boolean isValidResponsableId(int responsableId) {
+        String qry = "SELECT COUNT(*) FROM Users WHERE id = ? AND user_type = 'RH'";
+        try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
+            pstm.setInt(1, responsableId);
+            try (ResultSet rs = pstm.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // True if ID exists and is RH
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la vérification du responsableId: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean isResponsableForOthers(int employeeId) {
+        String qry = "SELECT COUNT(*) FROM Users WHERE responsable_id = ?";
+        try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
+            pstm.setInt(1, employeeId);
+            try (ResultSet rs = pstm.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // True if employee is a responsable
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la vérification du responsable: " + e.getMessage());
+        }
+        return false;
+    }
 }

@@ -17,7 +17,7 @@ public class ServiceUser<T extends User> implements IService<T> {
 
     @Override
     public void add(T user) {
-        String qry = "INSERT INTO Users (numTel, joursOuvrables, nom, prenom, address, email, gender, department, designation, dateDeNaissance, user_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String qry = "INSERT INTO users (numTel, joursOuvrables, nom, prenom, address, email, gender, department, designation, dateDeNaissance, user_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry, Statement.RETURN_GENERATED_KEYS);
             pstm.setInt(1, user.getNumTel());
@@ -30,32 +30,40 @@ public class ServiceUser<T extends User> implements IService<T> {
             pstm.setString(8, user.getDepartment());
             pstm.setString(9, user.getDesignation());
             pstm.setDate(10, new java.sql.Date(user.getDateDeNaissance().getTime()));
-            pstm.setString(11, user.getClass().getSimpleName());
+
+            // Set the user type depending on the actual class
+            if (user instanceof Admin) {
+                pstm.setString(11, "Admin");
+            } else if (user instanceof RH) {
+                pstm.setString(11, "RH");
+            } else if (user instanceof Candidat) {
+                pstm.setString(11, "Candidat");
+            } else if (user instanceof Employee) {
+                pstm.setString(11, "Employee");
+            }
 
             int affectedRows = pstm.executeUpdate();
             if (affectedRows > 0) {
                 ResultSet generatedKeys = pstm.getGeneratedKeys();
                 if (generatedKeys.next()) {
                     int generatedId = generatedKeys.getInt(1);
-                    user.setId(generatedId);  // **Fix: Set the generated ID**
-                    System.out.println("User ajouté avec succès. ID: " + generatedId);
+                    user.setId(generatedId);  // Set the generated ID
+                    System.out.println("User added successfully. ID: " + generatedId);
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de l'ajout de l'utilisateur: " + e.getMessage());
+            System.out.println("Error while adding user: " + e.getMessage());
         }
     }
-
 
     @Override
     public List<T> getAll() {
         List<T> users = new ArrayList<>();
-        String qry = "SELECT * FROM Users";
+        String qry = "SELECT * FROM users";
         try {
             Statement stm = cnx.createStatement();
             ResultSet rs = stm.executeQuery(qry);
             while (rs.next()) {
-                // Create a User object based on the user_type
                 String userType = rs.getString("user_type");
                 T user = null;
                 switch (userType) {
@@ -66,19 +74,20 @@ public class ServiceUser<T extends User> implements IService<T> {
                         user = (T) new RH(rs.getInt("id"), rs.getInt("numTel"), rs.getInt("joursOuvrables"), rs.getString("nom"), rs.getString("prenom"), rs.getString("address"), rs.getString("email"), rs.getString("gender"), rs.getString("department"), rs.getString("designation"), rs.getDate("dateDeNaissance"), null, null);
                         break;
                     case "Employee":
-                        user = (T) new Employee(rs.getInt("id"), rs.getInt("numTel"), rs.getInt("joursOuvrables"), rs.getString("nom"), rs.getString("prenom"), rs.getString("address"), rs.getString("email"), rs.getString("gender"), rs.getString("department"), rs.getString("designation"), rs.getDate("dateDeNaissance"), rs.getInt("responsable_id"));
+                        user = (T) new Employee(rs.getInt("id"), rs.getInt("numTel"), rs.getInt("joursOuvrables"), rs.getString("nom"), rs.getString("prenom"), rs.getString("address"), rs.getString("email"), rs.getString("gender"), rs.getString("department"), rs.getString("designation"), rs.getDate("dateDeNaissance"), 0, null);  // Default values for new columns
                         break;
                     case "Candidat":
-                        user = (T) new Candidat(rs.getInt("id"), rs.getInt("numTel"), rs.getInt("joursOuvrables"), rs.getString("nom"), rs.getString("prenom"), rs.getString("address"), rs.getString("email"), rs.getString("gender"), rs.getString("department"), rs.getString("designation"), rs.getDate("dateDeNaissance"), rs.getInt("intervieweur_id"));
+                        user = (T) new Candidat(rs.getInt("id"), rs.getInt("numTel"), rs.getInt("joursOuvrables"), rs.getString("nom"), rs.getString("prenom"), rs.getString("address"), rs.getString("email"), rs.getString("gender"), rs.getString("department"), rs.getString("designation"), rs.getDate("dateDeNaissance"), 0);  // Default values for new columns
                         break;
                 }
                 users.add(user);
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération des utilisateurs: " + e.getMessage());
+            System.out.println("Error while retrieving users: " + e.getMessage());
         }
         return users;
     }
+
 
     @Override
     public void update(T user) {
@@ -107,7 +116,6 @@ public class ServiceUser<T extends User> implements IService<T> {
             System.out.println("Erreur lors de la mise à jour de l'utilisateur: " + e.getMessage());
         }
     }
-
 
     @Override
     public void delete(T user) {

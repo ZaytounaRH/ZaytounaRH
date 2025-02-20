@@ -10,28 +10,21 @@ import java.io.IOException;
 
 public class MainFX extends Application {
 
-    public static void main(String[] args) {
-        launch(args);
-    }
-
     @Override
     public void start(Stage primaryStage) {
         try {
-            // Load the FXML file and set the scene
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionUser.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherEmployee.fxml")); // Make sure the FXML file exists in resources
             Parent root = loader.load();
 
-            // Create a scene with the loaded root
-            Scene scene = new Scene(root);
-
-            // Set the scene to the primaryStage
-            primaryStage.setScene(scene);
-            primaryStage.setTitle("---- Gestion Personne -----");
+            primaryStage.setTitle("Gestion des Employés");
+            primaryStage.setScene(new Scene(root));
             primaryStage.show();
-
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Failed to load FXML: " + e.getMessage());
         }
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
