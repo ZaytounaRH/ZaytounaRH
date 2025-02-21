@@ -36,5 +36,8 @@ public class Employe {
         return nom;
     }
 
-
+    @Override
+    public String toString() {
+        return nom;
+    }
 }

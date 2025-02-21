@@ -55,11 +55,8 @@ public class Certification {
     }
     @Override
     public String toString() {
-        return "Certification{" +
-                "id=" + idCertif +
-                ", titre=" + titreCertif +
-                ", organisme='" + organismeCertif +
-                "}\n";
+        return titreCertif ;
+
     }
 
 

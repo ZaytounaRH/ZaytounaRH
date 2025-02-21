@@ -26,7 +26,7 @@ public class MainFX extends Application {
 
 
             primaryStage.setScene(scene);
-            primaryStage.setTitle("---- Gestion Personne -----");
+            primaryStage.setTitle("---- Gestion Formation-----");
             primaryStage.show();
 
         } catch (IOException e) {

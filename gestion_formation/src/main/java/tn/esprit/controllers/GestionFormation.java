@@ -2,9 +2,9 @@ package tn.esprit.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import tn.esprit.interfaces.IService;
 import tn.esprit.models.Certification;
 import tn.esprit.models.Formation;
@@ -15,6 +15,7 @@ import tn.esprit.models.Employe;
 import java.util.List;
 
 public class GestionFormation {
+
     @FXML
     private TextField tfNomFormation;
     @FXML
@@ -22,7 +23,7 @@ public class GestionFormation {
     @FXML
     private TextField tfDureeFormation;
     IService<Formation> sf = new ServiceFormation();
-    private ServiceFormation serviceFormation = new ServiceFormation();
+    //private ServiceFormation serviceFormation = new ServiceFormation();
     @FXML
     private Label lbFormations;
     @FXML
@@ -32,19 +33,45 @@ public class GestionFormation {
 
     @FXML
     private ComboBox<Certification> comboBoxCertification;
+    @FXML
+    private ScrollPane formationsScrollPane;
+    @FXML
+    private VBox cardContainer;
+    @FXML
+    private AnchorPane logoContainer;
+    @FXML
+    private VBox cardContainerCertification;
+    @FXML
+    private Label lbCertifications;
+    @FXML
+    private ScrollPane certificationsScrollPane;
+    @FXML
+    private Button btnSubmitCertification;
+    @FXML
+    private Button btnShow;
+    @FXML
+    private TextField tfDescriptionCertification;
+    @FXML
+    private Button btnSubmit;
+    @FXML
+    private Button btnShowCertification;
+    @FXML
+    private TextField tfDureeCertification;
+    @FXML
+    private TextField tfTitreCertification;
 
     public void chargerListes() {
         ServiceFormation serviceFormation = new ServiceFormation();
 
-        // Charger la liste des employés
+
         List<Employe> employes = serviceFormation.getAllEmployes();
         comboBoxEmploye.getItems().addAll(employes);
 
-        // Charger la liste des RH (depuis la table RH)
+
         List<Rh> rhList = serviceFormation.getAllRH();
         comboBoxRH.getItems().addAll(rhList);
 
-        // Charger la liste des certifications
+
         List<Certification> certifications = serviceFormation.getAllCertifications();
         comboBoxCertification.getItems().addAll(certifications);
     }
@@ -97,13 +124,19 @@ private void handleCertificationSelection() {
         lbFormations.setText(sf.getAll().toString());
     }
 
+
     @FXML
     public void initialize() {
         chargerListes();
     }
 
 
-
 }
+
+
+
+
+
+
 
 

@@ -78,3 +78,8 @@
     -fx-pref-height: 200px;
     -fx-scroll-bar-width: 10px;
 }
+.card-title {
+    -fx-font-size: 24px;  /* Ajuste selon ton besoin */
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}

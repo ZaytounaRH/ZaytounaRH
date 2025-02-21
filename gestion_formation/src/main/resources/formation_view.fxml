@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.GestionFormation"
+            prefHeight="400.0" prefWidth="600.0">
+    <children>
+        <Label text="Formation View" />
+        <!-- Conteneur principal sous forme de carte -->
+        <VBox fx:id="cardContainer" layoutX="150.0" layoutY="80.0" spacing="15"
+              prefWidth="700" prefHeight="650" styleClass="card" alignment="CENTER">
+
+            <!-- Titre -->
+            <Label text="Ajouter une Formation" styleClass="card-title"/>
+
+
+            <!-- Formulaire -->
+            <GridPane vgap="10" hgap="15">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <rowConstraints>
+                    <RowConstraints vgrow="NEVER"/>
+                </rowConstraints>
+
+
+                <!-- Champ Nom -->
+                <Label text="Nom :" styleClass="form-label" GridPane.rowIndex="0"/>
+                <TextField fx:id="tfNomFormation" promptText="Nom de la formation" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <!-- Champ Description -->
+                <Label text="Description :" styleClass="form-label" GridPane.rowIndex="1"/>
+                <TextField fx:id="tfDescriptionFormation" promptText="Description" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <!-- Champ Durée -->
+                <Label text="Durée :" styleClass="form-label" GridPane.rowIndex="2"/>
+                <TextField fx:id="tfDureeFormation" promptText="Durée" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <!-- Liste déroulante Employé -->
+                <Label text="Employé :" styleClass="form-label" GridPane.rowIndex="3"/>
+                <ComboBox fx:id="comboBoxEmploye" onAction="#handleEmployeSelection" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                <!-- Liste déroulante RH -->
+                <Label text="RH :" styleClass="form-label" GridPane.rowIndex="4"/>
+                <ComboBox fx:id="comboBoxRH" onAction="#handleRhSelection" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                <!-- Liste déroulante Certification -->
+                <Label text="Certification :" styleClass="form-label" GridPane.rowIndex="5"/>
+                <ComboBox fx:id="comboBoxCertification" onAction="#handleCertificationSelection" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <!-- Boutons -->
+            <HBox spacing="20" alignment="CENTER">
+                <Button fx:id="btnSubmit" text="Ajouter" onAction="#ajouterFormation" styleClass="submit-button"/>
+                <Button fx:id="btnShow" text="Afficher" onAction="#afficherFormation" styleClass="show-button"/>
+
+
+            </HBox>
+
+            <!-- Conteneur de formations avec ScrollPane -->
+            <ScrollPane fx:id="formationsScrollPane" prefHeight="150" prefWidth="700" styleClass="formations-scroll">
+                <Label fx:id="lbFormations" styleClass="formations-list"/>
+            </ScrollPane>
+        </VBox>
+
+
+
+
+    </children>
+
+</AnchorPane>
