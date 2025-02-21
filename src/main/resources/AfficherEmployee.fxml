@@ -15,6 +15,8 @@
         <Button fx:id="buttonAfficherEmployes" layoutX="425.0" layoutY="515.0" onAction="#afficherTousEmployes" text="Afficher Tous Les Employees" />
         <Button fx:id="buttonAjouterEmploye" layoutX="625.0" layoutY="515.0" onAction="#ajouterEmploye" text="Ajouter Un Employee" />
         <Button fx:id="buttonUpdateEmploye" layoutX="825.0" layoutY="515.0" onAction="#updateEmploye" text="Update Employee" />
+        <Button fx:id="buttonDeleteEmploye" layoutX="1025.0" layoutY="515.0" onAction="#supprimerEmploye" text="Supprimer Employee" />
+
 
         <!-- Title Text -->
         <Text layoutX="32.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="List Des Employees : ">

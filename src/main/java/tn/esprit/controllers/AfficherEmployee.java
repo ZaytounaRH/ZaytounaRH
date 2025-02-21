@@ -17,7 +17,7 @@ import java.util.List;
 public class AfficherEmployee {
 
     @FXML
-    private Button buttonAjouterEmploye, buttonAfficherEmployes, buttonUpdateEmploye;
+    private Button buttonAjouterEmploye, buttonAfficherEmployes, buttonUpdateEmploye,buttonDeleteEmploye;
 
     @FXML
     private ListView<String> listViewEmployes; // ListView to display employees' data
@@ -124,4 +124,48 @@ public class AfficherEmployee {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    @FXML
+    public void supprimerEmploye() {
+        try {
+            // Get the selected employee from the ListView
+            String selectedEmployeeData = listViewEmployes.getSelectionModel().getSelectedItem();
+            if (selectedEmployeeData == null) {
+                showAlert("Erreur", "Veuillez sélectionner un employé à supprimer.");
+                return;
+            }
+
+            // Extract employee ID
+            int employeeId = extractEmployeeId(selectedEmployeeData);
+
+            // Fetch the employee object from the database
+            Employee employeeToDelete = serviceEmployee.getById(employeeId);
+            if (employeeToDelete == null) {
+                showAlert("Erreur", "L'employé sélectionné n'existe pas.");
+                return;
+            }
+
+            // Confirm deletion
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setTitle("Confirmation de suppression");
+            confirmationAlert.setHeaderText(null);
+            confirmationAlert.setContentText("Êtes-vous sûr de vouloir supprimer cet employé ?");
+            confirmationAlert.showAndWait().ifPresent(response -> {
+                if (response.getText().equals("OK")) {
+                    // Call service to delete employee
+                    serviceEmployee.delete(employeeToDelete);
+
+                    // Refresh the list
+                    afficherTousEmployes();
+
+                    showAlert("Succès", "L'employé a été supprimé avec succès !");
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Une erreur est survenue lors de la suppression : " + e.getMessage());
+        }
+    }
+
 }
