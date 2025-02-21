@@ -6,16 +6,16 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="615.0" prefWidth="1179.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="tn.esprit.controllers.AfficherEmployee">
+<AnchorPane prefHeight="615.0" prefWidth="1179.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.AfficherEmployee">
     <children>
         <!-- ListView to display employees -->
-        <ListView fx:id="listViewEmployes" layoutX="34.0" layoutY="105.0" prefHeight="348.0" prefWidth="1112.0"/>
+        <ListView fx:id="listViewEmployes" layoutX="34.0" layoutY="105.0" prefHeight="348.0" prefWidth="1112.0" />
 
         <!-- Buttons -->
-        <Button fx:id="buttonAfficherEmployes" layoutX="425.0" layoutY="515.0" onAction="#afficherTousEmployes" text="Afficher Tous Les Employees" />
-        <Button fx:id="buttonAjouterEmploye" layoutX="625.0" layoutY="515.0" onAction="#ajouterEmploye" text="Ajouter Un Employee" />
-        <Button fx:id="buttonUpdateEmploye" layoutX="825.0" layoutY="515.0" onAction="#updateEmploye" text="Update Employee" />
-        <Button fx:id="buttonDeleteEmploye" layoutX="1025.0" layoutY="515.0" onAction="#supprimerEmploye" text="Supprimer Employee" />
+        <Button fx:id="buttonAfficherEmployes" layoutX="53.0" layoutY="515.0" onAction="#afficherTousEmployes" text="Afficher Tous Les Employees" />
+        <Button fx:id="buttonAjouterEmploye" layoutX="1017.0" layoutY="515.0" onAction="#ajouterEmploye" text="Ajouter Un Employee" />
+        <Button fx:id="buttonUpdateEmploye" layoutX="236.0" layoutY="515.0" onAction="#updateEmploye" text="Update Employee" />
+        <Button fx:id="buttonDeleteEmploye" layoutX="361.0" layoutY="515.0" onAction="#supprimerEmploye" text="Supprimer Employee" />
 
 
         <!-- Title Text -->
