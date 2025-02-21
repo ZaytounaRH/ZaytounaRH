@@ -12,7 +12,16 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <javafx.version>17.0.14</javafx.version>
     </properties>
+
+    <!-- Déclaration des dépôts -->
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <!-- MySQL Connector -->
@@ -26,16 +35,15 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>22.0.2</version>
+            <version>${javafx.version}</version> <!-- Utilisation de la version déclarée -->
         </dependency>
 
         <!-- JavaFX FXML -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>22.0.2</version>
+            <version>${javafx.version}</version> <!-- Utilisation de la version déclarée -->
         </dependency>
-
     </dependencies>
 
     <build>

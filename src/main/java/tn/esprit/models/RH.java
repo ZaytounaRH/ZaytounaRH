@@ -8,10 +8,13 @@ public class RH {
     public RH() {
     }
 
-    // Constructeur avec un argument
-    public RH(int idRH,String nom) {
+    // Constructeur avec deux arguments
+    public RH(int idRH, String nom) {
+        this.idRH = idRH;
         this.nom = nom;
     }
+
+    // Constructeur avec un argument pour idRH
     public RH(int idRH) {
         this.idRH = idRH;
     }
@@ -31,5 +34,10 @@ public class RH {
 
     public void setNom(String nom) {
         this.nom = nom;
+    }
+
+    @Override
+    public String toString() {
+        return nom; // Afficher le nom dans le ComboBox
     }
 }

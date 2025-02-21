@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.SpinnerValueFactory?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+
+
+<?import java.lang.String?>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="tn.esprit.controllers.GestionEntretien">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Ajouter ou Modifier un Entretien" style="-fx-font-size: 18px;"/>
+
+    <HBox spacing="10">
+        <Label text="Date d'entretien:"/>
+        <DatePicker fx:id="dateEntretienPicker"/>
+    </HBox>
+
+
+
+    <HBox spacing="10">
+        <Label text="Type d'entretien:"/>
+        <ComboBox fx:id="typeEntretienComboBox">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String>PRESENTIEL</String>
+                    <String>DISTANCIEL</String>
+                    <String>TELEPHONIQUE</String>
+                </FXCollections>
+            </items>
+        </ComboBox>
+    </HBox>
+
+    <HBox spacing="10">
+        <Label text="Statut d'entretien:"/>
+        <ComboBox fx:id="statutEntretienComboBox">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="PLANIFIE"/>
+                    <String fx:value="EN_COURS"/>
+                    <String fx:value="TERMINE"/>
+                    <String fx:value="ANNULE"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+    </HBox>
+
+    <HBox spacing="10">
+        <Label text="Commentaire:"/>
+        <TextArea fx:id="commentaireTextArea" prefHeight="100"/>
+    </HBox>
+
+    <HBox spacing="10">
+        <Label text="ID Entretien (pour modification):"/>
+        <TextField fx:id="idEntretienField"/>
+    </HBox>
+
+    <HBox spacing="10">
+        <Button fx:id="ajouterButton" text="Ajouter Entretien" onAction="#ajouterEntretien"/>
+        <Button fx:id="updateButton" text="Mettre à jour Entretien" onAction="#updateEntretien"/>
+    </HBox>
+
+    <TableView fx:id="tableEntretien" prefHeight="300" prefWidth="600">
+        <columns>
+            <TableColumn text="Date" />
+            <TableColumn text="Heure" />
+            <TableColumn text="Type" />
+            <TableColumn text="Statut" />
+            <TableColumn text="Commentaire" />
+        </columns>
+    </TableView>
+</VBox>

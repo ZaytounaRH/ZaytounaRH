@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.SupprimerOffreController">
+    <Label text="Êtes-vous sûr de vouloir supprimer cette offre ?" layoutX="20.0" layoutY="20.0" />
+    <Label fx:id="labelTitre" layoutX="20.0" layoutY="60.0" />
+    <Label fx:id="labelDescription" layoutX="20.0" layoutY="100.0" />
+    <HBox spacing="20.0" layoutX="20.0" layoutY="140.0">
+        <Button text="Supprimer" onAction="#confirmerSuppression" />
+        <Button text="Annuler" onAction="#annulerSuppression" />
+    </HBox>
+</AnchorPane>
