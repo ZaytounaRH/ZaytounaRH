@@ -6,37 +6,72 @@ import tn.esprit.utils.MyDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
+
 
 import java.sql.*;
 
 public class ServiceReclamation implements IService<Reclamation> {
-    private Connection cnx ;
+    private Connection cnx;
 
-    public ServiceReclamation(){
-        cnx = MyDatabase.getInstance().getCnx();
+    // Constructeur sans paramètre, utilisation du singleton MyDatabase pour obtenir la connexion
+    public ServiceReclamation() {
+        cnx = MyDatabase.getInstance().getCnx();  // Obtention de la connexion
     }
+
+    public boolean exists(String titre, String description, String incidentType,
+                          LocalDate dateSoumission, String statut, String priorite) {
+        // Exemple d'implémentation avec une requête en utilisant JDBC ou une autre technologie de persistance.
+
+        // Si vous utilisez JDBC :
+        // Exemple de code pour une requête SQL
+        String query = "SELECT COUNT(*) FROM reclamation WHERE titre = ? AND description = ? " +
+                "AND incidentType = ? AND date_soumission = ? AND statut = ? AND priorite = ?";
+
+
+        // Utilisation de votre méthode de gestion des connexions à la base de données
+        // Exécution de la requête pour vérifier l'existence d'une réclamation
+        int count = 0;
+
+        try (Connection conn = MyDatabase.getInstance().getCnx();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, titre);
+            stmt.setString(2, description);
+            stmt.setString(3, incidentType);
+            stmt.setObject(4, dateSoumission);
+            stmt.setString(5, statut);
+            stmt.setString(6, priorite);
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Gestion d'erreur
+        }
+
+        return count > 0; // Si une réclamation identique existe, count sera supérieur à 0
+    }
+
 
     @Override
     public void add(Reclamation reclamation) {
-        //create Qry SQL
-        //execute Qry
-        String qry ="INSERT INTO `reclamation`(`titre`, `description`, `dateSoumission` , `statut`, `priorite`, `pieceJointe`) VALUES (?,?,?,?,?,?)";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry);
-            pstm.setString(1,reclamation.getTitre());
+        String qry = "INSERT INTO `reclamation`(`titre`, `description`, `dateSoumission`, `statut`, `priorite`, `pieceJointe`) VALUES (?,?,?,?,?,?)";
+        try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
+            pstm.setString(1, reclamation.getTitre());
             pstm.setString(2, reclamation.getDescription());
             pstm.setDate(3, Date.valueOf(reclamation.getDateSoumission()));
-            pstm.setString(4,reclamation.getStatut().name());
+            pstm.setString(4, reclamation.getStatut().name());
             pstm.setString(5, reclamation.getPriorite().name());
-            pstm.setString(6,reclamation.getPieceJointe());
-
+            pstm.setString(6, reclamation.getPieceJointe());
 
             pstm.executeUpdate();
+            System.out.println("Réclamation ajoutée avec succès.");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.err.println("Erreur lors de l'ajout de la réclamation: " + e.getMessage());
         }
-
-
     }
 
     @Override

@@ -1,6 +1,5 @@
 package tn.esprit.models;
 
-import java.sql.Date;
 import java.time.LocalDate;
 
 public class Reclamation {
@@ -17,39 +16,52 @@ public class Reclamation {
         ELEVEE
     }
 
+    public enum IncidentType {
+        ACCIDENT_TRAVAIL,
+        MALADIE_PROFESSIONNELLE,
+        DÉFAUT_COUVERTURE,
+        LITIGE_CONTRAT
+    }
+
     private int idR;
     private String titre;
     private String description;
-    private String pieceJointe;
+    private IncidentType incidentType;
+    private LocalDate dateSoumission;
     private StatutReclamation statut;
     private PrioriteReclamation priorite;
-    private LocalDate dateSoumission; // Utilisation de LocalDate pour une gestion plus précise des dates.
+    private String pieceJointe;
+    private Integer idAssurance; // index pour l'assurance liée
 
     // Constructeur par défaut
     public Reclamation() {
     }
 
     // Constructeur avec tous les attributs
-    public Reclamation(String titre, String description, LocalDate dateSoumission,
-                       StatutReclamation statut, PrioriteReclamation priorite, String pieceJointe) {
+    public Reclamation(String titre, String description, IncidentType incidentType, LocalDate dateSoumission,
+                       StatutReclamation statut, PrioriteReclamation priorite, String pieceJointe, Integer idAssurance) {
         this.titre = titre;
         this.description = description;
+        this.incidentType = incidentType;
         this.dateSoumission = dateSoumission;
         this.statut = statut;
         this.priorite = priorite;
         this.pieceJointe = pieceJointe;
+        this.idAssurance = idAssurance;
     }
 
     // Constructeur avec id
-    public Reclamation(int idR, String titre, String description, LocalDate dateSoumission,
-                       StatutReclamation statut, PrioriteReclamation priorite, String pieceJointe) {
+    public Reclamation(int idR, String titre, String description, IncidentType incidentType, LocalDate dateSoumission,
+                       StatutReclamation statut, PrioriteReclamation priorite, String pieceJointe, Integer idAssurance) {
         this.idR = idR;
         this.titre = titre;
         this.description = description;
+        this.incidentType = incidentType;
         this.dateSoumission = dateSoumission;
         this.statut = statut;
         this.priorite = priorite;
         this.pieceJointe = pieceJointe;
+        this.idAssurance = idAssurance;
     }
 
     // Getters et Setters
@@ -77,12 +89,20 @@ public class Reclamation {
         this.description = description;
     }
 
-    public String getPieceJointe() {
-        return pieceJointe;
+    public IncidentType getIncidentType() {
+        return incidentType;
     }
 
-    public void setPieceJointe(String pieceJointe) {
-        this.pieceJointe = pieceJointe;
+    public void setIncidentType(IncidentType incidentType) {
+        this.incidentType = incidentType;
+    }
+
+    public LocalDate getDateSoumission() {
+        return dateSoumission;
+    }
+
+    public void setDateSoumission(LocalDate dateSoumission) {
+        this.dateSoumission = dateSoumission;
     }
 
     public StatutReclamation getStatut() {
@@ -101,12 +121,20 @@ public class Reclamation {
         this.priorite = priorite;
     }
 
-    public LocalDate getDateSoumission() {
-        return dateSoumission;
+    public String getPieceJointe() {
+        return pieceJointe;
     }
 
-    public void setDateSoumission(LocalDate dateSoumission) {
-        this.dateSoumission = dateSoumission;
+    public void setPieceJointe(String pieceJointe) {
+        this.pieceJointe = pieceJointe;
+    }
+
+    public Integer getIdAssurance() {
+        return idAssurance;
+    }
+
+    public void setIdAssurance(Integer idAssurance) {
+        this.idAssurance = idAssurance;
     }
 
     @Override
@@ -115,10 +143,12 @@ public class Reclamation {
                 "idR=" + idR +
                 ", titre='" + titre + '\'' +
                 ", description='" + description + '\'' +
+                ", incidentType=" + incidentType +
                 ", dateSoumission=" + dateSoumission +
                 ", statut=" + statut +
                 ", priorite=" + priorite +
                 ", pieceJointe='" + pieceJointe + '\'' +
+                ", idAssurance=" + idAssurance +
                 '}';
     }
 }

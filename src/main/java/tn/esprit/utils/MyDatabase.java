@@ -14,7 +14,7 @@ public class MyDatabase {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             // Connexion à la base de données
-            String url = "jdbc:mysql://127.0.0.1:3306/projet";
+            String url = "jdbc:mysql://127.0.0.1:3306/zaytounaRH";
             String username = "root";
             String password = "";
 
