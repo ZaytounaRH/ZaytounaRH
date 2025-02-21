@@ -17,13 +17,10 @@ import java.util.List;
 public class AfficherEmployee {
 
     @FXML
-    private Button buttonAjouterEmploye;
+    private Button buttonAjouterEmploye, buttonAfficherEmployes, buttonUpdateEmploye;
 
     @FXML
-    private Button buttonAfficherEmployes;
-
-    @FXML
-    private ListView<String> listViewEmployes; // ListView to display employees' names
+    private ListView<String> listViewEmployes; // ListView to display employees' data
 
     private ServiceEmployee serviceEmployee = new ServiceEmployee();
 
@@ -41,18 +38,20 @@ public class AfficherEmployee {
         // Fetch all employees from the database using ServiceEmployee
         List<Employee> employees = serviceEmployee.getAll();
 
-        // Add employee names and responsable_id to the ListView
+        // Add formatted employee data to the ListView
         for (Employee emp : employees) {
-            listViewEmployes.getItems().add(emp.getNom() + " " + emp.getPrenom() + " (Responsable ID: " + emp.getResponsableId() + ")");
+            String employeeData = String.format(
+                    "Nom: %s, Prenom: %s, Email: %s, Department: %s, Designation: %s, Responsable ID: %d",
+                    emp.getNom(), emp.getPrenom(), emp.getEmail(), emp.getDepartment(), emp.getDesignation(), emp.getResponsableId()
+            );
+            listViewEmployes.getItems().add(employeeData);
         }
     }
 
     @FXML
     public void ajouterEmploye() {
-
-
         try {
-            // Load the GestionUser.fxml
+            // Load the GestionUser.fxml using a classpath-relative path
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionUser.fxml"));
             AnchorPane gestionUserPage = loader.load();
 
@@ -67,8 +66,55 @@ public class AfficherEmployee {
             stage.setTitle("Gestion des Utilisateurs");
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert("Error", "Unable to load the GestionUser interface.");
+            showAlert("Error", "Unable to load the GestionUser interface. Please check the file path.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error", "An unexpected error occurred: " + e.getMessage());
         }
+    }
+
+    @FXML
+    public void updateEmploye() {
+        try {
+            // Get the selected employee's data from the ListView
+            String selectedEmployeeData = listViewEmployes.getSelectionModel().getSelectedItem();
+            if (selectedEmployeeData == null) {
+                showAlert("Error", "Please select an employee to update.");
+                return;
+            }
+
+            // Fetch the selected employee from the database
+            int employeeId = extractEmployeeId(selectedEmployeeData); // Implement this method to extract the ID
+            Employee selectedEmployee = serviceEmployee.getById(employeeId);
+
+            // Load the UpdateEmployee.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UpdateEmployee.fxml"));
+            AnchorPane updateEmployeePage = loader.load();
+
+            // Pass the selected employee to the UpdateEmployeeController
+            UpdateEmployee controller = loader.getController();
+            controller.setSelectedEmployee(selectedEmployee);
+
+            // Open the update window
+            Stage stage = new Stage();
+            stage.setScene(new Scene(updateEmployeePage));
+            stage.setTitle("Mettre à Jour un Employé");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Unable to load the UpdateEmployee interface. Please check the file path.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error", "An unexpected error occurred: " + e.getMessage());
+        }
+    }
+
+    private int extractEmployeeId(String employeeData) {
+        // Extract the employee ID from the formatted string
+        // Example: "Nom: John, Prenom: Doe, Email: john.doe@example.com, Department: IT, Designation: Developer, Responsable ID: 1"
+        String[] parts = employeeData.split(", ");
+        String idPart = parts[parts.length - 1]; // "Responsable ID: 1"
+        return Integer.parseInt(idPart.split(": ")[1]); // Extract "1" and convert to int
     }
 
     private void showAlert(String title, String message) {

@@ -6,6 +6,7 @@ public class Employee extends User {
     private int responsableId;
     private String responsableName;
 
+
     public Employee() {}
 
     public Employee(int numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance, int responsableId, String responsableName) {

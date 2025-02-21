@@ -1,16 +1,18 @@
 package tn.esprit.services;
 
 import tn.esprit.models.Employee;
+import tn.esprit.utils.MyDatabase;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceEmployee extends ServiceUser<Employee> {
+    private Connection cnx;
 
+    public ServiceEmployee() {
+        cnx = MyDatabase.getInstance().getCnx();
+    }
     @Override
     public void add(Employee employee) {
         if (!isValidResponsableId(employee.getResponsableId())) {
@@ -191,5 +193,32 @@ public class ServiceEmployee extends ServiceUser<Employee> {
             System.out.println("Erreur lors de la vérification du responsable: " + e.getMessage());
         }
         return false;
+    }
+    public Employee getById(int id) {
+        String query = "SELECT * FROM users WHERE id = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(query)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Employee(
+                        rs.getInt("id"),
+                        rs.getInt("numTel"),
+                        rs.getInt("joursOuvrables"),
+                        rs.getString("nom"),
+                        rs.getString("prenom"),
+                        rs.getString("address"),
+                        rs.getString("email"),
+                        rs.getString("gender"),
+                        rs.getString("department"),
+                        rs.getString("designation"),
+                        rs.getDate("dateDeNaissance"),
+                        rs.getInt("responsable_id"),
+                        null // responsable_name is not stored in the database
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

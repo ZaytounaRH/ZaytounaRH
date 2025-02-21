@@ -37,5 +37,6 @@
 
       <Button fx:id="btnAjouter" defaultButton="true" layoutX="275.0" layoutY="332.0" mnemonicParsing="false" text="Ajouter" onAction="#ajouterPersonne"/>
       <Button fx:id="btnAnnuler" cancelButton="true" layoutX="195.0" layoutY="332.0" mnemonicParsing="false" text="Annuler" onAction="#annulerAjout"/>
+      <Button fx:id="btnBack" layoutX="355.0" layoutY="332.0" mnemonicParsing="false" text="Retour" onAction="#goBack"/>
    </children>
 </AnchorPane>
