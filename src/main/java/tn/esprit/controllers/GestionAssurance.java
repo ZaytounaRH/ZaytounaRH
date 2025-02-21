@@ -128,25 +128,26 @@ public class GestionAssurance {
         // Titre de la réclamation
         Label lblTitre = new Label("Titre:");
         TextField tfTitre = new TextField();
+
         Label lblDescription = new Label("Description:");
         TextArea taDescription = new TextArea();
 
         // Type d'incident
         Label lblIncidentType = new Label("Type d'incident:");
         ComboBox<String> cbIncidentType = new ComboBox<>();
-        cbIncidentType.getItems().addAll("ACCIDENT_TRAVAIL", "MALADIE_PROFESSIONNELLE", "DÉFAUT_COUVERTURE", "LETIGE_CONTRAT"); // Les types d'incidents
+        cbIncidentType.getItems().addAll("ACCIDENT_TRAVAIL", "MALADIE_PROFESSIONNELLE", "DÉFAUT_COUVERTURE", "LETIGE_CONTRAT");
 
-        // Date de soumission (non modifiable)
+        // Date de soumission (par défaut aujourd'hui et non modifiable)
         Label lblDateSoumission = new Label("Date de soumission:");
         DatePicker dpDateSoumission = new DatePicker(LocalDate.now());
-        dpDateSoumission.setEditable(false); // DatePicker non modifiable
+        dpDateSoumission.setDisable(true);
 
-        // Statut (non modifiable, initialisé à EN_ATTENTE)
+        // Statut (par défaut "EN_ATTENTE" et non modifiable)
         Label lblStatut = new Label("Statut:");
         ComboBox<String> cbStatut = new ComboBox<>();
-        cbStatut.getItems().addAll("EN_ATTENTE");
+        cbStatut.getItems().add("EN_ATTENTE");
         cbStatut.setValue("EN_ATTENTE");
-        cbStatut.setDisable(true); // Rendre non modifiable
+        cbStatut.setDisable(true);
 
         // Priorité
         Label lblPriorite = new Label("Priorité:");
@@ -157,50 +158,43 @@ public class GestionAssurance {
         Label lblPieceJointe = new Label("Pièce jointe:");
         TextField tfPieceJointe = new TextField();
 
-        // Message de validation
+        // Message d'erreur
         Label lbMessage = new Label();
+        lbMessage.setStyle("-fx-text-fill: red;");
 
         // Bouton pour soumettre le formulaire
         Button btnSoumettre = new Button("Soumettre la réclamation");
 
         // Action lors de la soumission
         btnSoumettre.setOnAction(e -> {
-            String titre = tfTitre.getText();
-            String description = taDescription.getText();
-            String incidentTypeString = cbIncidentType.getValue();  // Valeur sélectionnée (String)
+            String titre = tfTitre.getText().trim();
+            String description = taDescription.getText().trim();
+            String incidentTypeString = cbIncidentType.getValue();
             LocalDate dateSoumission = dpDateSoumission.getValue();
-            String statutString = cbStatut.getValue();  // Valeur sélectionnée (String)
-            String prioriteString = cbPriorite.getValue();  // Valeur sélectionnée (String)
-            String pieceJointe = tfPieceJointe.getText();
+            String prioriteString = cbPriorite.getValue();
+            String pieceJointe = tfPieceJointe.getText().trim();
 
-            // Vérification des champs (vous pouvez ajuster la validation selon vos besoins)
-            if (titre.isEmpty() || description.isEmpty() || incidentTypeString == null || statutString == null || prioriteString == null) {
+            // Vérification des champs obligatoires
+            if (titre.isEmpty() || description.isEmpty() || incidentTypeString == null || prioriteString == null) {
                 lbMessage.setText("Tous les champs sont obligatoires.");
                 return;
             }
 
-            // Vérification si la réclamation existe déjà
-            ServiceReclamation reclamationService = new ServiceReclamation();
-            boolean reclamationExistante = reclamationService.exists(titre, description, incidentTypeString, dateSoumission, statutString, prioriteString);
-
-            if (reclamationExistante) {
-                lbMessage.setText("Une réclamation identique existe déjà.");
-                return;
-            }
-
             // Conversion des valeurs en types enum
-            IncidentType incidentType = IncidentType.valueOf(incidentTypeString);  // Convertir String en enum IncidentType
-            StatutReclamation statut = StatutReclamation.valueOf(statutString);  // Convertir String en enum StatutReclamation
-            PrioriteReclamation priorite = PrioriteReclamation.valueOf(prioriteString);  // Convertir String en enum PrioriteReclamation
+            IncidentType incidentType = IncidentType.valueOf(incidentTypeString);
+            StatutReclamation statut = StatutReclamation.EN_ATTENTE;
+            PrioriteReclamation priorite = PrioriteReclamation.valueOf(prioriteString);
 
-            // Création d'une nouvelle réclamation avec les informations saisies
+            // Création d'une nouvelle réclamation
             Reclamation reclamation = new Reclamation(
                     titre, description, incidentType, dateSoumission, statut, priorite, pieceJointe, assurance.getIdA()
             );
 
             // Appel au service pour sauvegarder la réclamation
-            reclamationService.add(reclamation);  // Appel de la méthode add
+            ServiceReclamation reclamationService = new ServiceReclamation();
+            reclamationService.add(reclamation);
 
+            lbMessage.setStyle("-fx-text-fill: green;");
             lbMessage.setText("Réclamation soumise avec succès !");
             reclamationStage.close(); // Ferme la fenêtre de réclamation
         });
@@ -211,10 +205,11 @@ public class GestionAssurance {
                 lblPieceJointe, tfPieceJointe, btnSoumettre, lbMessage);
 
         // Configurer la fenêtre et afficher
-        Scene scene = new Scene(vbox, 400, 400);
+        Scene scene = new Scene(vbox, 400, 450);
         reclamationStage.setScene(scene);
         reclamationStage.show();
     }
+
 
     @FXML
     public void afficherAssurances() {
