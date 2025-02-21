@@ -33,15 +33,15 @@ public class MainController {
     @FXML
     private void goToCertification(ActionEvent event) {
         try {
-            // Chargement du fichier FXML
+
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("certification_view.fxml"));
             Parent root = loader.load();
 
-            // Récupération de la scène et du stage actuel
+
             Scene scene = new Scene(root);
             Stage stage = (Stage) btnCertification.getScene().getWindow();
 
-            // Changement de scène
+
             stage.setScene(scene);
         } catch (IOException e) {
             e.printStackTrace();
