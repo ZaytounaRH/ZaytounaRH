@@ -31,7 +31,6 @@ public class ServiceUser<T extends User> implements IService<T> {
             pstm.setString(9, user.getDesignation());
             pstm.setDate(10, new java.sql.Date(user.getDateDeNaissance().getTime()));
 
-            // Set the user type depending on the actual class
             if (user instanceof Admin) {
                 pstm.setString(11, "Admin");
             } else if (user instanceof RH) {

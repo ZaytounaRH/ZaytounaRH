@@ -20,7 +20,6 @@ public class ServiceEmployee extends ServiceUser<Employee> {
             return;
         }
 
-        // Insert into users table
         String userQry = "INSERT INTO users (numTel, joursOuvrables, nom, prenom, address, email, gender, department, designation, dateDeNaissance, user_type) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement userPstm = cnx.prepareStatement(userQry, Statement.RETURN_GENERATED_KEYS)) {
@@ -67,7 +66,6 @@ public class ServiceEmployee extends ServiceUser<Employee> {
             return;
         }
 
-        // Update users table
         String userQry = "UPDATE users SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, department=?, designation=?, dateDeNaissance=? WHERE id=?";
         try (PreparedStatement userPstm = cnx.prepareStatement(userQry)) {
             userPstm.setInt(1, employee.getNumTel());
@@ -84,7 +82,6 @@ public class ServiceEmployee extends ServiceUser<Employee> {
 
             int userRowsUpdated = userPstm.executeUpdate();
 
-            // Update employee table
             String employeeQry = "UPDATE employee SET responsable_id=? WHERE employee_id=?";
             try (PreparedStatement employeePstm = cnx.prepareStatement(employeeQry)) {
                 employeePstm.setInt(1, employee.getResponsableId());
@@ -154,8 +151,8 @@ public class ServiceEmployee extends ServiceUser<Employee> {
                         rs.getString("department"),
                         rs.getString("designation"),
                         rs.getDate("dateDeNaissance"),
-                        rs.getInt("responsable_id"), // Fetch responsable_id from the employee table
-                        null // responsable_name is not stored in the database
+                        rs.getInt("responsable_id"),
+                        null
                 );
                 employees.add(employee);
             }
@@ -171,7 +168,7 @@ public class ServiceEmployee extends ServiceUser<Employee> {
             pstm.setInt(1, responsableId);
             try (ResultSet rs = pstm.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1) > 0; // True if ID exists and is RH
+                    return rs.getInt(1) > 0;
                 }
             }
         } catch (SQLException e) {
@@ -186,7 +183,7 @@ public class ServiceEmployee extends ServiceUser<Employee> {
             pstm.setInt(1, employeeId);
             try (ResultSet rs = pstm.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1) > 0; // True if employee is a responsable
+                    return rs.getInt(1) > 0;
                 }
             }
         } catch (SQLException e) {
@@ -213,7 +210,7 @@ public class ServiceEmployee extends ServiceUser<Employee> {
                         rs.getString("designation"),
                         rs.getDate("dateDeNaissance"),
                         rs.getInt("responsable_id"),
-                        null // responsable_name is not stored in the database
+                        null
                 );
             }
         } catch (SQLException e) {

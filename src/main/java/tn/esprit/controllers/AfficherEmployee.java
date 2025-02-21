@@ -20,25 +20,21 @@ public class AfficherEmployee {
     private Button buttonAjouterEmploye, buttonAfficherEmployes, buttonUpdateEmploye,buttonDeleteEmploye;
 
     @FXML
-    private ListView<String> listViewEmployes; // ListView to display employees' data
+    private ListView<String> listViewEmployes;
 
     private ServiceEmployee serviceEmployee = new ServiceEmployee();
 
     @FXML
     public void initialize() {
-        // Initialize the ListView with data when the controller is loaded
         afficherTousEmployes();
     }
 
     @FXML
     public void afficherTousEmployes() {
-        // Clear the ListView before adding new items
         listViewEmployes.getItems().clear();
 
-        // Fetch all employees from the database using ServiceEmployee
         List<Employee> employees = serviceEmployee.getAll();
 
-        // Add formatted employee data to the ListView
         for (Employee emp : employees) {
             String employeeData = String.format(
                     "Nom: %s, Prenom: %s, Email: %s, Department: %s, Designation: %s, Responsable ID: %d",
@@ -51,18 +47,14 @@ public class AfficherEmployee {
     @FXML
     public void ajouterEmploye() {
         try {
-            // Load the GestionUser.fxml using a classpath-relative path
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionUser.fxml"));
             AnchorPane gestionUserPage = loader.load();
 
-            // Get the current stage (window)
             Stage stage = (Stage) buttonAjouterEmploye.getScene().getWindow();
 
-            // Set the new scene
             Scene scene = new Scene(gestionUserPage);
             stage.setScene(scene);
 
-            // Optionally, set the title of the new window
             stage.setTitle("Gestion des Utilisateurs");
         } catch (IOException e) {
             e.printStackTrace();
@@ -76,26 +68,21 @@ public class AfficherEmployee {
     @FXML
     public void updateEmploye() {
         try {
-            // Get the selected employee's data from the ListView
             String selectedEmployeeData = listViewEmployes.getSelectionModel().getSelectedItem();
             if (selectedEmployeeData == null) {
                 showAlert("Error", "Please select an employee to update.");
                 return;
             }
 
-            // Fetch the selected employee from the database
             int employeeId = extractEmployeeId(selectedEmployeeData); // Implement this method to extract the ID
             Employee selectedEmployee = serviceEmployee.getById(employeeId);
 
-            // Load the UpdateEmployee.fxml
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/UpdateEmployee.fxml"));
             AnchorPane updateEmployeePage = loader.load();
 
-            // Pass the selected employee to the UpdateEmployeeController
             UpdateEmployee controller = loader.getController();
             controller.setSelectedEmployee(selectedEmployee);
 
-            // Open the update window
             Stage stage = new Stage();
             stage.setScene(new Scene(updateEmployeePage));
             stage.setTitle("Mettre à Jour un Employé");
@@ -110,11 +97,9 @@ public class AfficherEmployee {
     }
 
     private int extractEmployeeId(String employeeData) {
-        // Extract the employee ID from the formatted string
-        // Example: "Nom: John, Prenom: Doe, Email: john.doe@example.com, Department: IT, Designation: Developer, Responsable ID: 1"
         String[] parts = employeeData.split(", ");
-        String idPart = parts[parts.length - 1]; // "Responsable ID: 1"
-        return Integer.parseInt(idPart.split(": ")[1]); // Extract "1" and convert to int
+        String idPart = parts[parts.length - 1];
+        return Integer.parseInt(idPart.split(": ")[1]);
     }
 
     private void showAlert(String title, String message) {
@@ -128,34 +113,28 @@ public class AfficherEmployee {
     @FXML
     public void supprimerEmploye() {
         try {
-            // Get the selected employee from the ListView
             String selectedEmployeeData = listViewEmployes.getSelectionModel().getSelectedItem();
             if (selectedEmployeeData == null) {
                 showAlert("Erreur", "Veuillez sélectionner un employé à supprimer.");
                 return;
             }
 
-            // Extract employee ID
             int employeeId = extractEmployeeId(selectedEmployeeData);
 
-            // Fetch the employee object from the database
             Employee employeeToDelete = serviceEmployee.getById(employeeId);
             if (employeeToDelete == null) {
                 showAlert("Erreur", "L'employé sélectionné n'existe pas.");
                 return;
             }
 
-            // Confirm deletion
             Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
             confirmationAlert.setTitle("Confirmation de suppression");
             confirmationAlert.setHeaderText(null);
             confirmationAlert.setContentText("Êtes-vous sûr de vouloir supprimer cet employé ?");
             confirmationAlert.showAndWait().ifPresent(response -> {
                 if (response.getText().equals("OK")) {
-                    // Call service to delete employee
                     serviceEmployee.delete(employeeToDelete);
 
-                    // Refresh the list
                     afficherTousEmployes();
 
                     showAlert("Succès", "L'employé a été supprimé avec succès !");

@@ -23,15 +23,15 @@ public class ServiceCandidat extends ServiceUser<Candidat> {
             pstm.setString(8, candidat.getDepartment());
             pstm.setString(9, candidat.getDesignation());
             pstm.setDate(10, new java.sql.Date(candidat.getDateDeNaissance().getTime()));
-            pstm.setString(11, candidat.getClass().getSimpleName()); // User type (Candidat)
-            pstm.setInt(12, candidat.getIntervieweurId()); // Set the intervieweur_id
+            pstm.setString(11, candidat.getClass().getSimpleName());
+            pstm.setInt(12, candidat.getIntervieweurId());
 
             int affectedRows = pstm.executeUpdate();
             if (affectedRows > 0) {
                 ResultSet generatedKeys = pstm.getGeneratedKeys();
                 if (generatedKeys.next()) {
                     int generatedId = generatedKeys.getInt(1);
-                    candidat.setId(generatedId); // Set the generated ID
+                    candidat.setId(generatedId);
                     System.out.println("Candidat ajouté avec succès. ID: " + generatedId);
                 }
             }
@@ -64,7 +64,7 @@ public class ServiceCandidat extends ServiceUser<Candidat> {
             pstm.setString(8, candidat.getDepartment());
             pstm.setString(9, candidat.getDesignation());
             pstm.setDate(10, new java.sql.Date(candidat.getDateDeNaissance().getTime()));
-            pstm.setInt(11, candidat.getIntervieweurId()); // Update intervieweur_id
+            pstm.setInt(11, candidat.getIntervieweurId());
             pstm.setInt(12, candidat.getId());
 
             int rowsUpdated = pstm.executeUpdate();
@@ -100,8 +100,7 @@ public class ServiceCandidat extends ServiceUser<Candidat> {
             pstm.setInt(1, intervieweurId);
             ResultSet rs = pstm.executeQuery();
             if (rs.next()) {
-                return rs.getInt(1) > 0; // Returns true if the intervieweurId exists and is an RH
-            }
+                return rs.getInt(1) > 0; }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la vérification de l'intervieweurId: " + e.getMessage());
         }

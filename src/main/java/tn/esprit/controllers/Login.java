@@ -21,27 +21,23 @@ public class Login {
         String email = emailField.getText().trim();
         String password = passwordField.getText().trim();
 
-        // Réinitialiser les messages d'erreur
         emailError.setVisible(false);
         passwordError.setVisible(false);
 
         boolean isValid = true;
 
-        // Vérification de l'email (format valide)
         if (!isValidEmail(email)) {
             emailError.setText("Format d'email invalide !");
             emailError.setVisible(true);
             isValid = false;
         }
 
-        // Vérification du mot de passe (non vide)
         if (password.isEmpty()) {
             passwordError.setText("Mot de passe requis !");
             passwordError.setVisible(true);
             isValid = false;
         }
 
-        // Si tout est valide, on redirige vers AfficherEmployee.fxml
         if (isValid) {
             openAfficherEmployee();
         }

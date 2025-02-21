@@ -13,13 +13,13 @@
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.Login" stylesheets="@css/styles.css">
 
     <children>
-        <!-- Logo -->
+
         <ImageView fx:id="logoImage" fitHeight="205.0" fitWidth="200.0" layoutX="322.0" layoutY="98.0">
          <image>
             <Image url="@images/Logo.png" />
          </image></ImageView>
 
-        <!-- Email -->
+
         <TextField fx:id="emailField" layoutX="51.0" layoutY="130.0" prefHeight="25.0" prefWidth="200.0" promptText="Adresse Email" />
         <Label fx:id="emailError" layoutX="50" layoutY="130" textFill="RED" visible="false" />
 
