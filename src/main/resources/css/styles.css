@@ -1,0 +1,56 @@
+.root {
+    -fx-font-family: "Lato";
+    -fx-background-color: #F4F4F4;
+}
+
+.text-field, .choice-box {
+    -fx-border-color: #59CB32;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+    -fx-font-size: 14px;
+}
+
+.text-field:focused, .choice-box:focused {
+    -fx-border-color: #3DA126;
+}
+
+.button {
+    -fx-background-color: #59CB32;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #4DA72A;
+}
+
+.button:pressed {
+    -fx-background-color: #3B8521;
+}
+
+.text {
+    -fx-fill: #333333;
+}
+
+.text-title {
+    -fx-font-size: 23px;
+    -fx-font-weight: bold;
+    -fx-fill: #59CB32;
+}
+
+.list-view {
+    -fx-border-color: #59CB32;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.label {
+    -fx-text-fill: red;
+    -fx-font-size: 12px;
+}
