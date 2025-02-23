@@ -28,16 +28,17 @@ public class ServiceFormation implements IService<Formation> {
             return;
         }
 
-        String qry = "INSERT INTO `formation`( `nomFormation`, `descriptionFormation`, `dureeFormation`, `idEmploye`, `idCertif`,`idRH`  ) VALUES (?,?,?,?,?,?)";
+        String qry = "INSERT INTO `formation`( `nomFormation`, `descriptionFormation`, `dateDebutFormation`, `dateFinFormation`, `idEmploye`, `idCertif`,`idRH`  ) VALUES (?,?,?,?,?,?,?)";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setString(1, formation.getNomFormation());
             pstm.setString(2, formation.getDescriptionFormation());
-            pstm.setString(3, formation.getDureeFormation());
-            pstm.setInt(4, formation.getEmploye().getIdEmploye());
+            pstm.setDate(3, formation.getDateDebutFormation());
+            pstm.setDate(4, formation.getDateFinFormation());
+            pstm.setInt(5, formation.getEmploye().getIdEmploye());
 
-            pstm.setInt(5,formation.getCertification().getIdCertif());
-            pstm.setInt(6, formation.getRh().getIdRh());
+            pstm.setInt(6,formation.getCertification().getIdCertif());
+            pstm.setInt(7, formation.getRh().getIdRh());
 
             pstm.executeUpdate();
         } catch (SQLException e) {
@@ -59,7 +60,8 @@ public class ServiceFormation implements IService<Formation> {
                 formation.setIdFormation(rs.getInt("idFormation"));
                 formation.setNomFormation(rs.getString("nomFormation"));
                 formation.setDescriptionFormation(rs.getString("descriptionFormation"));
-                formation.setDureeFormation(rs.getString("dureeFormation"));
+                formation.setDateDebutFormation(rs.getDate("dateDebutFormation"));
+                formation.setDateFinFormation(rs.getDate("dateFinFormation"));
 
 
                 int idEmploye = rs.getInt("idEmploye");
@@ -133,18 +135,19 @@ public class ServiceFormation implements IService<Formation> {
             System.out.println("Erreur : données invalides, update annulé !");
             return;
         }
-        String qry = "UPDATE `formation` SET `nomFormation` = ?, `descriptionFormation` = ?, `dureeFormation` = ?, `idEmploye` = ?, `idCertif`= ?, `idRH` = ? WHERE `idFormation` = ?";
+        String qry = "UPDATE `formation` SET `nomFormation` = ?, `descriptionFormation` = ?, `dateDebutFormation` = ?,`dateFinFormation`= ? ,`idEmploye` = ?, `idCertif`= ?, `idRH` = ? WHERE `idFormation` = ?";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setString(1, formation.getNomFormation());
             pstm.setString(2, formation.getDescriptionFormation());
-            pstm.setString(3, formation.getDureeFormation());
+            pstm.setDate(3, formation.getDateDebutFormation());
+            pstm.setDate(4, formation.getDateFinFormation());
 
 
-            pstm.setInt(4, formation.getEmploye().getIdEmploye());
-            pstm.setInt(5, formation.getCertification().getIdCertif());
-            pstm.setInt(6, formation.getRh().getIdRh());
-            pstm.setInt(7, formation.getIdFormation());
+            pstm.setInt(5, formation.getEmploye().getIdEmploye());
+            pstm.setInt(6, formation.getCertification().getIdCertif());
+            pstm.setInt(7, formation.getRh().getIdRh());
+            pstm.setInt(8, formation.getIdFormation());
 
             int rowsUpdated = pstm.executeUpdate();
             if (rowsUpdated > 0) {
@@ -185,8 +188,12 @@ public class ServiceFormation implements IService<Formation> {
             System.out.println("La description doit contenir au moins 10 caractères !");
             return false;
         }
-        if (!formation.getDureeFormation().matches("\\d+ jours")) {
-            System.out.println("La durée doit être au format 'X jours' !");
+        if (formation.getDateDebutFormation() == null || formation.getDateFinFormation() == null) {
+            System.out.println("Les dates de début et de fin ne peuvent pas être nulles !");
+            return false;
+        }
+        if (formation.getDateFinFormation().before(formation.getDateDebutFormation())) {
+            System.out.println("La date de fin doit être postérieure à la date de début !");
             return false;
         }
 

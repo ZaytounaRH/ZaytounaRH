@@ -12,6 +12,9 @@
     <children>
         <Label text="Certification View" />
 
+       
+
+
         <VBox fx:id="cardContainerCertification" layoutX="150.0" layoutY="80.0" spacing="15"
               prefWidth="700" prefHeight="650" styleClass="card" alignment="CENTER">
 
@@ -43,7 +46,11 @@
             <HBox spacing="20" alignment="CENTER">
                 <Button fx:id="btnSubmitCertification" text="Ajouter" onAction="#ajouterCertification" styleClass="submit-button"/>
                 <Button fx:id="btnShowCertification" text="Afficher" onAction="#afficherCertification" styleClass="show-button"/>
+                <Button text="Modifier"  />
+                <Button text="Supprimer "  />
                 <Button text="Retour" onAction="#retourFormation" />
+
+
             </HBox>
 
             <!-- Conteneur de certifications avec ScrollPane -->

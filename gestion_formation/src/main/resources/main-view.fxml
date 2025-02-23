@@ -40,9 +40,8 @@
     <Label text="Description :" styleClass="form-label" GridPane.rowIndex="1"/>
     <TextField fx:id="tfDescriptionFormation" promptText="Description" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-    <!-- Champ Durée -->
-    <Label text="Durée :" styleClass="form-label" GridPane.rowIndex="2"/>
-    <TextField fx:id="tfDureeFormation" promptText="Durée" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+
 
     <!-- Liste déroulante Employé -->
     <Label text="Employé :" styleClass="form-label" GridPane.rowIndex="3"/>

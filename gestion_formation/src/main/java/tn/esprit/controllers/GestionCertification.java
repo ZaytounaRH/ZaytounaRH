@@ -15,6 +15,7 @@ import tn.esprit.services.ServiceCertification;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 
 public class GestionCertification {
@@ -27,6 +28,8 @@ public class GestionCertification {
     @FXML
     private TextField tfOrganismeCertification;
 
+
+    private ServiceCertification serviceCertification = new ServiceCertification();
     IService<Certification> sc = new ServiceCertification();
     @FXML
     public void ajouterCertification(ActionEvent event) {
@@ -58,5 +61,7 @@ public class GestionCertification {
             System.out.println("Erreur lors du retour à la page formation : " + e.getMessage());
         }
     }
+
+
 }
 

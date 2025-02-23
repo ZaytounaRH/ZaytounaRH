@@ -1,31 +1,36 @@
 package tn.esprit.models;
 
+import java.sql.Date;
+
 public class Formation {
     private int idFormation;
     private String nomFormation;
     private String descriptionFormation;
-    private String dureeFormation;
-    private Employe employe; // Relation avec un employé
-    private Rh rh; // Relation avec un RH
-    private Certification certification; // Une seule certification par formation
+   private Date dateDebutFormation;
+   private Date dateFinFormation;
+    private Employe employe;
+    private Rh rh;
+    private Certification certification;
 
     public Formation() {
     }
 
-    public Formation(int idFormation, String nomFormation, String descriptionFormation, String dureeFormation, Employe employe, Rh rh, Certification certification) {
+    public Formation(int idFormation, String nomFormation, String descriptionFormation, Date dateDebutFormation,Date dateFinFormation, Employe employe, Rh rh, Certification certification) {
         this.idFormation = idFormation;
         this.nomFormation = nomFormation;
         this.descriptionFormation = descriptionFormation;
-        this.dureeFormation = dureeFormation;
+       this.dateDebutFormation = dateDebutFormation;
+       this.dateFinFormation = dateFinFormation;
         this.employe = employe;
         this.rh = rh;
         this.certification = certification;
     }
 
-    public Formation(String nomFormation, String descriptionFormation, String dureeFormation, Employe employe, Rh rh, Certification certification) {
+    public Formation(String nomFormation, String descriptionFormation, Date dateDebutFormation,Date dateFinFormation, Employe employe, Rh rh, Certification certification) {
         this.nomFormation = nomFormation;
         this.descriptionFormation = descriptionFormation;
-        this.dureeFormation = dureeFormation;
+        this.dateDebutFormation = dateDebutFormation;
+        this.dateFinFormation = dateFinFormation;
         this.employe = employe;
         this.rh = rh;
         this.certification = certification;
@@ -55,12 +60,20 @@ public class Formation {
         this.descriptionFormation = descriptionFormation;
     }
 
-    public String getDureeFormation() {
-        return dureeFormation;
+    public Date getDateDebutFormation() {
+        return dateDebutFormation;
     }
 
-    public void setDureeFormation(String dureeFormation) {
-        this.dureeFormation = dureeFormation;
+    public void setDateDebutFormation(Date dateDebutFormation) {
+        this.dateDebutFormation = dateDebutFormation;
+    }
+
+    public Date getDateFinFormation() {
+        return dateFinFormation;
+    }
+
+    public void setDateFinFormation(Date dateFinFormation) {
+        this.dateFinFormation = dateFinFormation;
     }
 
     public Employe getEmploye() {
@@ -93,10 +106,13 @@ public class Formation {
                 "id=" + idFormation +
                 ", nom=" + nomFormation +
                 ", description='" + descriptionFormation +
-                ", duree='" + dureeFormation +
+                ", dateDebut='" + dateDebutFormation+
+                ", dateFin='" + dateFinFormation+
                 ", employe=" + (employe != null ? employe.getNom() : "null") +
                 ", rh=" + (rh != null ? rh.getNom() : "null") +
                 ", certification=" + (certification != null ? certification.getTitreCertif() : "null") +
                 "}\n";
     }
+
+
 }

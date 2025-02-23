@@ -46,9 +46,7 @@
                 <Label text="Description :" styleClass="form-label" GridPane.rowIndex="1"/>
                 <TextField fx:id="tfDescriptionFormation" promptText="Description" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-                <!-- Champ Durée -->
-                <Label text="Durée :" styleClass="form-label" GridPane.rowIndex="2"/>
-                <TextField fx:id="tfDureeFormation" promptText="Durée" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
 
                 <!-- Liste déroulante Employé -->
                 <Label text="Employé :" styleClass="form-label" GridPane.rowIndex="3"/>
@@ -67,6 +65,8 @@
             <HBox spacing="20" alignment="CENTER">
                 <Button fx:id="btnSubmit" text="Ajouter" onAction="#ajouterFormation" styleClass="submit-button"/>
                 <Button fx:id="btnShow" text="Afficher" onAction="#afficherFormation" styleClass="show-button"/>
+                <Button text="Modifier"  />
+                <Button text="Supprimer "  />
 
 
             </HBox>

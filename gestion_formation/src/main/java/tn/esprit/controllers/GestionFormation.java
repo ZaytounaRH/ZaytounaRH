@@ -25,8 +25,7 @@ public class GestionFormation {
     private TextField tfNomFormation;
     @FXML
     private TextField tfDescriptionFormation;
-    @FXML
-    private TextField tfDureeFormation;
+
     IService<Formation> sf = new ServiceFormation();
     //private ServiceFormation serviceFormation = new ServiceFormation();
     @FXML
@@ -117,7 +116,8 @@ private void handleCertificationSelection() {
         Formation formation = new Formation();
         formation.setNomFormation(tfNomFormation.getText());
         formation.setDescriptionFormation(tfDescriptionFormation.getText());
-        formation.setDureeFormation(tfDureeFormation.getText());
+        //formation.setDateDebutFormation(tfDebutFormation.getDate());
+        //formation.setDateFinFormation(tfDateFin.getDate());
         formation.setEmploye(employeSelectionne);
         formation.setRh(rhSelectionne);
         formation.setCertification(certificationSelectionnee);

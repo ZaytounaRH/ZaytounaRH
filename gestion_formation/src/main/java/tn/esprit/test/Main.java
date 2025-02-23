@@ -35,8 +35,6 @@ public class Main {
         for (Certification certif : certifications) {
             System.out.println(certif.getTitreCertif());
         }
-
- */
 //AJOUT
         int idemploye = 2;  // ID de l'employé
         int idCertif = 8;   // ID de la certification
@@ -45,16 +43,16 @@ public class Main {
 
         employeCertification.ajouterCertificationAEmploye(idemploye, idCertif, dateObtention);
 
+ */
 
 
 
 
-        Formation formation = new Formation();
-        formation.setIdFormation(12);
-        serviceFormation.delete(formation);
+
+
 
         System.out.println(serviceFormation.getAll());
-        System.out.println(serviceCertification.getAll());
+       // System.out.println(serviceCertification.getAll());
     }
 
 
@@ -68,22 +66,27 @@ System.out.println(serviceFormation.getAll());
  Employe employe = new Employe(1);
         Rh rh = new Rh(3);
         Certification certification = new Certification(6);
-        Formation formation = new Formation("testing", "Formation controlee", "15 jours",employe, rh, certification);
+        Date dateDebut= Date.valueOf("2023-01-05");
+        Date dateFin= Date.valueOf("2023-01-01");
+
+        Formation formation = new Formation("unix", "Formation en unix", dateDebut,dateFin,employe, rh, certification);
         serviceFormation.add(formation);
 //UPDATE
-        Employe employe = new Employe(2);
+
+Employe employe = new Employe(2);
         Rh rh = new Rh(3);
         Certification certif = new Certification(7);
-        Formation formation = new Formation("update controle", "description modifiee", "2 jours", employe, rh, certif);
-        formation.setIdFormation(6);
+        Date dateDebutModifiee= Date.valueOf("2025-01-01");
+        Date dateFinModifiee= Date.valueOf("2025-01-05");
+        Formation formation = new Formation("update", "formation modifiee", dateDebutModifiee,dateFinModifiee, employe, rh, certif);
+        formation.setIdFormation(14);
         serviceFormation.update(formation);
-
 //DELETE
 
-        Formation formation = new Formation();
-        formation.setIdFormation(5);
-        serviceFormation.delete(formation);
 
+Formation formation = new Formation();
+        formation.setIdFormation(14);
+        serviceFormation.delete(formation);
 
 
  */
