@@ -1,29 +1,29 @@
 package tn.esprit.models;
 
 public class Rh {
-    private int idRh;
+    private int rh_id;
     private String nom;
 
     public Rh() {
     }
 
-    public Rh(int idRh) {
-        this.idRh = idRh;
+    public Rh(int rh_id) {
+        this.rh_id= rh_id;
     }
 
-    public Rh(int idRh, String nom) {
-        this.idRh = idRh;
+    public Rh(int rh_id, String nom) {
+        this.rh_id = rh_id;
         this.nom = nom;
     }
 
-
-    public int getIdRh() {
-        return idRh;
+    public int getRh_id() {
+        return rh_id;
     }
 
-    public void setIdRh(int idRh) {
-        this.idRh = idRh;
+    public void setRh_id(int rh_id) {
+        this.rh_id = rh_id;
     }
+
 
     public String getNom() {
         return nom;
@@ -36,4 +36,6 @@ public class Rh {
     public String toString() {
         return nom;
     }
+
+
 }

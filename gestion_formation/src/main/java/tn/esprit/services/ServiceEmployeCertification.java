@@ -16,7 +16,7 @@ public class ServiceEmployeCertification {
     }
     public List<Certification> getCertificationsByEmploye(int idEmploye) {
         List<Certification> certifications=new ArrayList<>();
-        String qry = "SELECT c.idCertif, c.titreCertif FROM certification c JOIN employe_certification ec ON c.idCertif = ec.idCertif WHERE ec.idEmploye = ?";
+        String qry = "SELECT c.idCertif, c.titreCertif FROM certification c JOIN employe_certification ec ON c.idCertif = ec.idCertif WHERE ec.employee_id = ?";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setInt(1, idEmploye);
@@ -42,13 +42,13 @@ public class ServiceEmployeCertification {
         }
 
 
-        String qry = "INSERT INTO employe_certification (idEmploye, idCertif, dateObtention) VALUES (?, ?, ?)";
+        String qry = "INSERT INTO employe_certification (employee_id, idCertif, dateObtention) VALUES (?, ?, ?)";
 
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setInt(1, idEmploye);
             pstm.setInt(2, idCertif);
-            pstm.setDate(3, dateObtention); // Date d'obtention de la certification
+            pstm.setDate(3, dateObtention);
 
             int rowsAffected = pstm.executeUpdate();
             if (rowsAffected > 0) {
@@ -62,8 +62,8 @@ public class ServiceEmployeCertification {
     }
 
     public String getNomEmployeById(int idEmploye) {
-        String qry = "SELECT nom FROM employe WHERE idEmploye = ?";
-        String nom = "Inconnu"; // Valeur par défaut si l'employé n'est pas trouvé
+        String qry = "SELECT nom FROM users WHERE id = ? AND user_type = 'RH'";
+        String nom = "Inconnu";
 
         try {
             PreparedStatement pstmt = cnx.prepareStatement(qry);

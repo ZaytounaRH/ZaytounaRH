@@ -25,8 +25,7 @@ public class Main {
 /*
        //certification des employes
 //AFFICHAGE
-
-        int idEmploye =4;
+int idEmploye =6;
         String nomEmploye = employeCertification.getNomEmployeById(idEmploye);
 
         List<Certification> certifications = employeCertification.getCertificationsByEmploye(idEmploye);
@@ -35,17 +34,26 @@ public class Main {
         for (Certification certif : certifications) {
             System.out.println(certif.getTitreCertif());
         }
+
 //AJOUT
-        int idemploye = 2;  // ID de l'employé
-        int idCertif = 8;   // ID de la certification
+ int idemploye = 6;
+        int idCertif = 8;
         Date dateObtention = Date.valueOf("2025-01-20");
-
-
         employeCertification.ajouterCertificationAEmploye(idemploye, idCertif, dateObtention);
+
+
 
  */
 
 
+        Employe employe = new Employe(6);
+        Rh rh = new Rh(4);
+        Certification certification = new Certification(6);
+        Date dateDebut= Date.valueOf("2023-01-01");
+        Date dateFin= Date.valueOf("2023-01-05");
+
+        Formation formation = new Formation("java", "Formation en java", dateDebut,dateFin,employe, rh, certification);
+        serviceFormation.add(formation);
 
 
 
@@ -63,29 +71,20 @@ public class Main {
 System.out.println(serviceFormation.getAll());
  //AJOUT
 
- Employe employe = new Employe(1);
-        Rh rh = new Rh(3);
-        Certification certification = new Certification(6);
-        Date dateDebut= Date.valueOf("2023-01-05");
-        Date dateFin= Date.valueOf("2023-01-01");
-
-        Formation formation = new Formation("unix", "Formation en unix", dateDebut,dateFin,employe, rh, certification);
-        serviceFormation.add(formation);
 //UPDATE
 
-Employe employe = new Employe(2);
-        Rh rh = new Rh(3);
+Employe employe = new Employe(8);
+        Rh rh = new Rh(4);
         Certification certif = new Certification(7);
-        Date dateDebutModifiee= Date.valueOf("2025-01-01");
-        Date dateFinModifiee= Date.valueOf("2025-01-05");
+        Date dateDebutModifiee= Date.valueOf("2024-01-01");
+        Date dateFinModifiee= Date.valueOf("2024-01-05");
         Formation formation = new Formation("update", "formation modifiee", dateDebutModifiee,dateFinModifiee, employe, rh, certif);
-        formation.setIdFormation(14);
+        formation.setIdFormation(19);
         serviceFormation.update(formation);
 //DELETE
 
-
-Formation formation = new Formation();
-        formation.setIdFormation(14);
+ Formation formation = new Formation();
+        formation.setIdFormation(19);
         serviceFormation.delete(formation);
 
 
