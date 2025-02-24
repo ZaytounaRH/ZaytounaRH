@@ -28,7 +28,7 @@ public class ServiceFormation implements IService<Formation> {
             return;
         }
 
-        String qry = "INSERT INTO `formation`( `nomFormation`, `descriptionFormation`, `dateDebutFormation`, `dateFinFormation`,  `employee_id`, `idCertif`,`rh_id`  ) VALUES (?,?,?,?,?,?,?)";
+        String qry = "INSERT INTO `formation`( `nomFormation`, `descriptionFormation`, `dateDebutFormation`, `dateFinFormation`,  `employee_id`, `idCertif`  ) VALUES (?,?,?,?,?,?)";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setString(1, formation.getNomFormation());
@@ -36,11 +36,11 @@ public class ServiceFormation implements IService<Formation> {
             pstm.setDate(3, formation.getDateDebutFormation());
             pstm.setDate(4, formation.getDateFinFormation());
             pstm.setInt(5, formation.getEmploye().getIdEmploye());
-
             pstm.setInt(6,formation.getCertification().getIdCertif());
-            pstm.setInt(7, formation.getRh().getRh_id());
+
 
             pstm.executeUpdate();
+            System.out.println("Formation ajoutée avec succès !");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -115,7 +115,7 @@ public class ServiceFormation implements IService<Formation> {
 
 
                 formation.setEmploye(employe);
-                formation.setRh(rh);
+
                 formation.setCertification(certification);
 
                 formations.add(formation);
@@ -135,7 +135,7 @@ public class ServiceFormation implements IService<Formation> {
             System.out.println("Erreur : données invalides, update annulé !");
             return;
         }
-        String qry = "UPDATE `formation` SET `nomFormation` = ?, `descriptionFormation` = ?, `dateDebutFormation` = ?,`dateFinFormation`= ? ,`employee_id` = ?, `idCertif`= ?, `rh_id` = ? WHERE `idFormation` = ?";
+        String qry = "UPDATE `formation` SET `nomFormation` = ?, `descriptionFormation` = ?, `dateDebutFormation` = ?,`dateFinFormation`= ? ,`employee_id` = ?, `idCertif`= ?  WHERE `idFormation` = ?";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setString(1, formation.getNomFormation());
@@ -146,8 +146,7 @@ public class ServiceFormation implements IService<Formation> {
 
             pstm.setInt(5, formation.getEmploye().getIdEmploye());
             pstm.setInt(6, formation.getCertification().getIdCertif());
-            pstm.setInt(7, formation.getRh().getRh_id());
-            pstm.setInt(8, formation.getIdFormation());
+            pstm.setInt(7, formation.getIdFormation());
 
             int rowsUpdated = pstm.executeUpdate();
             if (rowsUpdated > 0) {
@@ -197,9 +196,7 @@ public class ServiceFormation implements IService<Formation> {
             return false;
         }
 
-        if (formation.getRh().getRh_id() <= 0) {
-            System.out.println("rh responsable manquant ! ");
-        }
+
         if  (formation.getEmploye().getIdEmploye() <= 0) {
             System.out.println("employe participant manquant ! ");
         }

@@ -52,7 +52,7 @@ int idEmploye =6;
         Date dateDebut= Date.valueOf("2023-01-01");
         Date dateFin= Date.valueOf("2023-01-05");
 
-        Formation formation = new Formation("java", "Formation en java", dateDebut,dateFin,employe, rh, certification);
+        Formation formation = new Formation("no rh", "Formation sans user rh ", dateDebut,dateFin,employe, certification);
         serviceFormation.add(formation);
 
 

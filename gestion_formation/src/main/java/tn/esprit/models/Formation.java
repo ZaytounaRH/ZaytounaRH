@@ -9,30 +9,29 @@ public class Formation {
    private Date dateDebutFormation;
    private Date dateFinFormation;
     private Employe employe;
-    private Rh rh;
     private Certification certification;
 
     public Formation() {
     }
 
-    public Formation(int idFormation, String nomFormation, String descriptionFormation, Date dateDebutFormation,Date dateFinFormation, Employe employe, Rh rh, Certification certification) {
+    public Formation(int idFormation, String nomFormation, String descriptionFormation, Date dateDebutFormation,Date dateFinFormation, Employe employe, Certification certification) {
         this.idFormation = idFormation;
         this.nomFormation = nomFormation;
         this.descriptionFormation = descriptionFormation;
        this.dateDebutFormation = dateDebutFormation;
        this.dateFinFormation = dateFinFormation;
         this.employe = employe;
-        this.rh = rh;
+
         this.certification = certification;
     }
 
-    public Formation(String nomFormation, String descriptionFormation, Date dateDebutFormation,Date dateFinFormation, Employe employe, Rh rh, Certification certification) {
+    public Formation(String nomFormation, String descriptionFormation, Date dateDebutFormation,Date dateFinFormation, Employe employe, Certification certification) {
         this.nomFormation = nomFormation;
         this.descriptionFormation = descriptionFormation;
         this.dateDebutFormation = dateDebutFormation;
         this.dateFinFormation = dateFinFormation;
         this.employe = employe;
-        this.rh = rh;
+
         this.certification = certification;
     }
 
@@ -84,13 +83,7 @@ public class Formation {
         this.employe = employe;
     }
 
-    public Rh getRh() {
-        return rh;
-    }
 
-    public void setRh(Rh rh) {
-        this.rh = rh;
-    }
 
     public Certification getCertification() {
         return certification;
@@ -109,7 +102,7 @@ public class Formation {
                 ", dateDebut='" + dateDebutFormation+
                 ", dateFin='" + dateFinFormation+
                 ", employe=" + (employe != null ? employe.getNom() : "null") +
-                ", rh=" + (rh != null ? rh.getNom() : "null") +
+
                 ", certification=" + (certification != null ? certification.getTitreCertif() : "null") +
                 "}\n";
     }
