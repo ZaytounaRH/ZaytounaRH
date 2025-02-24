@@ -46,14 +46,7 @@ int idEmploye =6;
  */
 
 
-        Employe employe = new Employe(6);
-        Rh rh = new Rh(4);
-        Certification certification = new Certification(6);
-        Date dateDebut= Date.valueOf("2023-01-01");
-        Date dateFin= Date.valueOf("2023-01-05");
 
-        Formation formation = new Formation("no rh", "Formation sans user rh ", dateDebut,dateFin,employe, certification);
-        serviceFormation.add(formation);
 
 
 
@@ -70,7 +63,14 @@ int idEmploye =6;
 /*
 System.out.println(serviceFormation.getAll());
  //AJOUT
+Employe employe = new Employe(6);
+        Rh rh = new Rh(4);
+        Certification certification = new Certification(6);
+        Date dateDebut= Date.valueOf("2023-01-01");
+        Date dateFin= Date.valueOf("2023-01-05");
 
+        Formation formation = new Formation("no rh", "Formation sans user rh ", dateDebut,dateFin,employe, certification);
+        serviceFormation.add(formation);
 //UPDATE
 
 Employe employe = new Employe(8);

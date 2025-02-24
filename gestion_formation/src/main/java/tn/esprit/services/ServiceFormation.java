@@ -49,11 +49,22 @@ public class ServiceFormation implements IService<Formation> {
     @Override
     public List<Formation> getAll() {
         List<Formation> formations = new ArrayList<>();
-        String qry = "SELECT * FROM `formation`";
+
+        String qry = """
+        SELECT f.idFormation, f.nomFormation, f.descriptionFormation, f.dateDebutFormation, f.dateFinFormation,
+               e.id AS employe_id, e.nom AS employe_nom, 
+               r.id AS rh_id, r.nom AS rh_nom, 
+               c.idCertif, c.titreCertif
+        FROM formation f
+        JOIN users e ON f.employee_id = e.id AND e.user_type = 'Employee'
+        JOIN rh_employee re ON re.employee_id = f.employee_id  -- Récupérer le RH dynamiquement
+        JOIN users r ON re.rh_id = r.id AND r.user_type = 'RH'
+        LEFT JOIN certification c ON f.idCertif = c.idCertif;
+    """;
 
         try {
-            Statement stm = cnx.createStatement();
-            ResultSet rs = stm.executeQuery(qry);
+            PreparedStatement pstm = cnx.prepareStatement(qry);
+            ResultSet rs = pstm.executeQuery();
 
             while (rs.next()) {
                 Formation formation = new Formation();
@@ -64,71 +75,25 @@ public class ServiceFormation implements IService<Formation> {
                 formation.setDateFinFormation(rs.getDate("dateFinFormation"));
 
 
-                int idEmploye = rs.getInt("employee_id");
-                int rh_id = rs.getInt("rh_id");
-                int idCertif = rs.getInt("idCertif");
-
-
-
-                Employe employe = null;
-                Rh rh = null;
-                Certification certification = null;
-
-                if (idEmploye > 0) {
-                    String employeQry = "SELECT nom FROM users WHERE id = ? AND user_type = 'Employee'";
-                    PreparedStatement pstmtEmploye = cnx.prepareStatement(employeQry);
-                    pstmtEmploye.setInt(1, idEmploye);
-                    ResultSet rsEmploye = pstmtEmploye.executeQuery();
-
-                    if (rsEmploye.next()) {
-                        employe = new Employe(idEmploye, rsEmploye.getString("nom"));
-                    }
-
-
-                }
-
-                if (rh_id > 0) {
-                    String rhQry = "SELECT nom FROM users WHERE id = ? AND user_type = 'RH'";
-                    PreparedStatement pstmtRh = cnx.prepareStatement(rhQry);
-                    pstmtRh.setInt(1, rh_id);
-                    ResultSet rsRh = pstmtRh.executeQuery();
-
-                    if (rsRh.next()) {
-                       rh = new Rh(rh_id, rsRh.getString("nom"));
-                    }
-                }
-
-                if (idCertif > 0) {
-                    // Récupérer l'objet Certification complet depuis la base de données
-                    String certifQry = "SELECT * FROM certification WHERE idCertif = ?";
-                    PreparedStatement pstmt = cnx.prepareStatement(certifQry);
-                    pstmt.setInt(1, idCertif);
-                    ResultSet rsCertif = pstmt.executeQuery();
-
-                    if (rsCertif.next()) {
-                        certification = new Certification(
-                                rsCertif.getInt("idCertif"),
-                                rsCertif.getString("titreCertif")
-                        );
-                    }
-                }
-
+                Employe employe = new Employe(rs.getInt("employe_id"), rs.getString("employe_nom"));
+                Rh rh = new Rh(rs.getInt("rh_id"), rs.getString("rh_nom"));
+                Certification certification = (rs.getInt("idCertif") > 0) ?
+                        new Certification(rs.getInt("idCertif"), rs.getString("titreCertif")) : null;
 
                 formation.setEmploye(employe);
-
                 formation.setCertification(certification);
 
                 formations.add(formation);
             }
+
             rs.close();
-            stm.close();
+            pstm.close();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Erreur lors de la récupération des formations : " + e.getMessage());
         }
 
         return formations;
     }
-
     @Override
     public void update(Formation formation) {
         if (!isValidFormation(formation)) {
