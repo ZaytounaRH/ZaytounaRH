@@ -25,15 +25,7 @@ public class Main {
 /*
        //certification des employes
 //AFFICHAGE
-int idEmploye =6;
-        String nomEmploye = employeCertification.getNomEmployeById(idEmploye);
 
-        List<Certification> certifications = employeCertification.getCertificationsByEmploye(idEmploye);
-
-        System.out.println("Certifications de l'employé " + nomEmploye + ":" );
-        for (Certification certif : certifications) {
-            System.out.println(certif.getTitreCertif());
-        }
 
 //AJOUT
  int idemploye = 6;
@@ -46,7 +38,15 @@ int idEmploye =6;
  */
 
 
+        int idEmploye =6;
+        String nomEmploye = employeCertification.getNomEmployeById(idEmploye);
 
+        List<Certification> certifications = employeCertification.getCertificationsByEmploye(idEmploye);
+
+        System.out.println("Certifications de l'employé " + nomEmploye + ":" );
+        for (Certification certif : certifications) {
+            System.out.println(certif.getTitreCertif());
+        }
 
 
 
