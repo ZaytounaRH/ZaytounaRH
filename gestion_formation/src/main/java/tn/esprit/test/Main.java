@@ -72,19 +72,18 @@ Employe employe = new Employe(6);
         Formation formation = new Formation("no rh", "Formation sans user rh ", dateDebut,dateFin,employe, certification);
         serviceFormation.add(formation);
 //UPDATE
-
-Employe employe = new Employe(8);
-        Rh rh = new Rh(4);
+ Employe employe = new Employe(8);
         Certification certif = new Certification(7);
-        Date dateDebutModifiee= Date.valueOf("2024-01-01");
-        Date dateFinModifiee= Date.valueOf("2024-01-05");
-        Formation formation = new Formation("update", "formation modifiee", dateDebutModifiee,dateFinModifiee, employe, rh, certif);
-        formation.setIdFormation(19);
+        Date dateDebutModifiee= Date.valueOf("2020-01-01");
+        Date dateFinModifiee= Date.valueOf("2020-01-05");
+        Formation formation = new Formation("update", "formation modifiee", dateDebutModifiee,dateFinModifiee, employe, certif);
+        formation.setIdFormation(20);
         serviceFormation.update(formation);
+
 //DELETE
 
- Formation formation = new Formation();
-        formation.setIdFormation(19);
+Formation formation = new Formation();
+        formation.setIdFormation(20);
         serviceFormation.delete(formation);
 
 

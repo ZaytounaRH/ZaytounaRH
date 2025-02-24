@@ -100,17 +100,24 @@ public class ServiceFormation implements IService<Formation> {
             System.out.println("Erreur : données invalides, update annulé !");
             return;
         }
-        String qry = "UPDATE `formation` SET `nomFormation` = ?, `descriptionFormation` = ?, `dateDebutFormation` = ?,`dateFinFormation`= ? ,`employee_id` = ?, `idCertif`= ?  WHERE `idFormation` = ?";
+
+        String qry = "UPDATE `formation` SET `nomFormation` = ?, `descriptionFormation` = ?, `dateDebutFormation` = ?, `dateFinFormation`= ?, `employee_id` = ?, `idCertif`= ? WHERE `idFormation` = ?";
+
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setString(1, formation.getNomFormation());
             pstm.setString(2, formation.getDescriptionFormation());
             pstm.setDate(3, formation.getDateDebutFormation());
             pstm.setDate(4, formation.getDateFinFormation());
-
-
             pstm.setInt(5, formation.getEmploye().getIdEmploye());
-            pstm.setInt(6, formation.getCertification().getIdCertif());
+
+            // Vérifier si une certification est associée
+            if (formation.getCertification() != null) {
+                pstm.setInt(6, formation.getCertification().getIdCertif());
+            } else {
+                pstm.setNull(6, Types.INTEGER); // Si pas de certification, on met NULL
+            }
+
             pstm.setInt(7, formation.getIdFormation());
 
             int rowsUpdated = pstm.executeUpdate();
@@ -123,6 +130,7 @@ public class ServiceFormation implements IService<Formation> {
             System.out.println("Erreur lors de la mise à jour : " + e.getMessage());
         }
     }
+
 
     @Override
     public void delete(Formation formation) {
