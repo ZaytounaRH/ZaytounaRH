@@ -3,21 +3,21 @@ package tn.esprit.models;
 import java.sql.Date;
 
 public class User {
-    private int id;
-    private int numTel;
-    private int joursOuvrables;
-    private String nom;
-    private String prenom;
-    private String address;
-    private String email;
-    private String gender;
-    private String department;
-    private String designation;
-    private Date dateDeNaissance;
+    protected int id;
+    protected String numTel;
+    protected int joursOuvrables;
+    protected String nom;
+    protected String prenom;
+    protected String address;
+    protected String email;
+    protected String gender;
+    protected Date dateDeNaissance;
+    protected String userType;
+    protected String password;
 
     public User() {}
 
-    public User(int numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance) {
+    public User(String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password) {
         this.numTel = numTel;
         this.joursOuvrables = joursOuvrables;
         this.nom = nom;
@@ -25,12 +25,12 @@ public class User {
         this.address = address;
         this.email = email;
         this.gender = gender;
-        this.department = department;
-        this.designation = designation;
         this.dateDeNaissance = dateDeNaissance;
+        this.userType = userType;
+        this.password = password;
     }
 
-    public User(int id, int numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance) {
+    public User(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password) {
         this.id = id;
         this.numTel = numTel;
         this.joursOuvrables = joursOuvrables;
@@ -39,10 +39,12 @@ public class User {
         this.address = address;
         this.email = email;
         this.gender = gender;
-        this.department = department;
-        this.designation = designation;
         this.dateDeNaissance = dateDeNaissance;
+        this.userType = userType;
+        this.password = password;
     }
+
+
 
     public int getId() {
         return id;
@@ -52,11 +54,11 @@ public class User {
         this.id = id;
     }
 
-    public int getNumTel() {
+    public String getNumTel() {
         return numTel;
     }
 
-    public void setNumTel(int numTel) {
+    public void setNumTel(String numTel) {
         this.numTel = numTel;
     }
 
@@ -108,22 +110,6 @@ public class User {
         this.gender = gender;
     }
 
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
-    public String getDesignation() {
-        return designation;
-    }
-
-    public void setDesignation(String designation) {
-        this.designation = designation;
-    }
-
     public Date getDateDeNaissance() {
         return dateDeNaissance;
     }
@@ -132,20 +118,35 @@ public class User {
         this.dateDeNaissance = dateDeNaissance;
     }
 
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", numTel=" + numTel +
+                ", numTel='" + numTel + '\'' +
                 ", joursOuvrables=" + joursOuvrables +
                 ", nom='" + nom + '\'' +
                 ", prenom='" + prenom + '\'' +
                 ", address='" + address + '\'' +
                 ", email='" + email + '\'' +
                 ", gender='" + gender + '\'' +
-                ", department='" + department + '\'' +
-                ", designation='" + designation + '\'' +
                 ", dateDeNaissance=" + dateDeNaissance +
+                ", userType='" + userType + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 }

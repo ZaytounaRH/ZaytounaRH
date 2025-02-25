@@ -3,30 +3,45 @@ package tn.esprit.models;
 import java.sql.Date;
 
 public class RH extends User {
-    private String employeeListJson;
-    private String candidatListJson;
-
+    protected int idRH;
     public RH() {}
 
-    public RH(int id, int numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, String department, String designation, Date dateDeNaissance, String employeeListJson, String candidatListJson) {
-        super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, department, designation, dateDeNaissance);
-        this.employeeListJson = employeeListJson;
-        this.candidatListJson = candidatListJson;
+    public RH(String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, int idRH) {
+        super(numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password);
+        this.idRH = idRH;
     }
 
-    public String getEmployeeListJson() {
-        return employeeListJson;
+    public RH(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, int idRH) {
+        super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password);
+        this.idRH = idRH;
+    }
+    public RH(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password) {
+        super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password);
     }
 
-    public void setEmployeeListJson(String employeeListJson) {
-        this.employeeListJson = employeeListJson;
+    public int getIdRH() {
+        return idRH;
     }
 
-    public String getCandidatListJson() {
-        return candidatListJson;
+    public void setIdRH(int idRH) {
+        this.idRH = idRH;
     }
 
-    public void setCandidatListJson(String candidatListJson) {
-        this.candidatListJson = candidatListJson;
+    @Override
+    public String toString() {
+        return "RH{" +
+                "idRH=" + idRH +
+                ", id=" + id +
+                ", numTel='" + numTel + '\'' +
+                ", joursOuvrables=" + joursOuvrables +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", address='" + address + '\'' +
+                ", email='" + email + '\'' +
+                ", gender='" + gender + '\'' +
+                ", dateDeNaissance=" + dateDeNaissance +
+                ", userType='" + userType + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }
