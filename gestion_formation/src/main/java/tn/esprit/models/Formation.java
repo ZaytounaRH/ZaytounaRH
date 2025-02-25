@@ -1,6 +1,7 @@
 package tn.esprit.models;
 
 import java.sql.Date;
+import java.util.List;
 
 public class Formation {
     private int idFormation;
@@ -8,31 +9,34 @@ public class Formation {
     private String descriptionFormation;
    private Date dateDebutFormation;
    private Date dateFinFormation;
-    private Employe employe;
-    private Certification certification;
-
+    private List<Certification> certifications;
     public Formation() {
     }
 
-    public Formation(int idFormation, String nomFormation, String descriptionFormation, Date dateDebutFormation,Date dateFinFormation, Employe employe, Certification certification) {
+    public Formation(int idFormation, String nomFormation, String descriptionFormation, Date dateDebutFormation,Date dateFinFormation, List<Certification> certifications) {
         this.idFormation = idFormation;
         this.nomFormation = nomFormation;
         this.descriptionFormation = descriptionFormation;
        this.dateDebutFormation = dateDebutFormation;
        this.dateFinFormation = dateFinFormation;
-        this.employe = employe;
 
-        this.certification = certification;
+
+        this.certifications = certifications;
     }
-
-    public Formation(String nomFormation, String descriptionFormation, Date dateDebutFormation,Date dateFinFormation, Employe employe, Certification certification) {
+    public Formation(String nomFormation, String descriptionFormation, Date dateDebutFormation,Date dateFinFormation) {
         this.nomFormation = nomFormation;
         this.descriptionFormation = descriptionFormation;
         this.dateDebutFormation = dateDebutFormation;
         this.dateFinFormation = dateFinFormation;
-        this.employe = employe;
 
-        this.certification = certification;
+    }
+
+    public Formation(String nomFormation, String descriptionFormation, Date dateDebutFormation,Date dateFinFormation, List<Certification> certifications) {
+        this.nomFormation = nomFormation;
+        this.descriptionFormation = descriptionFormation;
+        this.dateDebutFormation = dateDebutFormation;
+        this.dateFinFormation = dateFinFormation;
+        this.certifications = certifications;
     }
 
     public int getIdFormation() {
@@ -74,24 +78,12 @@ public class Formation {
     public void setDateFinFormation(Date dateFinFormation) {
         this.dateFinFormation = dateFinFormation;
     }
-
-    public Employe getEmploye() {
-        return employe;
+    public List<Certification> getCertifications() {
+        return certifications;
     }
-
-    public void setEmploye(Employe employe) {
-        this.employe = employe;
-    }
-
-
-
-    public Certification getCertification() {
-        return certification;
-    }
-
-    public void setCertification(Certification certification) {
-        this.certification = certification;
-    }
+public void setCertifications(List<Certification> certifications) {
+        this.certifications = certifications;
+}
 
     @Override
     public String toString() {
@@ -101,9 +93,7 @@ public class Formation {
                 ", description='" + descriptionFormation +
                 ", dateDebut='" + dateDebutFormation+
                 ", dateFin='" + dateFinFormation+
-                ", employe=" + (employe != null ? employe.getNom() : "null") +
-
-                ", certification=" + (certification != null ? certification.getTitreCertif() : "null") +
+                ", certifications=" + certifications +
                 "}\n";
     }
 

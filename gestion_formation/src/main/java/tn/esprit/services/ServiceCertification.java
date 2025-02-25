@@ -25,14 +25,23 @@ public class ServiceCertification implements IService<Certification> {
             System.out.println("Erreur : Une certification avec le même titre et le même organisme existe déjà !");
             return;
         }
+        if (certification.getFormation() == null) {
+            System.out.println("Erreur : La certification doit être associée à une formation !");
+            return;
+        }
 
-        String qry ="INSERT INTO `certification`(`titreCertif`, `organismeCertif`) VALUES(?,?)";
+        String qry ="INSERT INTO `certification`(`titreCertif`, `organismeCertif`,`idFormation`) VALUES(?,?,?)";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setString(1,certification.getTitreCertif());
             pstm.setString(2, certification.getOrganismeCertif());
+            pstm.setInt(3, certification.getFormation().getIdFormation());
 
-            pstm.executeUpdate();
+            int rowsAffected = pstm.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Certification ajoutée avec succès !");
+            }
+            pstm.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -42,25 +51,38 @@ public class ServiceCertification implements IService<Certification> {
 
     @Override
     public List<Certification> getAll() {
-        List< Certification > certifications  = new ArrayList<>();
-        String qry ="SELECT * FROM `certification`";
+        List<Certification> certifications = new ArrayList<>();
+        String qry = "SELECT c.idCertif, c.titreCertif, c.organismeCertif, f.nomFormation " +
+                "FROM certification c " +
+                "LEFT JOIN formation f ON c.idFormation = f.idFormation";
 
         try {
             Statement stm = cnx.createStatement();
             ResultSet rs = stm.executeQuery(qry);
 
-            while (rs.next()){
+            while (rs.next()) {
                 Certification certification = new Certification();
                 certification.setIdCertif(rs.getInt("idCertif"));
                 certification.setTitreCertif(rs.getString("titreCertif"));
                 certification.setOrganismeCertif(rs.getString("organismeCertif"));
 
-                certifications.add(certification);
+                // Récupérer uniquement le nom de la formation
+                String nomFormation = rs.getString("nomFormation");
+                if (nomFormation != null) {
+                    certification.setFormation(new Formation());
+                    certification.getFormation().setNomFormation(nomFormation);
+                }
 
+                certifications.add(certification);
             }
+
+            rs.close();
+            stm.close();
+
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Erreur lors de la récupération des certifications : " + e.getMessage());
         }
+
         return certifications;
     }
 
@@ -70,23 +92,34 @@ public class ServiceCertification implements IService<Certification> {
             System.out.println("Erreur : données invalides, update annulé !");
             return;
         }
-        String qry = "UPDATE `certification` SET `titreCertif`=?,`organismeCertif`=? WHERE `idCertif`=?";
+
+        String qry = "UPDATE `certification` SET `titreCertif`=?, `organismeCertif`=?, `idFormation`=? WHERE `idCertif`=?";
 
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setString(1, certification.getTitreCertif());
-            pstm.setString(2,certification.getOrganismeCertif() );
-            pstm.setInt(3, certification.getIdCertif());
+            pstm.setString(2, certification.getOrganismeCertif());
+
+            // Vérifier si une formation est associée
+            if (certification.getFormation() != null) {
+                pstm.setInt(3, certification.getFormation().getIdFormation());
+            } else {
+                pstm.setNull(3, java.sql.Types.INTEGER); // Si aucune formation, mettre NULL
+            }
+
+            pstm.setInt(4, certification.getIdCertif());
 
             int rowsUpdated = pstm.executeUpdate();
             if (rowsUpdated > 0) {
-                System.out.println(" Certification mise à jour avec succès !");
+                System.out.println("Certification mise à jour avec succès !");
             } else {
-                System.out.println(" Aucun enregistrement mis à jour. Vérifie l'ID.");
+                System.out.println("Aucun enregistrement mis à jour. Vérifie l'ID.");
             }
 
+            pstm.close(); // Fermer le PreparedStatement après utilisation
+
         } catch (SQLException e) {
-            System.out.println(" Erreur lors de la mise à jour : " + e.getMessage());
+            System.out.println("Erreur lors de la mise à jour : " + e.getMessage());
         }
     }
 

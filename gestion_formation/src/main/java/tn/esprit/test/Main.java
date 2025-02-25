@@ -25,6 +25,15 @@ public class Main {
 /*
        //certification des employes
 //AFFICHAGE
+ int idEmploye =6;
+        String nomEmploye = employeCertification.getNomEmployeById(idEmploye);
+
+        List<Certification> certifications = employeCertification.getCertificationsByEmploye(idEmploye);
+
+        System.out.println("Certifications de l'employé " + nomEmploye + ":" );
+        for (Certification certif : certifications) {
+            System.out.println(certif.getTitreCertif());
+        }
 
 
 //AJOUT
@@ -38,22 +47,15 @@ public class Main {
  */
 
 
-        int idEmploye =6;
-        String nomEmploye = employeCertification.getNomEmployeById(idEmploye);
-
-        List<Certification> certifications = employeCertification.getCertificationsByEmploye(idEmploye);
-
-        System.out.println("Certifications de l'employé " + nomEmploye + ":" );
-        for (Certification certif : certifications) {
-            System.out.println(certif.getTitreCertif());
-        }
 
 
 
 
+        Certification certification = new Certification();
+        certification.setIdCertif(4);
+        serviceCertification.delete(certification);
 
-        System.out.println(serviceFormation.getAll());
-       // System.out.println(serviceCertification.getAll());
+        System.out.println(serviceCertification.getAll());
     }
 
 
@@ -63,27 +65,22 @@ public class Main {
 /*
 System.out.println(serviceFormation.getAll());
  //AJOUT
-Employe employe = new Employe(6);
-        Rh rh = new Rh(4);
-        Certification certification = new Certification(6);
-        Date dateDebut= Date.valueOf("2023-01-01");
+
+Date dateDebut= Date.valueOf("2023-01-01");
         Date dateFin= Date.valueOf("2023-01-05");
-
-        Formation formation = new Formation("no rh", "Formation sans user rh ", dateDebut,dateFin,employe, certification);
-        serviceFormation.add(formation);
+        Formation formation = new Formation("no rh", "Formation sans user rh ", dateDebut,dateFin);
+         serviceFormation.add(formation);
 //UPDATE
- Employe employe = new Employe(8);
-        Certification certif = new Certification(7);
-        Date dateDebutModifiee= Date.valueOf("2020-01-01");
-        Date dateFinModifiee= Date.valueOf("2020-01-05");
-        Formation formation = new Formation("update", "formation modifiee", dateDebutModifiee,dateFinModifiee, employe, certif);
-        formation.setIdFormation(20);
-        serviceFormation.update(formation);
 
+ Date dateDebutModifiee= Date.valueOf("2020-01-01");
+        Date dateFinModifiee= Date.valueOf("2020-01-05");
+        Formation formation = new Formation("update", "formation modifiee", dateDebutModifiee,dateFinModifiee);
+        formation.setIdFormation(2);
+        serviceFormation.update(formation);
 //DELETE
 
 Formation formation = new Formation();
-        formation.setIdFormation(20);
+        formation.setIdFormation(2);
         serviceFormation.delete(formation);
 
 
@@ -96,19 +93,22 @@ Formation formation = new Formation();
 
 
         //AJOUT
+Formation formation = new Formation();
+        formation.setIdFormation(1);
+        System.out.println(serviceFormation.getAll());
+        serviceCertification.add(new Certification("machine_learning","nvidia",formation));
 
-        serviceCertification.add(new Certification("machine_learning","nvidia"));
 //UPDATE
 
-        Certification certification = new Certification("controle saisie","esprit");
-        certification.setIdCertif(7);
+Formation formation = new Formation();
+        formation.setIdFormation(3);
+        Certification certification = new Certification("administration systeme","esprit",formation);
+        certification.setIdCertif(1);
         serviceCertification.update(certification);
 
 //DELETE
 
-        Certification certification = new Certification();
-        certification.setIdCertif(4);
-        serviceCertification.delete(certification);
+
 
  */
 

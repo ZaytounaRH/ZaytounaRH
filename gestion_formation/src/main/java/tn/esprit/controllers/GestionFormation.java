@@ -118,9 +118,7 @@ private void handleCertificationSelection() {
         formation.setDescriptionFormation(tfDescriptionFormation.getText());
         //formation.setDateDebutFormation(tfDebutFormation.getDate());
         //formation.setDateFinFormation(tfDateFin.getDate());
-        formation.setEmploye(employeSelectionne);
 
-        formation.setCertification(certificationSelectionnee);
 
         sf.add(formation);
     }

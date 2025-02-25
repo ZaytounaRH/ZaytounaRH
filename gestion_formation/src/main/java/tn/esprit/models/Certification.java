@@ -1,28 +1,30 @@
 package tn.esprit.models;
 
-import java.sql.Date;
+
 
 public class Certification {
     private int idCertif;
     private String titreCertif;
     private String organismeCertif;
-
+    private Formation formation;
     public Certification() {
 
     }
     public Certification(int idCertif) {
         this.idCertif = idCertif;
     }
-    public Certification(int idCertif, String titreCertif, String organismeCertif) {
+    public Certification(int idCertif, String titreCertif, String organismeCertif, Formation formation) {
         this.idCertif = idCertif;
         this.titreCertif = titreCertif;
        this.organismeCertif = organismeCertif;
+       this.formation = formation;
     }
 
-    public Certification( String titreCertif, String organismeCertif) {
+    public Certification( String titreCertif, String organismeCertif, Formation formation) {
 
         this.titreCertif = titreCertif;
         this.organismeCertif = organismeCertif;
+        this.formation = formation;
     }
 
     public Certification(int idCertif, String titreCertif) {
@@ -53,11 +55,25 @@ public class Certification {
     public void setOrganismeCertif(String organismeCertif) {
         this.organismeCertif = organismeCertif;
     }
+    public Formation getFormation() {
+        return formation;
+    }
+
+    public void setFormation(Formation formation) {
+        this.formation = formation;
+    }
     @Override
     public String toString() {
-        return titreCertif ;
+        String formationNom = (formation != null) ? formation.getNomFormation() : "Aucune formation";
 
+        return "Certification{ " +
+                "Titre = " + titreCertif +
+                ", Organisme = " + organismeCertif +
+                ", Formation = " + formationNom +
+                " }\n";
     }
+
+
 
 
 }

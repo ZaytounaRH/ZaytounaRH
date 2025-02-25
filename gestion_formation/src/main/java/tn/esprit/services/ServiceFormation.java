@@ -8,7 +8,9 @@ import tn.esprit.utils.MyDatabase;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ServiceFormation implements IService<Formation> {
     private final Connection cnx ;
@@ -28,15 +30,14 @@ public class ServiceFormation implements IService<Formation> {
             return;
         }
 
-        String qry = "INSERT INTO `formation`( `nomFormation`, `descriptionFormation`, `dateDebutFormation`, `dateFinFormation`,  `employee_id`, `idCertif`  ) VALUES (?,?,?,?,?,?)";
+        String qry = "INSERT INTO `formation`( `nomFormation`, `descriptionFormation`, `dateDebutFormation`, `dateFinFormation` ) VALUES (?,?,?,?)";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setString(1, formation.getNomFormation());
             pstm.setString(2, formation.getDescriptionFormation());
             pstm.setDate(3, formation.getDateDebutFormation());
             pstm.setDate(4, formation.getDateFinFormation());
-            pstm.setInt(5, formation.getEmploye().getIdEmploye());
-            pstm.setInt(6,formation.getCertification().getIdCertif());
+
 
 
             pstm.executeUpdate();
@@ -49,41 +50,42 @@ public class ServiceFormation implements IService<Formation> {
     @Override
     public List<Formation> getAll() {
         List<Formation> formations = new ArrayList<>();
+        Map<Integer, Formation> formationMap = new HashMap<>(); // Utiliser une Map pour éviter les doublons
 
-        String qry = """
-        SELECT f.idFormation, f.nomFormation, f.descriptionFormation, f.dateDebutFormation, f.dateFinFormation,
-               e.id AS employe_id, e.nom AS employe_nom, 
-               r.id AS rh_id, r.nom AS rh_nom, 
-               c.idCertif, c.titreCertif
-        FROM formation f
-        JOIN users e ON f.employee_id = e.id AND e.user_type = 'Employee'
-        JOIN rh_employee re ON re.employee_id = f.employee_id  -- Récupérer le RH dynamiquement
-        JOIN users r ON re.rh_id = r.id AND r.user_type = 'RH'
-        LEFT JOIN certification c ON f.idCertif = c.idCertif;
-    """;
+        String qry = "SELECT f.idFormation, f.nomFormation, f.descriptionFormation, f.dateDebutFormation, f.dateFinFormation, " +
+                "c.titreCertif " +
+                "FROM formation f " +
+                "LEFT JOIN certification c ON f.idFormation = c.idFormation";
 
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             ResultSet rs = pstm.executeQuery();
 
             while (rs.next()) {
-                Formation formation = new Formation();
-                formation.setIdFormation(rs.getInt("idFormation"));
-                formation.setNomFormation(rs.getString("nomFormation"));
-                formation.setDescriptionFormation(rs.getString("descriptionFormation"));
-                formation.setDateDebutFormation(rs.getDate("dateDebutFormation"));
-                formation.setDateFinFormation(rs.getDate("dateFinFormation"));
+                int formationId = rs.getInt("idFormation");
 
 
-                Employe employe = new Employe(rs.getInt("employe_id"), rs.getString("employe_nom"));
-                Rh rh = new Rh(rs.getInt("rh_id"), rs.getString("rh_nom"));
-                Certification certification = (rs.getInt("idCertif") > 0) ?
-                        new Certification(rs.getInt("idCertif"), rs.getString("titreCertif")) : null;
+                Formation formation = formationMap.get(formationId);
+                if (formation == null) {
+                    formation = new Formation();
+                    formation.setIdFormation(formationId);
+                    formation.setNomFormation(rs.getString("nomFormation"));
+                    formation.setDescriptionFormation(rs.getString("descriptionFormation"));
+                    formation.setDateDebutFormation(rs.getDate("dateDebutFormation"));
+                    formation.setDateFinFormation(rs.getDate("dateFinFormation"));
+                    formation.setCertifications(new ArrayList<>()); // Initialiser la liste des certifications
 
-                formation.setEmploye(employe);
-                formation.setCertification(certification);
+                    formationMap.put(formationId, formation);
+                    formations.add(formation);
+                }
 
-                formations.add(formation);
+                // Ajouter la certification si elle existe
+                String titreCertif = rs.getString("titreCertif");
+                if (titreCertif != null) {
+                    Certification certification = new Certification();
+                    certification.setTitreCertif(titreCertif);
+                    formation.getCertifications().add(certification);
+                }
             }
 
             rs.close();
@@ -94,6 +96,7 @@ public class ServiceFormation implements IService<Formation> {
 
         return formations;
     }
+
     @Override
     public void update(Formation formation) {
         if (!isValidFormation(formation)) {
@@ -101,7 +104,7 @@ public class ServiceFormation implements IService<Formation> {
             return;
         }
 
-        String qry = "UPDATE `formation` SET `nomFormation` = ?, `descriptionFormation` = ?, `dateDebutFormation` = ?, `dateFinFormation`= ?, `employee_id` = ?, `idCertif`= ? WHERE `idFormation` = ?";
+        String qry = "UPDATE `formation` SET `nomFormation` = ?, `descriptionFormation` = ?, `dateDebutFormation` = ?, `dateFinFormation`= ? WHERE `idFormation` = ?";
 
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
@@ -109,16 +112,9 @@ public class ServiceFormation implements IService<Formation> {
             pstm.setString(2, formation.getDescriptionFormation());
             pstm.setDate(3, formation.getDateDebutFormation());
             pstm.setDate(4, formation.getDateFinFormation());
-            pstm.setInt(5, formation.getEmploye().getIdEmploye());
 
-            // Vérifier si une certification est associée
-            if (formation.getCertification() != null) {
-                pstm.setInt(6, formation.getCertification().getIdCertif());
-            } else {
-                pstm.setNull(6, Types.INTEGER); // Si pas de certification, on met NULL
-            }
 
-            pstm.setInt(7, formation.getIdFormation());
+            pstm.setInt(5, formation.getIdFormation());
 
             int rowsUpdated = pstm.executeUpdate();
             if (rowsUpdated > 0) {
@@ -169,10 +165,6 @@ public class ServiceFormation implements IService<Formation> {
             return false;
         }
 
-
-        if  (formation.getEmploye().getIdEmploye() <= 0) {
-            System.out.println("employe participant manquant ! ");
-        }
 
         return true;
     }
