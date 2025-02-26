@@ -17,9 +17,17 @@ public class ServiceEmployee implements IService<Employee> {
 
     @Override
     public void add(Employee employee) {
-        String query = "INSERT INTO employee (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // Validate user_type
+        String userType = employee.getUserType();
+        if (!userType.equals("EMPLOYEE")) {
+            System.out.println("Erreur : Le type d'utilisateur doit être 'EMPLOYEE' !");
+            return;
+        }
 
-        try (PreparedStatement pst = cnx.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        // Insert into the 'users' table first
+        String userQuery = "INSERT INTO users (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement pst = cnx.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS)) {
             pst.setString(1, employee.getNumTel());
             pst.setInt(2, employee.getJoursOuvrables());
             pst.setString(3, employee.getNom());
@@ -28,18 +36,27 @@ public class ServiceEmployee implements IService<Employee> {
             pst.setString(6, employee.getEmail());
             pst.setString(7, employee.getGender());
             pst.setDate(8, employee.getDateDeNaissance());
-            pst.setString(9, employee.getUserType());
+            pst.setString(9, userType);
             pst.setString(10, employee.getPassword());
 
             pst.executeUpdate();
 
             try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    employee.setIdEmployee(generatedKeys.getInt(1));
+                    int userId = generatedKeys.getInt(1);
+                    employee.setIdEmployee(userId);  // Store the generated user ID as Employee ID
+                    System.out.println("Utilisateur Employee ajouté avec succès !");
                 }
             }
 
-            System.out.println("Employee ajouté avec succès !");
+            // Now insert the Employee-specific information into the 'employee' table
+            String employeeQuery = "INSERT INTO employee (user_id) VALUES (?)";  // Reference the 'user_id' from the 'users' table
+            try (PreparedStatement pstEmp = cnx.prepareStatement(employeeQuery)) {
+                pstEmp.setInt(1, employee.getIdEmployee());
+                pstEmp.executeUpdate();
+                System.out.println("Employee spécifique ajouté avec succès !");
+            }
+
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'ajout de l'Employee : " + e.getMessage());
         }
@@ -48,7 +65,7 @@ public class ServiceEmployee implements IService<Employee> {
     @Override
     public List<Employee> getAll() {
         List<Employee> employees = new ArrayList<>();
-        String query = "SELECT * FROM employee";
+        String query = "SELECT * FROM users WHERE user_type = 'EMPLOYEE'";
 
         try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(query)) {
@@ -64,7 +81,7 @@ public class ServiceEmployee implements IService<Employee> {
                         rs.getString("email"),
                         rs.getString("gender"),
                         rs.getDate("dateDeNaissance"),
-                        rs.getString("userType"),
+                        rs.getString("user_type"),
                         rs.getString("password")
                 );
                 employees.add(employee);
@@ -78,7 +95,7 @@ public class ServiceEmployee implements IService<Employee> {
 
     @Override
     public void update(Employee employee) {
-        String query = "UPDATE employee SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, userType=?, password=? WHERE idEmployee=?";
+        String query = "UPDATE employee SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, user_type=?, password=? WHERE idEmployee=?";
 
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setString(1, employee.getNumTel());

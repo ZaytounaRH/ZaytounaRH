@@ -17,7 +17,14 @@ public class ServiceUser implements IService<User> {
 
     @Override
     public void add(User user) {
-        String query = "INSERT INTO user (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // Validate user_type
+        String userType = user.getUserType();
+        if (!userType.equals("RH") && !userType.equals("Employee") && !userType.equals("Candidat")) {
+            System.out.println("Erreur : Le type d'utilisateur n'est pas valide !");
+            return;
+        }
+
+        String query = "INSERT INTO users (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pst = cnx.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             pst.setString(1, user.getNumTel());
@@ -28,7 +35,7 @@ public class ServiceUser implements IService<User> {
             pst.setString(6, user.getEmail());
             pst.setString(7, user.getGender());
             pst.setDate(8, user.getDateDeNaissance());
-            pst.setString(9, user.getUserType());
+            pst.setString(9, userType);
             pst.setString(10, user.getPassword());
 
             pst.executeUpdate();
@@ -42,10 +49,11 @@ public class ServiceUser implements IService<User> {
         }
     }
 
+
     @Override
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
-        String query = "SELECT * FROM user";
+        String query = "SELECT * FROM users";
 
         try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(query)) {
@@ -61,7 +69,7 @@ public class ServiceUser implements IService<User> {
                         rs.getString("email"),
                         rs.getString("gender"),
                         rs.getDate("dateDeNaissance"),
-                        rs.getString("userType"),
+                        rs.getString("user_type"),
                         rs.getString("password")
                 );
                 users.add(user);
@@ -75,7 +83,7 @@ public class ServiceUser implements IService<User> {
 
     @Override
     public void update(User user) {
-        String query = "UPDATE user SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, userType=?, password=? WHERE id=?";
+        String query = "UPDATE users SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, user_type=?, password=? WHERE id=?";
 
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setString(1, user.getNumTel());
@@ -103,7 +111,7 @@ public class ServiceUser implements IService<User> {
 
     @Override
     public void delete(User user) {
-        String query = "DELETE FROM user WHERE id=?";
+        String query = "DELETE FROM users WHERE id=?";
 
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setInt(1, user.getId());

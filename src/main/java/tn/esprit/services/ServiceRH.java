@@ -17,9 +17,17 @@ public class ServiceRH implements IService<RH> {
 
     @Override
     public void add(RH rh) {
-        String query = "INSERT INTO rh (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // Validate user_type
+        String userType = rh.getUserType();
+        if (!userType.equals("RH")) {
+            System.out.println("Erreur : Le type d'utilisateur doit être 'RH' !");
+            return;
+        }
 
-        try (PreparedStatement pst = cnx.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        // Insert into the 'users' table first
+        String userQuery = "INSERT INTO users (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement pst = cnx.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS)) {
             pst.setString(1, rh.getNumTel());
             pst.setInt(2, rh.getJoursOuvrables());
             pst.setString(3, rh.getNom());
@@ -28,18 +36,27 @@ public class ServiceRH implements IService<RH> {
             pst.setString(6, rh.getEmail());
             pst.setString(7, rh.getGender());
             pst.setDate(8, rh.getDateDeNaissance());
-            pst.setString(9, rh.getUserType());
+            pst.setString(9, userType);
             pst.setString(10, rh.getPassword());
 
             pst.executeUpdate();
 
             try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    rh.setIdRH(generatedKeys.getInt(1));
+                    int userId = generatedKeys.getInt(1);
+                    rh.setIdRH(userId);  // Store the generated user ID as RH ID
+                    System.out.println("Utilisateur RH ajouté avec succès !");
                 }
             }
 
-            System.out.println("RH ajouté avec succès !");
+            // Now insert the RH specific information into the 'rh' table
+            String rhQuery = "INSERT INTO rh (user_id) VALUES (?)";  // Reference the 'user_id' from the 'users' table
+            try (PreparedStatement pstRh = cnx.prepareStatement(rhQuery)) {
+                pstRh.setInt(1, rh.getIdRH());
+                pstRh.executeUpdate();
+                System.out.println("RH spécifique ajouté avec succès !");
+            }
+
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'ajout du RH : " + e.getMessage());
         }
@@ -48,7 +65,7 @@ public class ServiceRH implements IService<RH> {
     @Override
     public List<RH> getAll() {
         List<RH> rhs = new ArrayList<>();
-        String query = "SELECT * FROM rh";
+        String query = "SELECT * FROM users WHERE user_type = 'RH'";
 
         try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(query)) {
@@ -64,7 +81,7 @@ public class ServiceRH implements IService<RH> {
                         rs.getString("email"),
                         rs.getString("gender"),
                         rs.getDate("dateDeNaissance"),
-                        rs.getString("userType"),
+                        rs.getString("user_type"),
                         rs.getString("password")
                 );
                 rhs.add(rh);
@@ -78,7 +95,7 @@ public class ServiceRH implements IService<RH> {
 
     @Override
     public void update(RH rh) {
-        String query = "UPDATE rh SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, userType=?, password=? WHERE idRH=?";
+        String query = "UPDATE rh SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, user_type=?, password=? WHERE idRH=?";
 
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setString(1, rh.getNumTel());

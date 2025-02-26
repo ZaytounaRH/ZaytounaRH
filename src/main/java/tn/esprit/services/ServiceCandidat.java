@@ -17,30 +17,40 @@ public class ServiceCandidat implements IService<Candidat> {
 
     @Override
     public void add(Candidat candidat) {
-        String query = "INSERT INTO candidat (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // First, add the user to the users table
+        String userQuery = "INSERT INTO users (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement pstUser = cnx.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS)) {
+            pstUser.setString(1, candidat.getNumTel());
+            pstUser.setInt(2, candidat.getJoursOuvrables());
+            pstUser.setString(3, candidat.getNom());
+            pstUser.setString(4, candidat.getPrenom());
+            pstUser.setString(5, candidat.getAddress());
+            pstUser.setString(6, candidat.getEmail());
+            pstUser.setString(7, candidat.getGender());
+            pstUser.setDate(8, candidat.getDateDeNaissance());
+            pstUser.setString(9, "Candidat");  // Ensure it's "Candidat"
+            pstUser.setString(10, candidat.getPassword());
 
-        try (PreparedStatement pst = cnx.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            pst.setString(1, candidat.getNumTel());
-            pst.setInt(2, candidat.getJoursOuvrables());
-            pst.setString(3, candidat.getNom());
-            pst.setString(4, candidat.getPrenom());
-            pst.setString(5, candidat.getAddress());
-            pst.setString(6, candidat.getEmail());
-            pst.setString(7, candidat.getGender());
-            pst.setDate(8, candidat.getDateDeNaissance());
-            pst.setString(9, candidat.getUserType());
-            pst.setString(10, candidat.getPassword());
-            pst.setString(11, candidat.getStatus());
+            pstUser.executeUpdate();
 
-            pst.executeUpdate();
-
-            try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    candidat.setCandidat_id(generatedKeys.getInt(1));
-                }
+            // Get the generated user_id
+            ResultSet generatedKeys = pstUser.getGeneratedKeys();
+            int userId = 0;
+            if (generatedKeys.next()) {
+                userId = generatedKeys.getInt(1);
             }
 
-            System.out.println("Candidat ajouté avec succès !");
+            // Now insert into the candidat table
+            String candidatQuery = "INSERT INTO candidat (user_id, status) VALUES (?, ?)";
+            try (PreparedStatement pstCandidat = cnx.prepareStatement(candidatQuery)) {
+                pstCandidat.setInt(1, userId); // Use the generated user_id
+                pstCandidat.setString(2, candidat.getStatus()); // Ensure status is valid
+
+                pstCandidat.executeUpdate();
+
+                System.out.println("Candidat ajouté avec succès !");
+            }
+
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'ajout du Candidat : " + e.getMessage());
         }
@@ -49,7 +59,7 @@ public class ServiceCandidat implements IService<Candidat> {
     @Override
     public List<Candidat> getAll() {
         List<Candidat> candidats = new ArrayList<>();
-        String query = "SELECT * FROM candidat";
+        String query = "SELECT * FROM users WHERE user_type='Candidat'";
 
         try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(query)) {
@@ -65,7 +75,7 @@ public class ServiceCandidat implements IService<Candidat> {
                         rs.getString("email"),
                         rs.getString("gender"),
                         rs.getDate("dateDeNaissance"),
-                        rs.getString("userType"),
+                        rs.getString("user_type"),
                         rs.getString("password"),
                         rs.getString("status")
                 );
@@ -80,7 +90,7 @@ public class ServiceCandidat implements IService<Candidat> {
 
     @Override
     public void update(Candidat candidat) {
-        String query = "UPDATE candidat SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, userType=?, password=?, status=? WHERE idCandidat=?";
+        String query = "UPDATE candidat SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, user_type=?, password=?, status=? WHERE idCandidat=?";
 
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setString(1, candidat.getNumTel());

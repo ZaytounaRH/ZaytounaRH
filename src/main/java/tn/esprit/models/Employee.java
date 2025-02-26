@@ -7,7 +7,7 @@ public class Employee extends User {
 
     public  Employee() {}
 
-    public Employee(String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, int idEmployee) {
+    public Employee(String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password) {
         super(numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password);
         this.idEmployee = idEmployee;
     }
