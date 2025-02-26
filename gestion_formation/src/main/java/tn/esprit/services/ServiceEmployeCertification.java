@@ -14,6 +14,7 @@ public class ServiceEmployeCertification {
     public ServiceEmployeCertification() {
         cnx=MyDatabase.getInstance().getCnx();
     }
+
     public List<Certification> getCertificationsByEmploye(int employee_id) {
         List<Certification> certifications=new ArrayList<>();
         String qry = "SELECT c.idCertif, c.titreCertif FROM certification c JOIN employe_certification ec ON c.idCertif = ec.idCertif WHERE ec.employee_id = ?";

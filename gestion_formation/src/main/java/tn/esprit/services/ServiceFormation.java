@@ -1,10 +1,8 @@
 package tn.esprit.services;
 import tn.esprit.interfaces.IService;
-import tn.esprit.models.Certification;
-import tn.esprit.models.Formation;
-import tn.esprit.models.Employe;
-import tn.esprit.models.Rh;
+import tn.esprit.models.*;
 import tn.esprit.utils.MyDatabase;
+import tn.esprit.utils.SessionManager;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -29,6 +27,15 @@ public class ServiceFormation implements IService<Formation> {
             System.out.println("Erreur : Une formation avec le même nom et la même description existe déjà !");
             return;
         }
+
+        User currentUser = SessionManager.getInstance().getCurrentUser();
+
+        // Vérification du rôle
+        if (currentUser == null || !"RH".equalsIgnoreCase(currentUser.getUserType())) {
+            System.out.println("Erreur : Seuls les RH peuvent ajouter une formation !");
+            return;
+        }
+
 
         String qry = "INSERT INTO `formation`( `nomFormation`, `descriptionFormation`, `dateDebutFormation`, `dateFinFormation` ) VALUES (?,?,?,?)";
         try {
@@ -103,6 +110,13 @@ public class ServiceFormation implements IService<Formation> {
             System.out.println("Erreur : données invalides, update annulé !");
             return;
         }
+        User currentUser = SessionManager.getInstance().getCurrentUser();
+
+        // Vérification du rôle
+        if (currentUser == null || !"RH".equalsIgnoreCase(currentUser.getUserType())) {
+            System.out.println("Erreur : Seuls les RH peuvent modifier une formation !");
+            return;
+        }
 
         String qry = "UPDATE `formation` SET `nomFormation` = ?, `descriptionFormation` = ?, `dateDebutFormation` = ?, `dateFinFormation`= ? WHERE `idFormation` = ?";
 
@@ -130,6 +144,14 @@ public class ServiceFormation implements IService<Formation> {
 
     @Override
     public void delete(Formation formation) {
+
+        User currentUser = SessionManager.getInstance().getCurrentUser();
+
+        // Vérification du rôle
+        if (currentUser == null || !"RH".equalsIgnoreCase(currentUser.getUserType())) {
+            System.out.println("Erreur : Seuls les RH peuvent supprimer une formation !");
+            return;
+        }
         String qry = "DELETE FROM formation WHERE idFormation = ?";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
@@ -184,24 +206,7 @@ public class ServiceFormation implements IService<Formation> {
         return false;
     }
 
-    public List<Employe> getAllEmployes() {
-        List<Employe> employes = new ArrayList<>();
-        String query = "SELECT * FROM employe";
 
-        try (Statement stmt = cnx.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-
-            while (rs.next()) {
-                Employe employe = new Employe();
-                employe.setIdEmploye(rs.getInt("idEmploye"));
-                employe.setNom(rs.getString("nom"));
-                employes.add(employe);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return employes;
-    }
 
     public List<Rh> getAllRH() {
         List<Rh> rhList = new ArrayList<>();

@@ -1,17 +1,19 @@
 package tn.esprit.test;
 
 import tn.esprit.models.Formation;
+import tn.esprit.services.ServiceEmployeFormation;
 import tn.esprit.services.ServiceFormation;
 import tn.esprit.utils.MyDatabase;
-import tn.esprit.models.Rh;
-import tn.esprit.models.Employe;
+import tn.esprit.models.User;
 import tn.esprit.services.ServiceEmployeCertification;
 
 
 import tn.esprit.services.ServiceCertification;
 import tn.esprit.models.Certification;
+import tn.esprit.utils.SessionManager;
 
 import java.sql.Date;
+import java.util.Arrays;
 import java.util.List;
 
 import static tn.esprit.services.ServiceFormation.isValidFormation;
@@ -22,7 +24,20 @@ public class Main {
         ServiceFormation serviceFormation = new ServiceFormation();
         ServiceEmployeCertification employeCertification = new ServiceEmployeCertification();
         ServiceCertification serviceCertification = new ServiceCertification();
-/*
+        ServiceEmployeFormation service = new ServiceEmployeFormation();
+
+        /*
+        Formation des employes
+         */
+
+        List<Integer> employeIds = Arrays.asList(1, 2);
+        service.affecterFormationAEmployes(4, employeIds);
+
+
+
+
+
+        /*
        //certification des employes
 //AFFICHAGE
  int idEmploye =6;
@@ -50,12 +65,21 @@ public class Main {
 
 
 
+/*
+CHOIX TYPE  USER
+        User rhUser = new User();
+        rhUser.setUserType("Admin");
+        SessionManager.getInstance().login(rhUser);
 
-        Certification certification = new Certification();
-        certification.setIdCertif(4);
-        serviceCertification.delete(certification);
 
-        System.out.println(serviceCertification.getAll());
+
+ */
+
+
+
+        System.out.println(serviceFormation.getAll());
+
+        //System.out.println(serviceCertification.getAll());
     }
 
 
@@ -66,21 +90,21 @@ public class Main {
 System.out.println(serviceFormation.getAll());
  //AJOUT
 
-Date dateDebut= Date.valueOf("2023-01-01");
-        Date dateFin= Date.valueOf("2023-01-05");
-        Formation formation = new Formation("no rh", "Formation sans user rh ", dateDebut,dateFin);
-         serviceFormation.add(formation);
+ Date dateDebut= Date.valueOf("2025-01-01");
+        Date dateFin= Date.valueOf("2025-01-05");
+        Formation formation = new Formation("ai", "Formation ", dateDebut,dateFin);
+        serviceFormation.add(formation);
 //UPDATE
 
  Date dateDebutModifiee= Date.valueOf("2020-01-01");
         Date dateFinModifiee= Date.valueOf("2020-01-05");
         Formation formation = new Formation("update", "formation modifiee", dateDebutModifiee,dateFinModifiee);
-        formation.setIdFormation(2);
+        formation.setIdFormation(5);
         serviceFormation.update(formation);
 //DELETE
 
 Formation formation = new Formation();
-        formation.setIdFormation(2);
+        formation.setIdFormation(4);
         serviceFormation.delete(formation);
 
 
@@ -108,7 +132,9 @@ Formation formation = new Formation();
 
 //DELETE
 
-
+Certification certification = new Certification();
+        certification.setIdCertif(4);
+        serviceCertification.delete(certification);
 
  */
 

@@ -11,10 +11,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import tn.esprit.interfaces.IService;
 import tn.esprit.models.Certification;
+import tn.esprit.models.Employee;
 import tn.esprit.models.Formation;
 import tn.esprit.models.Rh;
 import tn.esprit.services.ServiceFormation;
-import tn.esprit.models.Employe;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,7 +31,7 @@ public class GestionFormation {
     @FXML
     private Label lbFormations;
     @FXML
-    private ComboBox<Employe> comboBoxEmploye;
+    private ComboBox<Employee> comboBoxEmploye;
     @FXML
     private ComboBox<Rh> comboBoxRH;
 
@@ -68,8 +68,8 @@ public class GestionFormation {
         ServiceFormation serviceFormation = new ServiceFormation();
 
 
-        List<Employe> employes = serviceFormation.getAllEmployes();
-        comboBoxEmploye.getItems().addAll(employes);
+       // List<Employee> employes = serviceFormation.g();
+       // comboBoxEmploye.getItems().addAll(employes);
 
 
         List<Rh> rhList = serviceFormation.getAllRH();
@@ -82,7 +82,7 @@ public class GestionFormation {
 
     @FXML
     private void handleEmployeSelection() {
-        Employe selectedEmploye = comboBoxEmploye.getSelectionModel().getSelectedItem();
+        Employee selectedEmploye = comboBoxEmploye.getSelectionModel().getSelectedItem();
         if (selectedEmploye != null) {
             System.out.println("Employé sélectionné : " + selectedEmploye.getNom());
         }
@@ -103,7 +103,7 @@ private void handleCertificationSelection() {
 }
     @FXML
     public void ajouterFormation(ActionEvent event) {
-        Employe employeSelectionne = comboBoxEmploye.getSelectionModel().getSelectedItem();
+        Employee employeSelectionne = comboBoxEmploye.getSelectionModel().getSelectedItem();
         Rh rhSelectionne = comboBoxRH.getSelectionModel().getSelectedItem();
         Certification certificationSelectionnee = comboBoxCertification.getSelectionModel().getSelectedItem();
 
