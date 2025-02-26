@@ -19,7 +19,7 @@ public class ServiceUser implements IService<User> {
     public void add(User user) {
         String query = "INSERT INTO user (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+        try (PreparedStatement pst = cnx.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             pst.setString(1, user.getNumTel());
             pst.setInt(2, user.getJoursOuvrables());
             pst.setString(3, user.getNom());
@@ -32,7 +32,11 @@ public class ServiceUser implements IService<User> {
             pst.setString(10, user.getPassword());
 
             pst.executeUpdate();
-            System.out.println("Utilisateur ajouté avec succès !");
+            ResultSet generatedKeys = pst.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                user.setId(generatedKeys.getInt(1));
+            }
+            System.out.println("Utilisateur ajouté avec succès ! ID: " + user.getId());
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'ajout de l'utilisateur : " + e.getMessage());
         }
@@ -86,8 +90,12 @@ public class ServiceUser implements IService<User> {
             pst.setString(10, user.getPassword());
             pst.setInt(11, user.getId());
 
-            pst.executeUpdate();
-            System.out.println("Utilisateur mis à jour avec succès !");
+            int rowsUpdated = pst.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Utilisateur mis à jour avec succès !");
+            } else {
+                System.out.println("Aucun utilisateur trouvé avec cet ID.");
+            }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la mise à jour de l'utilisateur : " + e.getMessage());
         }
@@ -100,8 +108,12 @@ public class ServiceUser implements IService<User> {
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setInt(1, user.getId());
 
-            pst.executeUpdate();
-            System.out.println("Utilisateur supprimé avec succès !");
+            int rowsDeleted = pst.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Utilisateur supprimé avec succès !");
+            } else {
+                System.out.println("Aucun utilisateur trouvé avec cet ID.");
+            }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la suppression de l'utilisateur : " + e.getMessage());
         }

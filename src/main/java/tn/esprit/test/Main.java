@@ -1,26 +1,17 @@
 package tn.esprit.test;
 
-import tn.esprit.models.Admin;
-import tn.esprit.services.ServiceAdmin;
+import tn.esprit.models.User;
+import tn.esprit.services.ServiceUser;
 
 import java.sql.Date;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        ServiceAdmin serviceAdmin = new ServiceAdmin();
+        ServiceUser serviceUser = new ServiceUser();
+        User newUser = new User( "27446717", 5, "Fares", "Dammmak", "123 Street", "fares@example.com", "Male", new Date(2002,07,19), "Admin", "securePass");
+        serviceUser.add(newUser);
+        System.out.println("Nouvel ID généré : " + newUser.getId());
 
-        Admin admin = new Admin( 27446717, 5, "Fares", "Dammak", "123 Main St", "john.doe@example.com", "Male", "IT", "Developer", new Date(2005,07,19));
-       // serviceAdmin.add(admin);
-        //System.out.println("Admin ID: " + admin.getId());
-
-        System.out.println(serviceAdmin.getAll());
-
-        admin.setNom("Faress");
-        System.out.println("Admin ID: " + admin.getId());
-       // serviceAdmin.update(admin);
-
-        System.out.println(serviceAdmin.getAll());
-
-        //serviceAdmin.delete(admin);
     }
 }

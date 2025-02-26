@@ -1,109 +1,119 @@
 package tn.esprit.services;
 
+import tn.esprit.interfaces.IService;
 import tn.esprit.models.Candidat;
+import tn.esprit.utils.MyDatabase;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ServiceCandidat extends ServiceUser<Candidat> {
+public class ServiceCandidat implements IService<Candidat> {
+    protected Connection cnx;
+
+    public ServiceCandidat() {
+        cnx = MyDatabase.getInstance().getCnx();
+    }
+
     @Override
     public void add(Candidat candidat) {
-        String qry = "INSERT INTO Users (numTel, joursOuvrables, nom, prenom, address, email, gender, department, designation, dateDeNaissance, user_type, intervieweur_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry, Statement.RETURN_GENERATED_KEYS);
-            pstm.setInt(1, candidat.getNumTel());
-            pstm.setInt(2, candidat.getJoursOuvrables());
-            pstm.setString(3, candidat.getNom());
-            pstm.setString(4, candidat.getPrenom());
-            pstm.setString(5, candidat.getAddress());
-            pstm.setString(6, candidat.getEmail());
-            pstm.setString(7, candidat.getGender());
-            pstm.setString(8, candidat.getDepartment());
-            pstm.setString(9, candidat.getDesignation());
-            pstm.setDate(10, new java.sql.Date(candidat.getDateDeNaissance().getTime()));
-            pstm.setString(11, candidat.getClass().getSimpleName());
-            pstm.setInt(12, candidat.getIntervieweurId());
+        String query = "INSERT INTO candidat (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            int affectedRows = pstm.executeUpdate();
-            if (affectedRows > 0) {
-                ResultSet generatedKeys = pstm.getGeneratedKeys();
+        try (PreparedStatement pst = cnx.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            pst.setString(1, candidat.getNumTel());
+            pst.setInt(2, candidat.getJoursOuvrables());
+            pst.setString(3, candidat.getNom());
+            pst.setString(4, candidat.getPrenom());
+            pst.setString(5, candidat.getAddress());
+            pst.setString(6, candidat.getEmail());
+            pst.setString(7, candidat.getGender());
+            pst.setDate(8, candidat.getDateDeNaissance());
+            pst.setString(9, candidat.getUserType());
+            pst.setString(10, candidat.getPassword());
+            pst.setString(11, candidat.getStatus());
+
+            pst.executeUpdate();
+
+            try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    int generatedId = generatedKeys.getInt(1);
-                    candidat.setId(generatedId);
-                    System.out.println("Candidat ajouté avec succès. ID: " + generatedId);
+                    candidat.setCandidat_id(generatedKeys.getInt(1));
                 }
             }
+
+            System.out.println("Candidat ajouté avec succès !");
         } catch (SQLException e) {
-            System.out.println("Erreur lors de l'ajout du candidat: " + e.getMessage());
+            System.out.println("Erreur lors de l'ajout du Candidat : " + e.getMessage());
         }
     }
+
+    @Override
+    public List<Candidat> getAll() {
+        List<Candidat> candidats = new ArrayList<>();
+        String query = "SELECT * FROM candidat";
+
+        try (Statement st = cnx.createStatement();
+             ResultSet rs = st.executeQuery(query)) {
+
+            while (rs.next()) {
+                Candidat candidat = new Candidat(
+                        rs.getInt("idCandidat"),
+                        rs.getString("numTel"),
+                        rs.getInt("joursOuvrables"),
+                        rs.getString("nom"),
+                        rs.getString("prenom"),
+                        rs.getString("address"),
+                        rs.getString("email"),
+                        rs.getString("gender"),
+                        rs.getDate("dateDeNaissance"),
+                        rs.getString("userType"),
+                        rs.getString("password"),
+                        rs.getString("status")
+                );
+                candidats.add(candidat);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des Candidats : " + e.getMessage());
+        }
+
+        return candidats;
+    }
+
     @Override
     public void update(Candidat candidat) {
-        if (candidat.getId() <= 0) {
-            System.out.println("Error: Candidat ID is not set for update!");
-            return;
-        }
+        String query = "UPDATE candidat SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, userType=?, password=?, status=? WHERE idCandidat=?";
 
-        if (!isValidIntervieweurId(candidat.getIntervieweurId())) {
-            System.out.println("Erreur: intervieweurId invalide.");
-            return;
-        }
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setString(1, candidat.getNumTel());
+            pst.setInt(2, candidat.getJoursOuvrables());
+            pst.setString(3, candidat.getNom());
+            pst.setString(4, candidat.getPrenom());
+            pst.setString(5, candidat.getAddress());
+            pst.setString(6, candidat.getEmail());
+            pst.setString(7, candidat.getGender());
+            pst.setDate(8, candidat.getDateDeNaissance());
+            pst.setString(9, candidat.getUserType());
+            pst.setString(10, candidat.getPassword());
+            pst.setString(11, candidat.getStatus());
+            pst.setInt(12, candidat.getCandidat_id());
 
-        String qry = "UPDATE Users SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, department=?, designation=?, dateDeNaissance=?, intervieweur_id=? WHERE id=?";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry);
-            pstm.setInt(1, candidat.getNumTel());
-            pstm.setInt(2, candidat.getJoursOuvrables());
-            pstm.setString(3, candidat.getNom());
-            pstm.setString(4, candidat.getPrenom());
-            pstm.setString(5, candidat.getAddress());
-            pstm.setString(6, candidat.getEmail());
-            pstm.setString(7, candidat.getGender());
-            pstm.setString(8, candidat.getDepartment());
-            pstm.setString(9, candidat.getDesignation());
-            pstm.setDate(10, new java.sql.Date(candidat.getDateDeNaissance().getTime()));
-            pstm.setInt(11, candidat.getIntervieweurId());
-            pstm.setInt(12, candidat.getId());
-
-            int rowsUpdated = pstm.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Update Success for Candidat ID: " + candidat.getId());
-            } else {
-                System.out.println("Update Failed: No rows updated. Check if ID exists in the database.");
-            }
+            pst.executeUpdate();
+            System.out.println("Candidat mis à jour avec succès !");
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la mise à jour du candidat: " + e.getMessage());
+            System.out.println("Erreur lors de la mise à jour du Candidat : " + e.getMessage());
         }
     }
+
     @Override
     public void delete(Candidat candidat) {
-        String qry = "DELETE FROM Users WHERE id=?";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry);
-            pstm.setInt(1, candidat.getId());
+        String query = "DELETE FROM candidat WHERE idCandidat=?";
 
-            int rowsDeleted = pstm.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("Candidat supprimé avec succès! ID: " + candidat.getId());
-            }
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de la suppression du candidat: " + e.getMessage());
-        }
-    }
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setInt(1, candidat.getCandidat_id());
 
-    public boolean isValidIntervieweurId(int intervieweurId) {
-        String qry = "SELECT COUNT(*) FROM Users WHERE id = ? AND user_type = 'RH'";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry);
-            pstm.setInt(1, intervieweurId);
-            ResultSet rs = pstm.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 0; }
+            pst.executeUpdate();
+            System.out.println("Candidat supprimé avec succès !");
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la vérification de l'intervieweurId: " + e.getMessage());
+            System.out.println("Erreur lors de la suppression du Candidat : " + e.getMessage());
         }
-        return false;
     }
 }
