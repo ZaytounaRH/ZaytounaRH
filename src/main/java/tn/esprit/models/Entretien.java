@@ -14,7 +14,7 @@ public class Entretien {
     private LocalDate dateEntretien;
     private LocalTime heureEntretien;
     private TypeEntretien typeEntretien;
-    private StatutEntretien statut = StatutEntretien.EN_COURS;  // Statut par défaut
+    private StatutEntretien statut ;  // Statut par défaut
     private String commentaire;
     private OffreEmploi offreEmploi; // Relation bidirectionnelle avec OffreEmploi
 
