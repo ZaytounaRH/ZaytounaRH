@@ -1,5 +1,6 @@
 package tn.esprit.test;
 
+import tn.esprit.models.Employee;
 import tn.esprit.models.Formation;
 import tn.esprit.services.ServiceEmployeFormation;
 import tn.esprit.services.ServiceFormation;
@@ -16,7 +17,7 @@ import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
 
-import static tn.esprit.services.ServiceFormation.isValidFormation;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -24,15 +25,24 @@ public class Main {
         ServiceFormation serviceFormation = new ServiceFormation();
         ServiceEmployeCertification employeCertification = new ServiceEmployeCertification();
         ServiceCertification serviceCertification = new ServiceCertification();
-        ServiceEmployeFormation service = new ServiceEmployeFormation();
+        ServiceEmployeFormation employeFormation = new ServiceEmployeFormation();
 
         /*
         Formation des employes
-         */
-
+       //AJOUT
         List<Integer> employeIds = Arrays.asList(1, 2);
         service.affecterFormationAEmployes(4, employeIds);
+         */
 
+
+
+        int idFormationTest = 4;
+        List<Employee> employes = employeFormation.getEmployesByFormation(idFormationTest);
+
+        System.out.println("📌 Liste des employés inscrits à la formation " + idFormationTest + " :");
+        for (Employee emp : employes) {
+            System.out.println("➡ " + emp.getNom() + " " + emp.getPrenom() + " | Email: " + emp.getEmail());
+        }
 
 
 
@@ -77,7 +87,7 @@ CHOIX TYPE  USER
 
 
 
-        System.out.println(serviceFormation.getAll());
+        //System.out.println(serviceFormation.getAll());
 
         //System.out.println(serviceCertification.getAll());
     }

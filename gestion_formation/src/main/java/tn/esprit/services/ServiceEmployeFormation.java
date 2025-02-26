@@ -2,13 +2,15 @@ package tn.esprit.services;
 import tn.esprit.models.Employee;
 import tn.esprit.models.Formation;
 import tn.esprit.utils.MyDatabase;
-
+import tn.esprit.services.ServiceEmployee;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceEmployeFormation {
     private final Connection cnx ;
+    private final ServiceEmployee serviceEmploye = new ServiceEmployee();
+
     public ServiceEmployeFormation() {
         cnx=MyDatabase.getInstance().getCnx();
     }
@@ -51,4 +53,36 @@ public class ServiceEmployeFormation {
         }
         return false;
     }
+
+    public List<Employee> getEmployesByFormation(int idFormation) {
+        List<Employee> employees = new ArrayList<>();
+        List<Integer> employeeIds = new ArrayList<>();
+
+
+        String qry = "SELECT employee_id FROM employe_formation WHERE idFormation = ?";
+        try {
+            PreparedStatement pstm = cnx.prepareStatement(qry);
+            pstm.setInt(1, idFormation);
+            ResultSet rs = pstm.executeQuery();
+            while (rs.next()) {
+                employeeIds.add(rs.getInt("employee_id"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des employés par formation : " + e.getMessage());
+            return employees;
+        }
+
+
+        List<Employee> allEmployees = serviceEmploye.getAll();
+        for (Employee emp : allEmployees) {
+            if (employeeIds.contains(emp.getId())) {
+                employees.add(emp);
+            }
+        }
+
+        return employees;
+    }
+
+
+
 }
