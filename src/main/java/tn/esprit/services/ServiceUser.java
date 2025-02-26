@@ -1,14 +1,14 @@
 package tn.esprit.services;
 
 import tn.esprit.interfaces.IService;
-import tn.esprit.models.*;
+import tn.esprit.models.User;
 import tn.esprit.utils.MyDatabase;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceUser<T extends User> implements IService<T> {
+public class ServiceUser implements IService<User> {
     protected Connection cnx;
 
     public ServiceUser() {
@@ -16,119 +16,94 @@ public class ServiceUser<T extends User> implements IService<T> {
     }
 
     @Override
-    public void add(T user) {
-        String qry = "INSERT INTO users (numTel, joursOuvrables, nom, prenom, address, email, gender, department, designation, dateDeNaissance, user_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry, Statement.RETURN_GENERATED_KEYS);
-            pstm.setInt(1, user.getNumTel());
-            pstm.setInt(2, user.getJoursOuvrables());
-            pstm.setString(3, user.getNom());
-            pstm.setString(4, user.getPrenom());
-            pstm.setString(5, user.getAddress());
-            pstm.setString(6, user.getEmail());
-            pstm.setString(7, user.getGender());
-            pstm.setString(8, user.getDepartment());
-            pstm.setString(9, user.getDesignation());
-            pstm.setDate(10, new java.sql.Date(user.getDateDeNaissance().getTime()));
+    public void add(User user) {
+        String query = "INSERT INTO user (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            if (user instanceof Admin) {
-                pstm.setString(11, "Admin");
-            } else if (user instanceof RH) {
-                pstm.setString(11, "RH");
-            } else if (user instanceof Candidat) {
-                pstm.setString(11, "Candidat");
-            } else if (user instanceof Employee) {
-                pstm.setString(11, "Employee");
-            }
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setString(1, user.getNumTel());
+            pst.setInt(2, user.getJoursOuvrables());
+            pst.setString(3, user.getNom());
+            pst.setString(4, user.getPrenom());
+            pst.setString(5, user.getAddress());
+            pst.setString(6, user.getEmail());
+            pst.setString(7, user.getGender());
+            pst.setDate(8, user.getDateDeNaissance());
+            pst.setString(9, user.getUserType());
+            pst.setString(10, user.getPassword());
 
-            int affectedRows = pstm.executeUpdate();
-            if (affectedRows > 0) {
-                ResultSet generatedKeys = pstm.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    int generatedId = generatedKeys.getInt(1);
-                    user.setId(generatedId);  // Set the generated ID
-                    System.out.println("User added successfully. ID: " + generatedId);
-                }
-            }
+            pst.executeUpdate();
+            System.out.println("Utilisateur ajouté avec succès !");
         } catch (SQLException e) {
-            System.out.println("Error while adding user: " + e.getMessage());
+            System.out.println("Erreur lors de l'ajout de l'utilisateur : " + e.getMessage());
         }
     }
 
     @Override
-    public List<T> getAll() {
-        List<T> users = new ArrayList<>();
-        String qry = "SELECT * FROM users";
-        try {
-            Statement stm = cnx.createStatement();
-            ResultSet rs = stm.executeQuery(qry);
+    public List<User> getAll() {
+        List<User> users = new ArrayList<>();
+        String query = "SELECT * FROM user";
+
+        try (Statement st = cnx.createStatement();
+             ResultSet rs = st.executeQuery(query)) {
+
             while (rs.next()) {
-                String userType = rs.getString("user_type");
-                T user = null;
-                switch (userType) {
-                    case "Admin":
-                        user = (T) new Admin(rs.getInt("id"), rs.getInt("numTel"), rs.getInt("joursOuvrables"), rs.getString("nom"), rs.getString("prenom"), rs.getString("address"), rs.getString("email"), rs.getString("gender"), rs.getString("department"), rs.getString("designation"), rs.getDate("dateDeNaissance"));
-                        break;
-                    case "RH":
-                        user = (T) new RH(rs.getInt("id"), rs.getInt("numTel"), rs.getInt("joursOuvrables"), rs.getString("nom"), rs.getString("prenom"), rs.getString("address"), rs.getString("email"), rs.getString("gender"), rs.getString("department"), rs.getString("designation"), rs.getDate("dateDeNaissance"), null, null);
-                        break;
-                    case "Employee":
-                        user = (T) new Employee(rs.getInt("id"), rs.getInt("numTel"), rs.getInt("joursOuvrables"), rs.getString("nom"), rs.getString("prenom"), rs.getString("address"), rs.getString("email"), rs.getString("gender"), rs.getString("department"), rs.getString("designation"), rs.getDate("dateDeNaissance"), 0, null);  // Default values for new columns
-                        break;
-                    case "Candidat":
-                        user = (T) new Candidat(rs.getInt("id"), rs.getInt("numTel"), rs.getInt("joursOuvrables"), rs.getString("nom"), rs.getString("prenom"), rs.getString("address"), rs.getString("email"), rs.getString("gender"), rs.getString("department"), rs.getString("designation"), rs.getDate("dateDeNaissance"), 0);  // Default values for new columns
-                        break;
-                }
+                User user = new User(
+                        rs.getInt("id"),
+                        rs.getString("numTel"),
+                        rs.getInt("joursOuvrables"),
+                        rs.getString("nom"),
+                        rs.getString("prenom"),
+                        rs.getString("address"),
+                        rs.getString("email"),
+                        rs.getString("gender"),
+                        rs.getDate("dateDeNaissance"),
+                        rs.getString("userType"),
+                        rs.getString("password")
+                );
                 users.add(user);
             }
         } catch (SQLException e) {
-            System.out.println("Error while retrieving users: " + e.getMessage());
+            System.out.println("Erreur lors de la récupération des utilisateurs : " + e.getMessage());
         }
+
         return users;
     }
 
-
     @Override
-    public void update(T user) {
-        String qry = "UPDATE Users SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, department=?, designation=?, dateDeNaissance=? WHERE id=?";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry);
-            pstm.setInt(1, user.getNumTel());
-            pstm.setInt(2, user.getJoursOuvrables());
-            pstm.setString(3, user.getNom());
-            pstm.setString(4, user.getPrenom());
-            pstm.setString(5, user.getAddress());
-            pstm.setString(6, user.getEmail());
-            pstm.setString(7, user.getGender());
-            pstm.setString(8, user.getDepartment());
-            pstm.setString(9, user.getDesignation());
-            pstm.setDate(10, new java.sql.Date(user.getDateDeNaissance().getTime()));
-            pstm.setInt(11, user.getId());
+    public void update(User user) {
+        String query = "UPDATE user SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, userType=?, password=? WHERE id=?";
 
-            int rowsUpdated = pstm.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Update Success for User ID: " + user.getId());
-            } else {
-                System.out.println("Update Failed: No rows updated. Check if ID exists in the database.");
-            }
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setString(1, user.getNumTel());
+            pst.setInt(2, user.getJoursOuvrables());
+            pst.setString(3, user.getNom());
+            pst.setString(4, user.getPrenom());
+            pst.setString(5, user.getAddress());
+            pst.setString(6, user.getEmail());
+            pst.setString(7, user.getGender());
+            pst.setDate(8, user.getDateDeNaissance());
+            pst.setString(9, user.getUserType());
+            pst.setString(10, user.getPassword());
+            pst.setInt(11, user.getId());
+
+            pst.executeUpdate();
+            System.out.println("Utilisateur mis à jour avec succès !");
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la mise à jour de l'utilisateur: " + e.getMessage());
+            System.out.println("Erreur lors de la mise à jour de l'utilisateur : " + e.getMessage());
         }
     }
 
     @Override
-    public void delete(T user) {
-        String qry = "DELETE FROM Users WHERE id=?";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry);
-            pstm.setInt(1, user.getId());
+    public void delete(User user) {
+        String query = "DELETE FROM user WHERE id=?";
 
-            int rowsDeleted = pstm.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("User supprimé avec succès! ID: " + user.getId());
-            }
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setInt(1, user.getId());
+
+            pst.executeUpdate();
+            System.out.println("Utilisateur supprimé avec succès !");
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la suppression de l'utilisateur: " + e.getMessage());
+            System.out.println("Erreur lors de la suppression de l'utilisateur : " + e.getMessage());
         }
     }
 }
