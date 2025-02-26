@@ -100,7 +100,6 @@ public class ServiceEmployeFormation implements IService<EmployeFormation> {
             return;
         }
 
-        // 4. Afficher les résultats
         System.out.println(" Liste des employés inscrits à la formation : " + nomFormation);
 
         if (employeesInFormation.isEmpty()) {

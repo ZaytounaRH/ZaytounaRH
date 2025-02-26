@@ -31,7 +31,6 @@ public class ServiceEmployeCertification implements IService<EmployeCertificatio
             pstm.setInt(1, employee_id);
             ResultSet rs = pstm.executeQuery();
 
-            // Récupérer les certifications
             while (rs.next()) {
                 Certification certif = new Certification(
                         rs.getInt("idCertif"),
@@ -40,7 +39,6 @@ public class ServiceEmployeCertification implements IService<EmployeCertificatio
                 certifications.add(certif);
             }
 
-            // Récupérer les informations de l'employé
             Employee employee = null;
             List<Employee> allEmployees = serviceEmploye.getAll(); // Utilise la méthode getAll() pour récupérer tous les employés
 
@@ -51,7 +49,6 @@ public class ServiceEmployeCertification implements IService<EmployeCertificatio
                 }
             }
 
-            // Affichage des résultats
             if (employee != null) {
                 System.out.println("Liste des certifications de l'employé : " + employee.getNom() + " " + employee.getPrenom());
                 if (certifications.isEmpty()) {
@@ -68,7 +65,7 @@ public class ServiceEmployeCertification implements IService<EmployeCertificatio
             System.out.println("Erreur lors de la récupération des certifications : " + e.getMessage());
         }
 
-        return certifications; // Retourner la liste des certifications
+        return certifications;
     }
 
 
@@ -100,23 +97,7 @@ public class ServiceEmployeCertification implements IService<EmployeCertificatio
         }
     }
 
-    public String getNomEmployeById(int idEmploye) {
-        String qry = "SELECT nom FROM users WHERE id = ? AND user_type = 'Employee'";
-        String nom = "Inconnu";
 
-        try {
-            PreparedStatement pstmt = cnx.prepareStatement(qry);
-            pstmt.setInt(1, idEmploye);
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                nom = rs.getString("nom");
-            }
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération du nom de l'employé : " + e.getMessage());
-        }
-        return nom;
-    }
 
     public boolean controleSaisieCertification(int idEmploye, int idCertif, Date dateObtention) {
 
@@ -145,6 +126,37 @@ public class ServiceEmployeCertification implements IService<EmployeCertificatio
 
         return true;
     }
+    public void modifierCertificationEmploye(int employeeId, int ancienneCertifId, int nouvelleCertifId) {
+        String checkQuery = "SELECT COUNT(*) FROM employe_certification WHERE employee_id = ? AND idCertif = ?";
+        String updateQuery = "UPDATE employe_certification SET idCertif = ? WHERE employee_id = ? AND idCertif = ?";
+
+        try (PreparedStatement checkStmt = cnx.prepareStatement(checkQuery)) {
+            checkStmt.setInt(1, employeeId);
+            checkStmt.setInt(2, ancienneCertifId);
+            ResultSet rs = checkStmt.executeQuery();
+
+            if (rs.next() && rs.getInt(1) > 0) {
+
+                try (PreparedStatement updateStmt = cnx.prepareStatement(updateQuery)) {
+                    updateStmt.setInt(1, nouvelleCertifId);
+                    updateStmt.setInt(2, employeeId);
+                    updateStmt.setInt(3, ancienneCertifId);
+
+                    int rowsUpdated = updateStmt.executeUpdate();
+                    if (rowsUpdated > 0) {
+                        System.out.println(" Certification modifiée avec succès ");
+                    } else {
+                        System.out.println(" Échec de la modification de la certification.");
+                    }
+                }
+            } else {
+                System.out.println("L'employé n'est pas associé à cette certification.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la modification de la certification : " + e.getMessage());
+        }
+    }
+
 
 
     @Override

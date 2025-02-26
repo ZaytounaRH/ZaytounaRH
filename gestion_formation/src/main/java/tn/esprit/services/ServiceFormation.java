@@ -28,13 +28,6 @@ public class ServiceFormation implements IService<Formation> {
             return;
         }
 
-        User currentUser = SessionManager.getInstance().getCurrentUser();
-
-        // Vérification du rôle
-        if (currentUser == null || !"RH".equalsIgnoreCase(currentUser.getUserType())) {
-            System.out.println("Erreur : Seuls les RH peuvent ajouter une formation !");
-            return;
-        }
 
 
         String qry = "INSERT INTO `formation`( `nomFormation`, `descriptionFormation`, `dateDebutFormation`, `dateFinFormation` ) VALUES (?,?,?,?)";
@@ -110,13 +103,7 @@ public class ServiceFormation implements IService<Formation> {
             System.out.println("Erreur : données invalides, update annulé !");
             return;
         }
-        User currentUser = SessionManager.getInstance().getCurrentUser();
 
-        // Vérification du rôle
-        if (currentUser == null || !"RH".equalsIgnoreCase(currentUser.getUserType())) {
-            System.out.println("Erreur : Seuls les RH peuvent modifier une formation !");
-            return;
-        }
 
         String qry = "UPDATE `formation` SET `nomFormation` = ?, `descriptionFormation` = ?, `dateDebutFormation` = ?, `dateFinFormation`= ? WHERE `idFormation` = ?";
 
@@ -145,13 +132,7 @@ public class ServiceFormation implements IService<Formation> {
     @Override
     public void delete(Formation formation) {
 
-        User currentUser = SessionManager.getInstance().getCurrentUser();
 
-        // Vérification du rôle
-        if (currentUser == null || !"RH".equalsIgnoreCase(currentUser.getUserType())) {
-            System.out.println("Erreur : Seuls les RH peuvent supprimer une formation !");
-            return;
-        }
         String qry = "DELETE FROM formation WHERE idFormation = ?";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
@@ -204,6 +185,29 @@ public class ServiceFormation implements IService<Formation> {
             System.out.println("Erreur SQL : " + e.getMessage());
         }
         return false;
+    }
+    public Formation getByName(String nomFormation) {
+        Formation formation = null;
+        String query = "SELECT * FROM formation WHERE nomFormation = ?";
+
+        try {
+            PreparedStatement pstm = cnx.prepareStatement(query);
+            pstm.setString(1, nomFormation);
+            ResultSet resultSet = pstm.executeQuery();
+
+            if (resultSet.next()) {
+                formation = new Formation();
+                formation.setIdFormation(resultSet.getInt("idFormation"));
+                formation.setNomFormation(resultSet.getString("nomFormation"));
+                formation.setDescriptionFormation(resultSet.getString("descriptionFormation"));
+                formation.setDateDebutFormation(resultSet.getDate("dateDebutFormation"));
+                formation.setDateFinFormation(resultSet.getDate("dateFinFormation"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return formation;
     }
 
 

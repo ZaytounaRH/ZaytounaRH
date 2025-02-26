@@ -1,85 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Pos?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="tn.esprit.controllers.GestionFormation"
-            stylesheets="@/style.css"
-
-            prefHeight="720.0" prefWidth="1080.0">
+<FlowPane fx:id="formationCards" hgap="20" vgap="20" alignment="CENTER" prefWidth="1000" prefHeight="800" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17" fx:controller="tn.esprit.controllers.GestionFormation">
     <children>
+        <!-- Title -->
+        <Label layoutX="400.0" layoutY="20.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Gestion des Formations" />
 
-        <Button text="Gérer Certifications" onAction="#ouvrirCertification" />
+        <!-- Section for Adding/Updating a Formation -->
+        <VBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 10px;">
+            <Label text="Nom de la Formation" />
+            <TextField fx:id="tfNomFormation" promptText="Nom de la Formation" />
 
+            <Label text="Description" />
+            <TextField fx:id="tfDescriptionFormation" promptText="Description de la Formation" />
 
-        <Label text="Formation View" />
-        <!-- Conteneur principal sous forme de carte -->
-        <VBox fx:id="cardContainer" layoutX="150.0" layoutY="80.0" spacing="15"
-              prefWidth="700" prefHeight="650" styleClass="card" alignment="CENTER">
+            <Label text="Date Début" />
+            <DatePicker fx:id="dateDebutPicker" />
 
-            <!-- Titre -->
-            <Label text="Ajouter une Formation" styleClass="card-title"/>
+            <Label text="Date Fin" />
+            <DatePicker fx:id="dateFinPicker" />
 
-
-            <!-- Formulaire -->
-            <GridPane vgap="10" hgap="15">
-                <columnConstraints>
-                    <ColumnConstraints halignment="RIGHT"/>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
-
-                <rowConstraints>
-                    <RowConstraints vgrow="NEVER"/>
-                </rowConstraints>
-
-
-                <!-- Champ Nom -->
-                <Label text="Nom :" styleClass="form-label" GridPane.rowIndex="0"/>
-                <TextField fx:id="tfNomFormation" promptText="Nom de la formation" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-
-                <!-- Champ Description -->
-                <Label text="Description :" styleClass="form-label" GridPane.rowIndex="1"/>
-                <TextField fx:id="tfDescriptionFormation" promptText="Description" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-
-
-
-                <!-- Liste déroulante Employé -->
-                <Label text="Employé :" styleClass="form-label" GridPane.rowIndex="3"/>
-                <ComboBox fx:id="comboBoxEmploye" onAction="#handleEmployeSelection" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-
-                <!-- Liste déroulante RH -->
-                <Label text="RH :" styleClass="form-label" GridPane.rowIndex="4"/>
-                <ComboBox fx:id="comboBoxRH" onAction="#handleRhSelection" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-
-                <!-- Liste déroulante Certification -->
-                <Label text="Certification :" styleClass="form-label" GridPane.rowIndex="5"/>
-                <ComboBox fx:id="comboBoxCertification" onAction="#handleCertificationSelection" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
-            </GridPane>
-
-            <!-- Boutons -->
-            <HBox spacing="20" alignment="CENTER">
-                <Button fx:id="btnSubmit" text="Ajouter" onAction="#ajouterFormation" styleClass="submit-button"/>
-                <Button fx:id="btnShow" text="Afficher" onAction="#afficherFormation" styleClass="show-button"/>
-                <Button text="Modifier"  />
-                <Button text="Supprimer "  />
-
-
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="Ajouter Formation" onAction="#ajouterFormation" />
+                <Button text="Afficher Formations" onAction="#afficherFormations" />
+                <Button text="Mettre à Jour" onAction="#updateFormation" />
+                <Button text="Supprimer Formation" onAction="#deleteFormation" />
             </HBox>
-
-            <!-- Conteneur de formations avec ScrollPane -->
-            <ScrollPane fx:id="formationsScrollPane" prefHeight="150" prefWidth="700" styleClass="formations-scroll">
-                <Label fx:id="lbFormations" styleClass="formations-list"/>
-            </ScrollPane>
         </VBox>
 
+        <!-- Section for Displaying Formations -->
+        <Label layoutX="50.0" layoutY="350.0" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Liste des Formations" />
 
+        <!-- FlowPane for dynamically added Formation Cards -->
+        <FlowPane fx:id="formationFlowPane" hgap="10" vgap="10" alignment="CENTER" prefWidth="900" prefHeight="600">
+            <!-- Dynamically added Formation Cards will appear here -->
+        </FlowPane>
 
-
+        <!-- Label for displaying messages -->
+        <Label fx:id="lbFormations" layoutX="50.0" layoutY="640.0" prefWidth="980.0" style="-fx-text-fill: red;" />
     </children>
-
-</AnchorPane>
+</FlowPane>

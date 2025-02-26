@@ -60,6 +60,7 @@ public class Main {
         serviceEmployeCertification.ajouterCertificationAEmploye(idemploye, idCertif, dateObtention);
 
  */
+        serviceEmployeCertification.modifierCertificationEmploye(1, 3, 5);
 serviceEmployeCertification.getCertificationsByEmployee(1);
 
 
@@ -69,8 +70,8 @@ serviceEmployeCertification.getCertificationsByEmployee(1);
 
 /*
 CHOIX TYPE  USER
-        User rhUser = new User();
-        rhUser.setUserType("Admin");
+User rhUser = new User();
+        rhUser.setUserType("RH");
         SessionManager.getInstance().login(rhUser);
  */
 
