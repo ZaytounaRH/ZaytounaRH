@@ -1,5 +1,9 @@
 package tn.esprit.services;
+import tn.esprit.interfaces.IService;
 import tn.esprit.models.Certification;
+import tn.esprit.models.EmployeCertification;
+import tn.esprit.models.EmployeFormation;
+import tn.esprit.models.Employee;
 import tn.esprit.utils.MyDatabase;
 
 import java.sql.*;
@@ -8,33 +12,67 @@ import java.util.List;
 import java.sql.Date;
 
 
-public class ServiceEmployeCertification {
+public class ServiceEmployeCertification implements IService<EmployeCertification> {
 
     private final Connection cnx ;
+    private final ServiceEmployee serviceEmploye = new ServiceEmployee();
     public ServiceEmployeCertification() {
         cnx=MyDatabase.getInstance().getCnx();
     }
 
-    public List<Certification> getCertificationsByEmploye(int employee_id) {
-        List<Certification> certifications=new ArrayList<>();
+
+
+
+    public List<Certification> getCertificationsByEmployee(int employee_id) {
+        List<Certification> certifications = new ArrayList<>();
         String qry = "SELECT c.idCertif, c.titreCertif FROM certification c JOIN employe_certification ec ON c.idCertif = ec.idCertif WHERE ec.employee_id = ?";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry);
+
+        try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
             pstm.setInt(1, employee_id);
             ResultSet rs = pstm.executeQuery();
+
+            // Récupérer les certifications
             while (rs.next()) {
                 Certification certif = new Certification(
                         rs.getInt("idCertif"),
                         rs.getString("titreCertif")
                 );
                 certifications.add(certif);
+            }
 
-        }}
-        catch (SQLException e) {
-                System.out.println( e.getMessage());
+            // Récupérer les informations de l'employé
+            Employee employee = null;
+            List<Employee> allEmployees = serviceEmploye.getAll(); // Utilise la méthode getAll() pour récupérer tous les employés
+
+            for (Employee emp : allEmployees) {
+                if (emp.getId() == employee_id) {
+                    employee = emp;
+                    break;
+                }
+            }
+
+            // Affichage des résultats
+            if (employee != null) {
+                System.out.println("Liste des certifications de l'employé : " + employee.getNom() + " " + employee.getPrenom());
+                if (certifications.isEmpty()) {
+                    System.out.println("Aucune certification trouvée pour cet employé.");
+                } else {
+                    for (Certification cert : certifications) {
+                        System.out.println("Certification : " + cert.getTitreCertif());
+                    }
+                }
+            } else {
+                System.out.println("Employé  " + employee.getNom() + " non trouvé.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des certifications : " + e.getMessage());
         }
-        return certifications;
+
+        return certifications; // Retourner la liste des certifications
     }
+
+
+
 
     public void ajouterCertificationAEmploye(int idEmploye, int idCertif, Date dateObtention) {
         if (!controleSaisieCertification(idEmploye, idCertif, dateObtention)) {
@@ -109,6 +147,21 @@ public class ServiceEmployeCertification {
     }
 
 
+    @Override
+    public List<EmployeCertification> getAll() {
+        return null;
+    }
+    @Override
+    public void add(EmployeCertification employeCertification) {
 
+    }
+    @Override
+    public void update(EmployeCertification employeCertification) {
+
+    }
+    @Override
+    public void delete(EmployeCertification employeCertification) {
+
+    }
 
 }

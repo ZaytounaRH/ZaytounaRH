@@ -1,19 +1,17 @@
 package tn.esprit.test;
 
-import tn.esprit.models.Employee;
-import tn.esprit.models.Formation;
+import tn.esprit.models.*;
 import tn.esprit.services.ServiceEmployeFormation;
 import tn.esprit.services.ServiceFormation;
 import tn.esprit.utils.MyDatabase;
-import tn.esprit.models.User;
 import tn.esprit.services.ServiceEmployeCertification;
 
 
 import tn.esprit.services.ServiceCertification;
-import tn.esprit.models.Certification;
 import tn.esprit.utils.SessionManager;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,53 +21,47 @@ public class Main {
     public static void main(String[] args) {
 
         ServiceFormation serviceFormation = new ServiceFormation();
-        ServiceEmployeCertification employeCertification = new ServiceEmployeCertification();
+        ServiceEmployeCertification serviceEmployeCertification = new ServiceEmployeCertification();
         ServiceCertification serviceCertification = new ServiceCertification();
-        ServiceEmployeFormation employeFormation = new ServiceEmployeFormation();
+        ServiceEmployeFormation serviceEmployeFormation = new ServiceEmployeFormation();
 
         /*
         Formation des employes
+
        //AJOUT
         List<Integer> employeIds = Arrays.asList(1, 2);
-        service.affecterFormationAEmployes(4, employeIds);
+        serviceEmployeFormation.affecterFormationAEmployes(4, employeIds);
+
+        //AFFICHAGE
+         serviceEmployeFormation.afficherEmployesParFormation(4);
+
+         //DELETE
+         serviceEmployeFormation.supprimerEmployeDeFormation(1,6);
+
+         //UPDATE
+        List<Integer> newEmployeIds = Arrays.asList(1, 3);
+        serviceEmployeFormation.modifierListeEmployesFormation(4, newEmployeIds);
          */
 
-
-
-        int idFormationTest = 4;
-        List<Employee> employes = employeFormation.getEmployesByFormation(idFormationTest);
-
-        System.out.println("📌 Liste des employés inscrits à la formation " + idFormationTest + " :");
-        for (Employee emp : employes) {
-            System.out.println("➡ " + emp.getNom() + " " + emp.getPrenom() + " | Email: " + emp.getEmail());
-        }
-
-
-
-
-        /*
+  /*
        //certification des employes
 //AFFICHAGE
  int idEmploye =6;
         String nomEmploye = employeCertification.getNomEmployeById(idEmploye);
-
         List<Certification> certifications = employeCertification.getCertificationsByEmploye(idEmploye);
-
         System.out.println("Certifications de l'employé " + nomEmploye + ":" );
         for (Certification certif : certifications) {
             System.out.println(certif.getTitreCertif());
         }
-
-
 //AJOUT
- int idemploye = 6;
-        int idCertif = 8;
-        Date dateObtention = Date.valueOf("2025-01-20");
-        employeCertification.ajouterCertificationAEmploye(idemploye, idCertif, dateObtention);
-
-
+ int idemploye = 2;
+        int idCertif = 3;
+        Date dateObtention = Date.valueOf("2025-01-26");
+        serviceEmployeCertification.ajouterCertificationAEmploye(idemploye, idCertif, dateObtention);
 
  */
+serviceEmployeCertification.getCertificationsByEmployee(1);
+
 
 
 
@@ -80,19 +72,13 @@ CHOIX TYPE  USER
         User rhUser = new User();
         rhUser.setUserType("Admin");
         SessionManager.getInstance().login(rhUser);
-
-
-
  */
 
 
 
-        //System.out.println(serviceFormation.getAll());
 
         //System.out.println(serviceCertification.getAll());
     }
-
-
 
 
 
