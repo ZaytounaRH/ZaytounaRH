@@ -31,8 +31,16 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import tn.esprit.utils.MyDatabase;
 import java.util.HashMap;
-import java.util.Map;
 import java.time.LocalDate;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.chart.PieChart;
+import javafx.scene.control.Label;
+import tn.esprit.services.ServiceReclamation;
+
+import java.util.Map;
+
 
 public class GestionAssurance {
 
@@ -71,12 +79,30 @@ public class GestionAssurance {
     }
 
     @FXML
+    private PieChart pieChartStats;
+
+    @FXML
     private void testerStats() {
         ServiceReclamation serviceReclamation = new ServiceReclamation();
         Map<String, Object> resultats = serviceReclamation.getStatistiquesReclamations(); // Retourne une map
 
         // Affichage des statistiques dans les labels
         afficherStats(resultats);
+
+        // Mise à jour du PieChart avec les données de réclamation
+        int enAttente = (int) resultats.get("En Attente");
+        int enCours = (int) resultats.get("En Cours");
+        int resolu = (int) resultats.get("Résolu");
+
+        // Créer les tranches pour le PieChart
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
+                new PieChart.Data("En Attente", enAttente),
+                new PieChart.Data("En Cours", enCours),
+                new PieChart.Data("Résolu", resolu)
+        );
+
+        // Ajouter les données au PieChart
+        pieChartStats.setData(pieChartData);
     }
 
     @FXML

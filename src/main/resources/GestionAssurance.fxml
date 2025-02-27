@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.text.Text?>
 
 <ScrollPane prefHeight="720.0" prefWidth="1080.0"
@@ -58,6 +59,9 @@
                         <Label fx:id="lbDelaiMoyen" text="Délai Moyen (jours): " />
                     </children>
                 </FlowPane>
+
+                <!-- Graphique de type pie chart pour les statistiques -->
+                <PieChart fx:id="pieChartStats" layoutX="650.0" layoutY="100.0" prefWidth="350.0" prefHeight="350.0" />
             </children>
         </AnchorPane>
     </content>
