@@ -55,13 +55,14 @@ public class AfficherEmployee {
             Label addressLabel = new Label("Address: " + employee.getAddress());
             Label workingDaysLabel = new Label("Working Days: " + employee.getJoursOuvrables());
             Label genderLabel = new Label("Gender: " + employee.getGender());
+            Label idLabel = new Label("ID: " + employee.getIdEmployee());  // Add the ID label
 
             // Create a region to space out the labels
             Region spacer = new Region();
             spacer.setPrefWidth(200);
 
             // Add labels to the HBox
-            card.getChildren().addAll(nameLabel, spacer, emailLabel, phoneLabel, dobLabel, addressLabel, workingDaysLabel, genderLabel);
+            card.getChildren().addAll(nameLabel, spacer, emailLabel, phoneLabel, dobLabel, addressLabel, workingDaysLabel, genderLabel, idLabel);
 
             // Add the click event to each HBox (employee card)
             card.setOnMouseClicked(event -> {
@@ -90,8 +91,6 @@ public class AfficherEmployee {
         return selectedEmployee;
     }
 
-
-
     @FXML
     public void ajouterEmploye() {
         try {
@@ -113,7 +112,31 @@ public class AfficherEmployee {
 
     @FXML
     public void updateEmploye() {
-        // Logique pour mettre à jour un employé
+        if (selectedEmployee != null) {
+            try {
+                // Load the Update Employee FXML
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/UpdateEmployee.fxml"));
+                AnchorPane updateEmployeePage = loader.load();
+
+                // Get the controller of the UpdateEmployee FXML
+                UpdateEmployee updateEmployeeController = loader.getController();
+
+                // Pass the selected employee to the UpdateEmployee controller
+                updateEmployeeController.setEmployeeData(selectedEmployee);
+
+                // Get the current stage and set the new scene
+                Stage stage = (Stage) buttonUpdateEmploye.getScene().getWindow();
+                Scene scene = new Scene(updateEmployeePage);
+                stage.setScene(scene);
+                stage.setTitle("Update Employee");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Handle the case where no employee is selected
+            System.out.println("No employee selected!");
+        }
     }
 
     @FXML

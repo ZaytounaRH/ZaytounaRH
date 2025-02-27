@@ -65,13 +65,15 @@ public class ServiceEmployee implements IService<Employee> {
     @Override
     public List<Employee> getAll() {
         List<Employee> employees = new ArrayList<>();
-        String query = "SELECT numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password FROM users WHERE user_type = 'EMPLOYEE'";
+        // Change 'idEmployee' to 'id' in the SELECT query
+        String query = "SELECT id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password FROM users WHERE user_type = 'EMPLOYEE'";
 
         try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(query)) {
 
             while (rs.next()) {
                 Employee employee = new Employee(
+                        rs.getInt("id"),  // Fetching the 'id' field
                         rs.getString("numTel"),
                         rs.getInt("joursOuvrables"),
                         rs.getString("nom"),
@@ -93,33 +95,39 @@ public class ServiceEmployee implements IService<Employee> {
     }
 
 
-    @Override
+
     public void update(Employee employee) {
-        String query = "UPDATE employee SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, user_type=?, password=? WHERE idEmployee=?";
+        String query = "UPDATE users SET numTel = ?, joursOuvrables = ?, nom = ?, prenom = ?, address = ?, email = ?, gender = ?, dateDeNaissance = ?, user_type = ?, password = ? WHERE id = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(query)) {
+            ps.setString(1, employee.getNumTel());
+            ps.setInt(2, employee.getJoursOuvrables());
+            ps.setString(3, employee.getNom());
+            ps.setString(4, employee.getPrenom());
+            ps.setString(5, employee.getAddress());
+            ps.setString(6, employee.getEmail());
+            ps.setString(7, employee.getGender());
+            ps.setDate(8, employee.getDateDeNaissance());
+            ps.setString(9, employee.getUserType());
+            ps.setString(10, employee.getPassword());
+            ps.setInt(11, employee.getId());  // Ensure the ID is set here
 
-        try (PreparedStatement pst = cnx.prepareStatement(query)) {
-            pst.setString(1, employee.getNumTel());
-            pst.setInt(2, employee.getJoursOuvrables());
-            pst.setString(3, employee.getNom());
-            pst.setString(4, employee.getPrenom());
-            pst.setString(5, employee.getAddress());
-            pst.setString(6, employee.getEmail());
-            pst.setString(7, employee.getGender());
-            pst.setDate(8, employee.getDateDeNaissance());
-            pst.setString(9, employee.getUserType());
-            pst.setString(10, employee.getPassword());
-            pst.setInt(11, employee.getIdEmployee());
-
-            pst.executeUpdate();
-            System.out.println("Employee mis à jour avec succès !");
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Employee updated successfully.");
+            } else {
+                System.out.println("No employee found with the given ID.");
+            }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la mise à jour de l'Employee : " + e.getMessage());
+            System.out.println("Error updating employee: " + e.getMessage());
         }
     }
 
+
+
+
     @Override
     public void delete(Employee employee) {
-        String query = "DELETE FROM employee WHERE idEmployee=?";
+        String query = "DELETE FROM user WHERE id=?";
 
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setInt(1, employee.getIdEmployee());

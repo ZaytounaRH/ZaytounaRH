@@ -24,10 +24,11 @@
         <TextField fx:id="tfGenre" layoutX="324.0" layoutY="167.0" promptText="Genre" />
 
         <Button fx:id="btnUpdate" layoutX="293.0" layoutY="332.0" mnemonicParsing="false" onAction="#updateEmployee" text="Mettre à Jour" />
-        <Button fx:id="btnAnnuler" layoutX="194.0" layoutY="332.0" mnemonicParsing="false" onAction="#annulerUpdate" text="Annuler" />
-      <TextField fx:id="tfAdresse" layoutX="129.0" layoutY="204.0" promptText="Address" />
-      <TextField fx:id="tfJoursOuvrables" layoutX="325.0" layoutY="204.0" promptText="Jours Ouvrables" />
-      <TextField fx:id="tfJoursOuvrables1" layoutX="129.0" layoutY="246.0" promptText="Password" />
-      <ChoiceBox layoutX="325.0" layoutY="243.0" prefHeight="13.0" prefWidth="184.0" />
+        <Button fx:id="btnRetour" layoutX="194.0" layoutY="332.0" mnemonicParsing="false" onAction="#goBackToAfficherEmployee" text="Retour" />
+
+        <TextField fx:id="tfAdresse" layoutX="129.0" layoutY="204.0" promptText="Address" />
+        <TextField fx:id="tfJoursOuvrables" layoutX="325.0" layoutY="204.0" promptText="Jours Ouvrables" />
+        <TextField fx:id="tfPassword" layoutX="129.0" layoutY="246.0" promptText="Password" />
+        <ChoiceBox fx:id="choiceBoxUserType" layoutX="325.0" layoutY="243.0" prefHeight="13.0" prefWidth="184.0" />
     </children>
 </AnchorPane>
