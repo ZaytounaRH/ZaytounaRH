@@ -172,6 +172,48 @@ public class ServiceEntretien implements Iservice<Entretien> {
         }
     }
 
+    @Override
+    public void remove(int id) {
+        // Récupérer l'utilisateur actuellement connecté via SessionManager
+        User currentUser = SessionManager.getInstance().getCurrentUser();
+
+        // Vérifier si l'utilisateur est un RH
+        if (currentUser == null || !(currentUser instanceof RH)) {
+            System.out.println("Erreur : Seuls les RH peuvent supprimer un entretien !");
+            return;  // Interrompre l'exécution si ce n'est pas un RH
+        }
+
+        // Préparer la requête SQL pour vérifier si l'entretien existe
+        String checkQuery = "SELECT idEntretien FROM entretien WHERE idEntretien = ?";
+        try (PreparedStatement stmtCheck = cnx.prepareStatement(checkQuery)) {
+            stmtCheck.setInt(1, id);
+            ResultSet rs = stmtCheck.executeQuery();
+
+            if (!rs.next()) {
+                System.out.println("Erreur : L'entretien avec l'ID " + id + " n'existe pas.");
+                return;  // Si l'entretien n'existe pas, on arrête ici
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la vérification de l'existence de l'entretien : " + e.getMessage());
+            return;
+        }
+
+        // Préparer la requête SQL pour supprimer l'entretien
+        String deleteQuery = "DELETE FROM entretien WHERE idEntretien = ?";
+        try (PreparedStatement stmt = cnx.prepareStatement(deleteQuery)) {
+            stmt.setInt(1, id);
+
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Entretien supprimé avec succès !");
+            } else {
+                System.out.println("Erreur : Aucune suppression effectuée.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la suppression de l'entretien : " + e.getMessage());
+        }
+    }
+
 
 }
 
