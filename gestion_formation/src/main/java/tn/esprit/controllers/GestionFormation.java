@@ -19,6 +19,7 @@ import tn.esprit.utils.SessionManager;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class GestionFormation {
@@ -41,6 +42,7 @@ public class GestionFormation {
 
     @FXML
     private ListView<Employee> employesListView;
+
 
     @FXML
     private Button affecterButton;
@@ -181,6 +183,7 @@ public void afficherFormations(ActionEvent actionEvent) {
         List<Employee> employes = serviceEmployee.getAll();
         employesListView.setItems(FXCollections.observableArrayList(employes));
         employesListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        employesListView.setItems(FXCollections.observableArrayList(serviceEmployee.getAll()));
     }
 
 
@@ -254,6 +257,61 @@ public void afficherFormations(ActionEvent actionEvent) {
             }
         }
     }
+    @FXML
+    private void modifierEmployesFormation() {
+        // Récupérer la formation sélectionnée
+        Formation formationChoisie = formationsComboBox.getSelectionModel().getSelectedItem();
+
+        // Vérifier si une formation a bien été sélectionnée
+        if (formationChoisie == null) {
+            showAlert("Erreur", "Veuillez sélectionner une formation.");
+            return;
+        }
+
+        // Récupérer la liste des employés sélectionnés
+        List<Employee> selectedEmployees = employesListView.getSelectionModel().getSelectedItems();
+
+        // Convertir les employés en leurs IDs
+        List<Integer> newEmployeeIds = selectedEmployees.stream()
+                .map(Employee::getId)
+                .collect(Collectors.toList());
+
+        // Appeler la méthode du service pour modifier la liste des employés
+        serviceEmployeFormation.modifierListeEmployesFormation(formationChoisie.getIdFormation(), newEmployeeIds);
+
+        // Afficher un message de confirmation
+        showAlert("Succès", "La liste des employés a été mise à jour.");
+    }
+    @FXML
+    private void supprimerEmployeFormation() {
+        // Récupérer la formation sélectionnée
+        Formation formationChoisie = formationsComboBox.getSelectionModel().getSelectedItem();
+
+        // Vérifier si une formation a bien été sélectionnée
+        if (formationChoisie == null) {
+            showAlert("Erreur", "Veuillez sélectionner une formation.");
+            return;
+        }
+
+        // Récupérer l'employé sélectionné
+        Employee employeSelectionne = employesListView.getSelectionModel().getSelectedItem();
+
+        // Vérifier si un employé a bien été sélectionné
+        if (employeSelectionne == null) {
+            showAlert("Erreur", "Veuillez sélectionner un employé.");
+            return;
+        }
+
+        // Appeler la méthode de service pour supprimer l'employé de la formation
+        serviceEmployeFormation.supprimerEmployeDeFormation(employeSelectionne.getId(), formationChoisie.getIdFormation());
+
+        // Rafraîchir la liste des employés pour la formation donnée après la suppression
+        afficherEmployesParFormation();
+
+        // Afficher un message de confirmation
+        showAlert("Succès", "L'employé a été supprimé de la formation.");
+    }
+
 }
 
 

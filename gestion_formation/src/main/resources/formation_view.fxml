@@ -51,6 +51,9 @@
             </VBox>
 
             <Button text="Afficher Employés" onAction="#afficherEmployesParFormation" />
+            <Button text="Modifier les employés" onAction="#modifierEmployesFormation" />
+            <Button text="Supprimer l'employé de la formation" onAction="#supprimerEmployeFormation" />
+
 
         </VBox>
 
