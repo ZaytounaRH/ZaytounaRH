@@ -4,6 +4,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<VBox xmlns:fx="http://javafx.com/fxml/1" spacing="20" alignment="CENTER">
+    <!-- Titre de la vue -->
+    <Label text="Vue des Certifications" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <!-- Exemple de contenu supplémentaire -->
+    <Label text="Cette section contient la gestion des certifications."/>
+</VBox>
+
+<!--
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="tn.esprit.controllers.GestionCertification"
@@ -18,10 +27,10 @@
         <VBox fx:id="cardContainerCertification" layoutX="150.0" layoutY="80.0" spacing="15"
               prefWidth="700" prefHeight="650" styleClass="card" alignment="CENTER">
 
-            <!-- Titre -->
+
             <Label text="Ajouter une Certification" styleClass="card-title"/>
 
-            <!-- Formulaire -->
+
             <GridPane vgap="10" hgap="15">
                 <columnConstraints>
                     <ColumnConstraints halignment="RIGHT"/>
@@ -31,18 +40,18 @@
                     <RowConstraints vgrow="NEVER"/>
                 </rowConstraints>
 
-                <!-- Champ Titre Certification -->
+
                 <Label text="Titre :" styleClass="form-label" GridPane.rowIndex="0"/>
                 <TextField fx:id="tfTitreCertification" promptText="Titre de la certification" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-                <!-- Champ Organisme -->
+
                 <Label text="Organisme :" styleClass="form-label" GridPane.rowIndex="1"/>
                 <TextField fx:id="tfOrganismeCertification" promptText="Organisme" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
 
             </GridPane>
 
-            <!-- Boutons -->
+
             <HBox spacing="20" alignment="CENTER">
                 <Button fx:id="btnSubmitCertification" text="Ajouter" onAction="#ajouterCertification" styleClass="submit-button"/>
                 <Button fx:id="btnShowCertification" text="Afficher" onAction="#afficherCertification" styleClass="show-button"/>
@@ -53,10 +62,11 @@
 
             </HBox>
 
-            <!-- Conteneur de certifications avec ScrollPane -->
+
             <ScrollPane fx:id="certificationsScrollPane" prefHeight="150" prefWidth="700" styleClass="formations-scroll">
                 <Label fx:id="lbCertifications" styleClass="formations-list"/>
             </ScrollPane>
         </VBox>
     </children>
 </AnchorPane>
+-->
