@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="615.0" prefWidth="1179.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.AfficherEmployee" stylesheets="@css/styles.css">
+<AnchorPane prefHeight="615.0" prefWidth="1179.0" stylesheets="@css/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.AfficherEmployee">
     <children>
-        <ListView fx:id="listViewEmployes" layoutX="34.0" layoutY="105.0" prefHeight="348.0" prefWidth="1112.0" />
+        <VBox fx:id="vboxEmployes" layoutX="34.0" layoutY="105.0" prefHeight="348.0" prefWidth="1112.0" spacing="10" />
 
-        <Button fx:id="buttonAfficherEmployes" layoutX="53.0" layoutY="515.0" onAction="#afficherTousEmployes" text="Afficher Tous Les Employees" />
+        <Button fx:id="buttonAfficherEmployes" layoutX="41.0" layoutY="515.0" onAction="#afficherTousEmployes" text="Afficher Tous Les Employees" />
         <Button fx:id="buttonAjouterEmploye" layoutX="1017.0" layoutY="515.0" onAction="#ajouterEmploye" text="Ajouter Un Employee" />
-        <Button fx:id="buttonUpdateEmploye" layoutX="236.0" layoutY="515.0" onAction="#updateEmploye" text="Update Employee" />
-        <Button fx:id="buttonDeleteEmploye" layoutX="361.0" layoutY="515.0" onAction="#supprimerEmploye" text="Supprimer Employee" />
+        <Button fx:id="buttonUpdateEmploye" layoutX="271.0" layoutY="515.0" onAction="#updateEmploye" text="Update Employee" />
+        <Button fx:id="buttonDeleteEmploye" layoutX="437.0" layoutY="515.0" onAction="#supprimerEmploye" text="Supprimer Employee" />
 
         <Text layoutX="32.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="List Des Employees : ">
             <font>

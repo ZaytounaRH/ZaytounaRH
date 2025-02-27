@@ -1,4 +1,4 @@
-/*package tn.esprit.controllers;
+package tn.esprit.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -51,7 +51,7 @@ public class Login {
     private void openAfficherEmployee() {
         try {
             Stage stage = (Stage) emailField.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherEmployee.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageEmployee.fxml"));
             Scene scene = new Scene(loader.load());
             stage.setScene(scene);
             stage.setTitle("Liste des Employés");
@@ -68,4 +68,4 @@ public class Login {
         alert.setContentText(message);
         alert.showAndWait();
     }
-}*/
+}

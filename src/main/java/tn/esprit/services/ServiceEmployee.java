@@ -65,14 +65,13 @@ public class ServiceEmployee implements IService<Employee> {
     @Override
     public List<Employee> getAll() {
         List<Employee> employees = new ArrayList<>();
-        String query = "SELECT * FROM users WHERE user_type = 'EMPLOYEE'";
+        String query = "SELECT numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password FROM users WHERE user_type = 'EMPLOYEE'";
 
         try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(query)) {
 
             while (rs.next()) {
                 Employee employee = new Employee(
-                        rs.getInt("idEmployee"),
                         rs.getString("numTel"),
                         rs.getInt("joursOuvrables"),
                         rs.getString("nom"),
@@ -92,6 +91,7 @@ public class ServiceEmployee implements IService<Employee> {
 
         return employees;
     }
+
 
     @Override
     public void update(Employee employee) {
