@@ -6,8 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import java.io.IOException;
-
-
+import java.net.URL;
 
 
 public class MainFX extends Application {
@@ -17,6 +16,7 @@ public class MainFX extends Application {
     }
     @Override
     public void start(Stage primaryStage) throws IOException {
+
 
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("formation_view.fxml"));
         try{

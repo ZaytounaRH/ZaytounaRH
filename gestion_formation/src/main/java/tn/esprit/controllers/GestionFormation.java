@@ -1,17 +1,24 @@
 package tn.esprit.controllers;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import tn.esprit.models.Employee;
 import tn.esprit.models.Formation;
 import tn.esprit.models.User;
+import tn.esprit.services.ServiceEmployeFormation;
+import tn.esprit.services.ServiceEmployee;
 import tn.esprit.services.ServiceFormation;
 import tn.esprit.utils.SessionManager;
 
 import java.sql.Date;
+import java.util.List;
 
 
 public class GestionFormation {
@@ -29,7 +36,18 @@ public class GestionFormation {
     @FXML
     private FlowPane formationFlowPane;
 
+    @FXML
+    private ComboBox<Formation> formationsComboBox;
+
+    @FXML
+    private ListView<Employee> employesListView;
+
+    @FXML
+    private Button affecterButton;
+
     ServiceFormation serviceFormation = new ServiceFormation();
+    private ServiceEmployeFormation serviceEmployeFormation = new ServiceEmployeFormation();
+    private ServiceEmployee serviceEmployee = new ServiceEmployee();
 
     @FXML
     public void ajouterFormation(ActionEvent actionEvent) {
@@ -63,7 +81,7 @@ public class GestionFormation {
 
 
 
-    public void afficherFormations(ActionEvent actionEvent) {
+public void afficherFormations(ActionEvent actionEvent) {
 
         User rhUser = new User();
         rhUser.setUserType("RH");
@@ -100,6 +118,8 @@ public class GestionFormation {
             formationFlowPane.getChildren().add(card);
         }
     }
+
+
 
 
     @FXML
@@ -149,9 +169,53 @@ public class GestionFormation {
         }
     }
 
+    @FXML
+    public void initialize() {
+
+        List<Formation> formations = serviceFormation.getAll();
+        formationsComboBox.setItems(FXCollections.observableArrayList(formations));
+
+
+        List<Employee> employes = serviceEmployee.getAll();
+        employesListView.setItems(FXCollections.observableArrayList(employes));
+        employesListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    }
+
+
+    @FXML
+    public void affecterFormation() {
+        Formation formationChoisie = formationsComboBox.getSelectionModel().getSelectedItem();
+        ObservableList<Employee> employesSelectionnes = employesListView.getSelectionModel().getSelectedItems();
+
+        if (formationChoisie == null || employesSelectionnes.isEmpty()) {
+            showAlert("Erreur", "Veuillez sélectionner une formation et au moins un employé.");
+            return;
+        }
+        List<Integer> employesIds = employesSelectionnes.stream()
+                .map(Employee::getId)
+                .toList();
+
+        serviceEmployeFormation.affecterFormationAEmployes(formationChoisie.getIdFormation(), employesIds);
+
+
+        showAlert("Succès", "Les employés ont été affectés à la formation !");
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.getDialogPane().setStyle("-fx-background-color: #f4f4f4; -fx-font-size: 14px;");
+
+        alert.showAndWait();
+    }
 
 
 }
+
+
+
 
     /*
     public void chargerListes() {
