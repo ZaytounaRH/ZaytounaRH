@@ -1,7 +1,6 @@
 package tn.esprit.test;
 
 import tn.esprit.models.Candidat;
-import java.sql.Date;
 import tn.esprit.models.OffreEmploi;
 import tn.esprit.models.Entretien;
 import tn.esprit.models.OffreEmploi.StatutOffre;
@@ -10,11 +9,13 @@ import tn.esprit.models.Entretien.TypeEntretien;
 import tn.esprit.services.ServiceEntretien;
 import tn.esprit.services.ServiceOffreEmploi;
 import tn.esprit.models.RH;
+import tn.esprit.utils.SessionManager;
+
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import tn.esprit.utils.SessionManager;
 
 public class Main {
     public static void main(String[] args) {
@@ -24,8 +25,9 @@ public class Main {
         SessionManager.getInstance().setCurrentUser(candidat);  // Simule un candidat connecté
 
         // 🟢 INITIALISATION DE LA SESSION POUR LE RH
-       // RH rh = new RH(1, "1234567890", 5, "Nom", "Prenom", "Adresse", "email@example.com", "Femme", Date.valueOf("2000-01-01"), "admin", "password123", 1);
-        //SessionManager.getInstance().setCurrentUser(rh);
+        RH rh = new RH(1, "1234567890", 5, "Nom", "Prenom", "Adresse", "email@example.com", "Femme", Date.valueOf("2000-01-01"), "admin", "password123", 1);
+        SessionManager.getInstance().setCurrentUser(rh);
+        System.out.println("Utilisateur connecté : " + SessionManager.getInstance().getCurrentUser().getClass().getSimpleName());
 
         // 🔥 CREATION D'UNE NOUVELLE OFFRE D'EMPLOI
         OffreEmploi nouvelleOffre = new OffreEmploi();
@@ -45,17 +47,66 @@ public class Main {
 
         ///////////////////////////////////////////////
         // 🟢 RÉCUPÉRATION ET AFFICHAGE DE TOUTES LES OFFRES D'EMPLOI
-        List<OffreEmploi> listeOffres = serviceOffreEmploi.getAll();
-        System.out.println("\n📋 Liste des offres d'emploi :");
-        for (OffreEmploi offre : listeOffres) {
-            System.out.println("ID: " + offre.getIdOffre() + ", Titre: " + offre.getTitreOffre() + ", Salaire: " + offre.getSalaire());
+        List<OffreEmploi> offres = serviceOffreEmploi.getAll();
+
+        if (offres.isEmpty()) {
+            System.out.println("Aucune offre d'emploi disponible.");
+        } else {
+            System.out.println("Liste des offres d'emploi :");
+            for (OffreEmploi offre : offres) {
+                System.out.println("\nOffre d'Emploi ID : " + offre.getIdOffre());
+                System.out.println("Titre : " + offre.getTitreOffre());
+                System.out.println("Description : " + offre.getDescription());
+                System.out.println("Salaire : " + offre.getSalaire() + " TND");
+                System.out.println("Statut : " + offre.getStatut());
+                System.out.println("Date de Publication : " + offre.getDatePublication());
+                System.out.println("Nombre d'entretiens associés : " + offre.getEntretiens().size());
+                System.out.println("-----------------------------------------");
+            }
         }
+
+        // 🟢 MISE À JOUR D'UNE OFFRE D'EMPLOI
+        if (!offres.isEmpty()) {
+            OffreEmploi offreEmploiToUpdate = offres.get(0);
+
+            // Mise à jour des détails de l'offre d'emploi
+            offreEmploiToUpdate.setTitreOffre("Développeur Java Senior");
+            offreEmploiToUpdate.setDescription("Nous recherchons un développeur Java Senior expérimenté.");
+            offreEmploiToUpdate.setSalaire(5500.0);
+            offreEmploiToUpdate.setStatut(StatutOffre.FERMEE);
+
+            // Mise à jour de l'offre via le service
+            serviceOffreEmploi.update(offreEmploiToUpdate);
+
+            // Vérification de la mise à jour
+            System.out.println("\n✅ Offre d'emploi mise à jour avec succès !");
+        }
+
+// 🟢 RÉCUPÉRATION DES OFFRES D'EMPLOI APRÈS LA MISE À JOUR
+        offres = serviceOffreEmploi.getAll();
+
+        System.out.println("\nListe des offres d'emploi après mise à jour :");
+        if (!offres.isEmpty()) {
+            for (OffreEmploi offre : offres) {
+                System.out.println("\nOffre d'Emploi ID : " + offre.getIdOffre());
+                System.out.println("Titre : " + offre.getTitreOffre());
+                System.out.println("Description : " + offre.getDescription());
+                System.out.println("Salaire : " + offre.getSalaire() + " TND");
+                System.out.println("Statut : " + offre.getStatut());
+                System.out.println("Date de Publication : " + offre.getDatePublication());
+                System.out.println("Nombre d'entretiens associés : " + offre.getEntretiens().size());
+                System.out.println("-----------------------------------------");
+            }
+        } else {
+            System.out.println("Aucune offre d'emploi disponible.");
+        }
+
 
         ///////////////////////////////////////////////
 
         // Créer une OffreEmploi pour l'entretien
         OffreEmploi offreEmploi = new OffreEmploi();
-        offreEmploi.setIdOffre(3);
+        offreEmploi.setIdOffre(4);
         offreEmploi.setTitreOffre("Développeur Java");
         offreEmploi.setDescription("Poste de développeur Java");
         offreEmploi.setSalaire(3000);

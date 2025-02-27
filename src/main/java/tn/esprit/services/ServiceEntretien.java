@@ -214,6 +214,48 @@ public class ServiceEntretien implements Iservice<Entretien> {
         }
     }
 
+    public List<Entretien> getAllByOffre(int idOffre) {
+        List<Entretien> entretiens = new ArrayList<>();
+        String qry = "SELECT e.*, c.candidat_id, u.nom AS candidat_nom " +
+                "FROM entretien e " +
+                "JOIN candidat c ON e.candidat_id = c.candidat_id " +
+                "JOIN users u ON c.candidat_id = u.id " +
+                "WHERE e.idOffre = ?";
+
+        try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
+            pstm.setInt(1, idOffre);
+            ResultSet rs = pstm.executeQuery();
+
+            while (rs.next()) {
+                Entretien entretien = new Entretien();
+                entretien.setIdEntretien(rs.getInt("idEntretien"));
+                entretien.setDateEntretien(rs.getDate("dateEntretien").toLocalDate());
+                entretien.setHeureEntretien(rs.getTime("heureEntretien").toLocalTime());
+                entretien.setTypeEntretien(Entretien.TypeEntretien.valueOf(rs.getString("typeEntretien")));
+                entretien.setStatut(Entretien.StatutEntretien.valueOf(rs.getString("statut")));
+                entretien.setCommentaire(rs.getString("commentaire"));
+
+                // Associer l'offre d'emploi
+                OffreEmploi offreEmploi = new OffreEmploi();
+                offreEmploi.setIdOffre(rs.getInt("idOffre"));
+                entretien.setOffreEmploi(offreEmploi);
+
+                // Associer le candidat (juste le nom)
+                Candidat candidat = new Candidat();
+                candidat.setCandidat_id(rs.getInt("candidat_id"));
+                candidat.setNom(rs.getString("candidat_nom"));
+                entretien.setCandidat(candidat);
+
+                // Ajouter l'entretien à la liste
+                entretiens.add(entretien);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return entretiens;
+    }
+
 
 }
 

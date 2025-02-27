@@ -10,7 +10,11 @@ public class RH extends User {
         super(numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password);
         this.idRH = idRH;
     }
-
+    // Nouveau constructeur
+    public RH(int idRH, String nom) {
+        this.idRH = idRH;
+        this.nom = nom;
+    }
     public RH(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, int idRH) {
         super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password);
         this.idRH = idRH;
