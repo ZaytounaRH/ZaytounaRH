@@ -4,11 +4,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import tn.esprit.models.Employee;
 import tn.esprit.models.Formation;
 import tn.esprit.models.User;
@@ -16,9 +19,12 @@ import tn.esprit.services.ServiceEmployeFormation;
 import tn.esprit.services.ServiceEmployee;
 import tn.esprit.services.ServiceFormation;
 import tn.esprit.utils.SessionManager;
+import tn.esprit.controllers.DatePickerDialog;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -52,6 +58,7 @@ public class GestionFormation {
     ServiceFormation serviceFormation = new ServiceFormation();
     private ServiceEmployeFormation serviceEmployeFormation = new ServiceEmployeFormation();
     private ServiceEmployee serviceEmployee = new ServiceEmployee();
+    private DatePickerDialog datePickerDialog;
 
     @FXML
     public void ajouterFormation(ActionEvent actionEvent) {
@@ -85,6 +92,7 @@ public class GestionFormation {
 
 
 
+
 public void afficherFormations(ActionEvent actionEvent) {
 
         User rhUser = new User();
@@ -97,9 +105,13 @@ public void afficherFormations(ActionEvent actionEvent) {
             System.out.println("Erreur : Seuls les RH peuvent ajouter une formation !");
             return;
         }
-
-        // Clear the current cards before adding new ones
         formationFlowPane.getChildren().clear();
+    Stage nouveauStage = new Stage();
+
+    // Crée un FlowPane pour afficher les formations
+    FlowPane formationFlowPane = new FlowPane();
+    formationFlowPane.setVgap(20);
+    formationFlowPane.setHgap(20);
 
         // Loop through the formations and create cards
         for (Formation formation : serviceFormation.getAll()) {
@@ -115,17 +127,107 @@ public void afficherFormations(ActionEvent actionEvent) {
             Label dateFinLabel = new Label("Fin : " + formation.getDateFinFormation().toString());
             dateFinLabel.setStyle("-fx-font-size: 12px;");
 
-            VBox cardContent = new VBox(5, nomLabel, descriptionLabel, dateDebutLabel, dateFinLabel);
+            // Bouton de modification
+            Button btnModifier = new Button("Modifier");
+            btnModifier.setOnAction(e ->updateFormation(formation));
+             /*
+            // Bouton de suppression
+            Button deleteButton = new Button("Supprimer");
+            deleteButton.setStyle("-fx-background-color: red; -fx-text-fill: white;");
+            deleteButton.setOnAction(e -> deleteFormation(formation));
+
+
+             */
+ VBox cardContent = new VBox(5, nomLabel, descriptionLabel, dateDebutLabel, dateFinLabel, btnModifier);
             card.getChildren().add(cardContent);
 
             // Add the card to the existing formationFlowPane
             formationFlowPane.getChildren().add(card);
         }
+    Scene scene = new Scene(formationFlowPane, 800, 600);
+    nouveauStage.setScene(scene);
+    nouveauStage.setTitle("Formations");
+    nouveauStage.show();
+    }
+
+    @FXML
+    public void updateFormation(Formation formation) {
+        // Boîte de dialogue pour modifier le nom
+        TextInputDialog nomDialog = new TextInputDialog(formation.getNomFormation());
+        nomDialog.setTitle("Modification");
+        nomDialog.setHeaderText("Modifier la formation");
+        nomDialog.setContentText("Nouveau nom :");
+        Optional<String> nomResult = nomDialog.showAndWait();
+
+        // Boîte de dialogue pour modifier la description
+        TextInputDialog descriptionDialog = new TextInputDialog(formation.getDescriptionFormation());
+        descriptionDialog.setTitle("Modification");
+        descriptionDialog.setHeaderText("Modifier la description");
+        descriptionDialog.setContentText("Nouvelle description :");
+        Optional<String> descriptionResult = descriptionDialog.showAndWait();
+
+        // Sélecteur de date pour la date de début
+        Label dateDebutLabel = new Label("Date de début :");
+        DatePicker dateDebutPicker = new DatePicker();
+        dateDebutPicker.setValue(formation.getDateDebutFormation().toLocalDate()); // Conversion de java.sql.Date à LocalDate
+        dateDebutPicker.setPromptText("Choisir une date de début");
+
+        // Sélecteur de date pour la date de fin
+        Label dateFinLabel = new Label("Date de fin :");
+        DatePicker dateFinPicker = new DatePicker();
+        dateFinPicker.setValue(formation.getDateFinFormation().toLocalDate()); // Conversion de java.sql.Date à LocalDate
+        dateFinPicker.setPromptText("Choisir une date de fin");
+
+        // Boutons Ok et Annuler
+        Button okButton = new Button("Ok");
+        Button cancelButton = new Button("Annuler");
+        Stage dateDialogStage = new Stage();
+        okButton.setOnAction(e -> {
+            // Vérifier si les dates sont sélectionnées
+            if (dateDebutPicker.getValue() != null && dateFinPicker.getValue() != null) {
+                formation.setDateDebutFormation(java.sql.Date.valueOf(dateDebutPicker.getValue())); // Conversion de LocalDate à java.sql.Date
+                formation.setDateFinFormation(java.sql.Date.valueOf(dateFinPicker.getValue())); // Conversion de LocalDate à java.sql.Date
+
+                // Mettre à jour les autres informations si elles sont présentes
+                if (nomResult.isPresent() && descriptionResult.isPresent()) {
+                    formation.setNomFormation(nomResult.get());
+                    formation.setDescriptionFormation(descriptionResult.get());
+
+                    // Mettre à jour dans la base de données
+                    serviceFormation.update(formation);
+
+                    // Rafraîchir l'affichage
+                    afficherFormations(new ActionEvent());
+                }
+            }
+
+            // Fermer la fenêtre après la mise à jour
+            dateDialogStage.close();
+        });
+
+        cancelButton.setOnAction(e -> {
+            // Fermer la fenêtre sans effectuer de modification
+            dateDialogStage.close();
+        });
+
+        // Ajouter les composants à la fenêtre
+        VBox dateDialog = new VBox(10, dateDebutLabel, dateDebutPicker, dateFinLabel, dateFinPicker, okButton, cancelButton);
+        HBox buttonBox = new HBox(10, okButton, cancelButton);
+        buttonBox.setAlignment(Pos.CENTER);
+        dateDialog.getChildren().add(buttonBox);
+
+
+        Scene dateScene = new Scene(dateDialog, 300, 250);
+        dateDialogStage.setTitle("Sélectionner les dates");
+        dateDialogStage.setScene(dateScene);
+        dateDialogStage.showAndWait();
     }
 
 
 
 
+
+    /*
     @FXML
     public void updateFormation(ActionEvent actionEvent) {
         User rhUser = new User();
@@ -155,6 +257,8 @@ public void afficherFormations(ActionEvent actionEvent) {
         }
     }
 
+
+ */
     @FXML
     public void deleteFormation(ActionEvent actionEvent) {
         String nomFormation = tfNomFormation.getText();

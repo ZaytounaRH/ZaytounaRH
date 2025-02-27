@@ -11,7 +11,7 @@
 
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ListView?>
-<FlowPane fx:id="formationCards" hgap="20" vgap="20" alignment="CENTER" prefWidth="1000" prefHeight="800" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17" fx:controller="tn.esprit.controllers.GestionFormation">
+<FlowPane fx:id="formationCards" hgap="10" vgap="10" alignment="CENTER" prefWidth="1080" prefHeight="720" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17" fx:controller="tn.esprit.controllers.GestionFormation">
     <children>
         <!-- Title -->
         <Label layoutX="400.0" layoutY="20.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Gestion des Formations" />
@@ -33,7 +33,7 @@
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Button text="Ajouter Formation" onAction="#ajouterFormation" />
                 <Button text="Afficher Formations" onAction="#afficherFormations" />
-                <Button text="Mettre à Jour" onAction="#updateFormation" />
+
                 <Button text="Supprimer Formation" onAction="#deleteFormation" />
             </HBox>
 

@@ -90,6 +90,7 @@ public class GestionCertification {
             Button deleteButton = new Button("Supprimer");
             deleteButton.setStyle("-fx-background-color: red; -fx-text-fill: white;");
             deleteButton.setOnAction(e -> deleteCertification(certification));
+
             VBox cardContent = new VBox(5,titreLabel,organismeLabel,formationLabel,btnModifier,deleteButton);
             card.getChildren().add(cardContent);
 
@@ -114,7 +115,7 @@ public class GestionCertification {
         Optional<String> organismeResult = organismeDialog.showAndWait();
 
         // Récupérer la liste des formations existantes
-        List<Formation> formations = serviceFormation.getAll(); // Assure-toi que ce service existe
+        List<Formation> formations = serviceFormation.getAll();
         ChoiceDialog<Formation> formationDialog = new ChoiceDialog<>(certification.getFormation(), formations);
         formationDialog.setTitle("Modification");
         formationDialog.setHeaderText("Modifier la formation");
