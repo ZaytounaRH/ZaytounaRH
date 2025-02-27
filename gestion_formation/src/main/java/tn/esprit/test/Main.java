@@ -58,10 +58,15 @@ public class Main {
         int idCertif = 3;
         Date dateObtention = Date.valueOf("2025-01-26");
         serviceEmployeCertification.ajouterCertificationAEmploye(idemploye, idCertif, dateObtention);
+//UPDATE
+        serviceEmployeCertification.modifierCertificationEmploye(1, 3, 5);
 
  */
-        serviceEmployeCertification.modifierCertificationEmploye(1, 3, 5);
-serviceEmployeCertification.getCertificationsByEmployee(1);
+        int idemploye = 3;
+        int idCertif = 3;
+        Date dateObtention = Date.valueOf("2025-02-27");
+        serviceEmployeCertification.ajouterCertificationAEmploye(idemploye, idCertif, dateObtention);
+serviceEmployeCertification.getCertificationsByEmployee(3);
 
 
 

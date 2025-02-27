@@ -11,14 +11,19 @@
             <TextField fx:id="tfTitreCertification" promptText="Titre de la certification" />
             <Label text="Organisme " />
             <TextField fx:id="tfOrganismeCertification" promptText="Organisme de la certification" />
+            <Label text="Date Obtention" />
+            <DatePicker fx:id="dateObtention" />
 
             <Label text="formation"/>
             <ComboBox fx:id="cbFormation" promptText="Sélectionner une formation" />
+            <ComboBox fx:id="comboBoxEmploye" layoutX="50" layoutY="50" />
+            <ComboBox fx:id="comboBoxCertification" layoutX="50" layoutY="100" />
+            <Button text="Affecter Certification" onAction="#affecterCertification" layoutX="50" layoutY="150" />
 
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Button text="Ajouter Certification" onAction="#ajouterCertification" />
                 <Button text="Afficher Certification" onAction="#afficherCertification" />
-
+                <Button text="afficher certif d'employe" onAction="#afficherCertifsParEmploye"/>
             </HBox>
         </VBox>
     </children>

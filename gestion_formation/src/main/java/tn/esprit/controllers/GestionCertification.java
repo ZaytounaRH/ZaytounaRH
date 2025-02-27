@@ -14,12 +14,17 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import tn.esprit.interfaces.IService;
 import tn.esprit.models.Certification;
+import tn.esprit.models.EmployeCertification;
+import tn.esprit.models.Employee;
 import tn.esprit.models.Formation;
 import tn.esprit.services.ServiceCertification;
+import tn.esprit.services.ServiceEmployeCertification;
+import tn.esprit.services.ServiceEmployee;
 import tn.esprit.services.ServiceFormation;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -35,13 +40,21 @@ public class GestionCertification {
     @FXML
     private TextField tfOrganismeCertification;
     @FXML
+    private DatePicker dateObtention;
+    @FXML
     private ComboBox<Formation> cbFormation;
+    @FXML
+    private ComboBox<Employee> comboBoxEmploye;
+    @FXML
+    private ComboBox<Certification> comboBoxCertification;
     @FXML
     private FlowPane certificationFlowPane;
 
     private ServiceCertification serviceCertification = new ServiceCertification();
     private ServiceFormation serviceFormation = new ServiceFormation();
-    IService<Certification> sc = new ServiceCertification();
+    private ServiceEmployeCertification serviceEmployeCertification = new ServiceEmployeCertification();
+    private ServiceEmployee serviceEmployee = new ServiceEmployee();
+
     @FXML
     public void ajouterCertification(ActionEvent event) {
         String titre = tfTitreCertification.getText();
@@ -141,10 +154,93 @@ public void deleteCertification(Certification certification) {
     }
 }
     @FXML
+    public void affecterCertification(ActionEvent event) {
+
+        EmployeCertification employeCertification = new EmployeCertification();
+
+        Employee employeSelectionne = comboBoxEmploye.getSelectionModel().getSelectedItem();
+        Certification certificationSelectionnee = comboBoxCertification.getSelectionModel().getSelectedItem();
+
+
+        if (employeSelectionne == null || certificationSelectionnee == null) {
+            System.out.println("Erreur : Veuillez sélectionner un employé et une certification.");
+            return;
+        }
+        if (dateObtention.getValue() == null) {
+            System.out.println("Erreur : Veuillez sélectionner une date d'obtention.");
+            return;
+        }
+
+        java.sql.Date dateObtentionSql = java.sql.Date.valueOf(dateObtention.getValue());
+
+try {
+    serviceEmployeCertification.ajouterCertificationAEmploye(employeSelectionne.getIdEmployee(), certificationSelectionnee.getIdCertif(), dateObtentionSql);
+    System.out.println("Certification affectée à l'employé avec succès !");
+}
+catch (Exception e) {
+    System.out.println("Erreur lors de l'ajout de la certification : " + e.getMessage());
+}
+
+    }
+    @FXML
+    public void afficherCertifsParEmploye(ActionEvent event) {
+
+        Employee employeSelectionne = comboBoxEmploye.getSelectionModel().getSelectedItem();
+
+        if (employeSelectionne == null) {
+            showAlert("Erreur", "Veuillez sélectionner un employé.");
+            return;
+        }
+        List<Certification> certifications = serviceEmployeCertification.getCertificationsByEmployee(employeSelectionne.getId());
+
+        certificationFlowPane.getChildren().clear();
+
+        // Afficher les certifications dans des cartes
+        for (Certification certif : certifications) {
+            HBox card = new HBox(10);
+            card.setStyle("-fx-padding: 10px; -fx-border-color: #cccccc; -fx-background-color: #f9f9f9; -fx-border-radius: 5px;");
+
+            // Créer les labels pour chaque certification
+            Label titreCertifLabel = new Label(certif.getTitreCertif());
+            titreCertifLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+
+            // Créer une VBox pour contenir les informations de la certification
+            VBox cardContent = new VBox(4, titreCertifLabel);
+            card.getChildren().add(cardContent);
+            // Ajouter la carte au FlowPane
+            certificationFlowPane.getChildren().add(card);
+        }
+
+        // Afficher un message si aucune certification n'est trouvée
+        if (certifications.isEmpty()) {
+            showAlert("Information", "Aucune certification trouvée pour cet employé.");
+        }
+    }
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+
+    @FXML
     public void initialize(){
         List<Formation> formations = serviceFormation.getAll();
         cbFormation.setItems(FXCollections.observableArrayList(formations));
+
+       List<Employee> employes = serviceEmployee.getAll();
+        comboBoxEmploye.setItems(FXCollections.observableArrayList(employes));
+
+
+       List<Certification> certifications = serviceCertification.getAll();
+        comboBoxCertification.setItems(FXCollections.observableArrayList(certifications));
+
+
     }
+
+
 
 
 
