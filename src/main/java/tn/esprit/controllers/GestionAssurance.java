@@ -15,6 +15,8 @@ import tn.esprit.models.Reclamation.PrioriteReclamation;
 import tn.esprit.models.Reclamation.StatutReclamation;
 import tn.esprit.models.Reclamation.IncidentType;
 import tn.esprit.services.ServiceReclamation;
+import tn.esprit.models.Reponse;
+import tn.esprit.services.ServiceReponse;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
@@ -306,6 +308,68 @@ public class GestionAssurance {
         afficherReclamations();
     }
 
+    private void ouvrirFenetreReponse(Reclamation reclamation) {
+        Stage reponseStage = new Stage();
+        reponseStage.setTitle("Répondre à la réclamation");
+
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(15));
+
+        Label lblReponse = new Label("Réponse:");
+        TextArea taReponse = new TextArea();
+
+        Button btnEnvoyerReponse = new Button("Envoyer la réponse");
+        btnEnvoyerReponse.setOnAction(e -> {
+            String reponseText = taReponse.getText().trim();
+
+            if (reponseText.isEmpty()) {
+                lbMessage.setText("La réponse ne peut pas être vide.");
+                return;
+            }
+
+            // Créer une réponse et l'associer à la réclamation
+            Reponse reponse = new Reponse(reclamation, reponseText);
+            ServiceReponse serviceReponse = new ServiceReponse();
+            serviceReponse.add(reponse);
+
+            lbMessage.setStyle("-fx-text-fill: green;");
+            lbMessage.setText("Réponse envoyée avec succès !");
+
+            reponseStage.close(); // Fermer la fenêtre de réponse
+            afficherReclamations(); // Rafraîchir la liste des réclamations
+        });
+
+        vbox.getChildren().addAll(lblReponse, taReponse, btnEnvoyerReponse);
+        Scene scene = new Scene(vbox, 400, 300);
+        reponseStage.setScene(scene);
+        reponseStage.show();
+    }
+
+    private void afficherReponses(Reclamation reclamation, VBox card) {
+        ServiceReponse serviceReponse = new ServiceReponse();
+        FlowPane flowPaneReponses = new FlowPane();
+        flowPaneReponses.setHgap(10);
+        flowPaneReponses.setVgap(10);
+
+        // Récupérer les réponses de la réclamation
+        for (Reponse reponse : serviceReponse.getAllByReclamation(reclamation)) {
+            VBox reponseCard = new VBox(10);
+            reponseCard.setPadding(new Insets(10));
+            reponseCard.setStyle("-fx-background-color: #F1F8E9; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 15; -fx-border-color: #8BC34A;");
+
+            // Ajouter les informations de la réponse
+            Label lblReponse = new Label("Réponse: " + reponse.getContenu());
+            lblReponse.setStyle("-fx-text-fill: #388E3C;");
+
+            // Ajouter la réponse à son FlowPane
+            reponseCard.getChildren().add(lblReponse);
+            flowPaneReponses.getChildren().add(reponseCard);
+        }
+
+        // Ajouter le FlowPane des réponses à la carte de la réclamation
+        card.getChildren().add(flowPaneReponses);
+    }
+
 
     @FXML
     public void afficherReclamations() {
@@ -337,11 +401,20 @@ public class GestionAssurance {
             btnSupprimer.setStyle("-fx-background-color: #E53935; -fx-text-fill: white;");
             btnSupprimer.setOnAction(e -> supprimerReclamation(reclamation));
 
+            // Bouton Répondre
+            Button btnRepondre = new Button("Répondre");
+            btnRepondre.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+            btnRepondre.setOnAction(e -> ouvrirFenetreReponse(reclamation));
+
             // Ajouter les éléments à la carte
-            card.getChildren().addAll(lblTitre, lblDescription, lblIncident, lblPriorite, lblStatut, lblDate, btnModifier, btnSupprimer);
+            card.getChildren().addAll(lblTitre, lblDescription, lblIncident, lblPriorite, lblStatut, lblDate, btnModifier, btnSupprimer, btnRepondre);
 
             // Ajouter la carte au FlowPane
             flowPaneReclamations.getChildren().add(card);
+
+            // Afficher les réponses de la réclamation
+            afficherReponses(reclamation, card);
+
         }
     }
 
