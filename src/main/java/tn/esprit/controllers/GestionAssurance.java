@@ -48,6 +48,10 @@ public class GestionAssurance {
     @FXML
     private Label lbMessage;
 
+    @FXML
+    private FlowPane flowPaneReclamations;
+
+
     private final IService<Assurance> sp = new ServiceAssurance();
     private Assurance assuranceAmodifier = null; // Variable pour stocker l'assurance en cours de modification
 
@@ -134,8 +138,8 @@ public class GestionAssurance {
 
         // Type d'incident
         Label lblIncidentType = new Label("Type d'incident:");
-        ComboBox<String> cbIncidentType = new ComboBox<>();
-        cbIncidentType.getItems().addAll("ACCIDENT_TRAVAIL", "MALADIE_PROFESSIONNELLE", "DÉFAUT_COUVERTURE", "LETIGE_CONTRAT");
+        ComboBox<Reclamation.IncidentType> cbIncidentType = new ComboBox<>();
+        cbIncidentType.getItems().addAll(Reclamation.IncidentType.values());  // Ajoute toutes les valeurs de l'énumération
 
         // Date de soumission (par défaut aujourd'hui et non modifiable)
         Label lblDateSoumission = new Label("Date de soumission:");
@@ -169,19 +173,18 @@ public class GestionAssurance {
         btnSoumettre.setOnAction(e -> {
             String titre = tfTitre.getText().trim();
             String description = taDescription.getText().trim();
-            String incidentTypeString = cbIncidentType.getValue();
+            Reclamation.IncidentType incidentType = cbIncidentType.getValue();  // Utiliser l'objet IncidentType sélectionné
             LocalDate dateSoumission = dpDateSoumission.getValue();
             String prioriteString = cbPriorite.getValue();
             String pieceJointe = tfPieceJointe.getText().trim();
 
             // Vérification des champs obligatoires
-            if (titre.isEmpty() || description.isEmpty() || incidentTypeString == null || prioriteString == null) {
+            if (titre.isEmpty() || description.isEmpty() || incidentType == null || prioriteString == null) {
                 lbMessage.setText("Tous les champs sont obligatoires.");
                 return;
             }
 
-            // Conversion des valeurs en types enum
-            IncidentType incidentType = IncidentType.valueOf(incidentTypeString);
+            // Conversion des valeurs en types enum pour priorite et statut
             StatutReclamation statut = StatutReclamation.EN_ATTENTE;
             PrioriteReclamation priorite = PrioriteReclamation.valueOf(prioriteString);
 
@@ -193,6 +196,9 @@ public class GestionAssurance {
             // Appel au service pour sauvegarder la réclamation
             ServiceReclamation reclamationService = new ServiceReclamation();
             reclamationService.add(reclamation);
+
+            // Rafraîchir l'affichage après l'ajout
+            afficherReclamations();
 
             lbMessage.setStyle("-fx-text-fill: green;");
             lbMessage.setText("Réclamation soumise avec succès !");
@@ -209,7 +215,6 @@ public class GestionAssurance {
         reclamationStage.setScene(scene);
         reclamationStage.show();
     }
-
 
     @FXML
     public void afficherAssurances() {
@@ -247,6 +252,96 @@ public class GestionAssurance {
 
             // Ajouter la carte au FlowPane
             flowPaneAssurances.getChildren().add(card);
+        }
+    }
+
+    private void remplirFormulaireReclamation(Reclamation reclamation) {
+        Stage modificationStage = new Stage();
+        modificationStage.setTitle("Modifier la Réclamation");
+
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(15));
+
+        Label lblTitre = new Label("Titre:");
+        TextField tfTitre = new TextField(reclamation.getTitre());
+
+        Label lblDescription = new Label("Description:");
+        TextArea taDescription = new TextArea(reclamation.getDescription());
+
+        Label lblIncidentType = new Label("Type d'incident:");
+        ComboBox<String> cbIncidentType = new ComboBox<>();
+        cbIncidentType.getItems().addAll("ACCIDENT_TRAVAIL", "MALADIE_PROFESSIONNELLE", "DÉFAUT_COUVERTURE", "LITIGE_CONTRAT");
+        cbIncidentType.setValue(reclamation.getIncidentType().toString());
+
+        Label lblPriorite = new Label("Priorité:");
+        ComboBox<String> cbPriorite = new ComboBox<>();
+        cbPriorite.getItems().addAll("FAIBLE", "MOYENNE", "ELEVEE");
+        cbPriorite.setValue(reclamation.getPriorite().toString());
+
+        Button btnModifier = new Button("Modifier");
+        btnModifier.setOnAction(e -> {
+            reclamation.setTitre(tfTitre.getText());
+            reclamation.setDescription(taDescription.getText());
+            reclamation.setIncidentType(IncidentType.valueOf(cbIncidentType.getValue()));
+            reclamation.setPriorite(PrioriteReclamation.valueOf(cbPriorite.getValue()));
+
+            ServiceReclamation sr = new ServiceReclamation();
+            sr.update(reclamation);
+
+            modificationStage.close();
+            afficherReclamations();
+        });
+
+        vbox.getChildren().addAll(lblTitre, tfTitre, lblDescription, taDescription, lblIncidentType, cbIncidentType, lblPriorite, cbPriorite, btnModifier);
+        Scene scene = new Scene(vbox, 400, 400);
+        modificationStage.setScene(scene);
+        modificationStage.show();
+    }
+
+    @FXML
+    private void supprimerReclamation(Reclamation reclamation) {
+        ServiceReclamation sr = new ServiceReclamation();
+        sr.delete(reclamation);
+
+        afficherReclamations();
+    }
+
+
+    @FXML
+    public void afficherReclamations() {
+        flowPaneReclamations.getChildren().clear(); // Nettoyer avant de ré-afficher
+
+        ServiceReclamation sr = new ServiceReclamation(); // Service des réclamations
+
+        for (Reclamation reclamation : sr.getAll()) {
+            VBox card = new VBox(10);
+            card.setPadding(new Insets(10));
+            card.setStyle("-fx-background-color: #FFF3E0; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 15; -fx-border-color: #FF9800;");
+
+            // Labels d'information
+            Label lblTitre = new Label("Titre: " + reclamation.getTitre());
+            lblTitre.setStyle("-fx-font-weight: bold; -fx-text-fill: #E65100;");
+
+            Label lblDescription = new Label("Description: " + reclamation.getDescription());
+            Label lblIncident = new Label("Incident: " + reclamation.getIncidentType());
+            Label lblPriorite = new Label("Priorité: " + reclamation.getPriorite());
+            Label lblStatut = new Label("Statut: " + reclamation.getStatut());
+            Label lblDate = new Label("Soumis le: " + reclamation.getDateSoumission());
+
+            // Bouton Modifier
+            Button btnModifier = new Button("Modifier");
+            btnModifier.setOnAction(e -> remplirFormulaireReclamation(reclamation));
+
+            // Bouton Supprimer
+            Button btnSupprimer = new Button("Supprimer");
+            btnSupprimer.setStyle("-fx-background-color: #E53935; -fx-text-fill: white;");
+            btnSupprimer.setOnAction(e -> supprimerReclamation(reclamation));
+
+            // Ajouter les éléments à la carte
+            card.getChildren().addAll(lblTitre, lblDescription, lblIncident, lblPriorite, lblStatut, lblDate, btnModifier, btnSupprimer);
+
+            // Ajouter la carte au FlowPane
+            flowPaneReclamations.getChildren().add(card);
         }
     }
 

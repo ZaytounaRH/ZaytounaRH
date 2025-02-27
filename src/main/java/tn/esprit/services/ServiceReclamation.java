@@ -19,14 +19,15 @@ public class ServiceReclamation implements IService<Reclamation> {
 
     @Override
     public void add(Reclamation reclamation) {
-        String qry = "INSERT INTO `reclamation`(`titre`, `description`, `dateSoumission`, `statut`, `priorite`, `pieceJointe`) VALUES (?,?,?,?,?,?)";
+        String qry = "INSERT INTO `reclamation`(`titre`, `description`, `incidentType`, `dateSoumission`, `statut`, `priorite`, `pieceJointe`) VALUES (?,?,?,?,?,?,?)";
         try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
             pstm.setString(1, reclamation.getTitre());
             pstm.setString(2, reclamation.getDescription());
-            pstm.setDate(3, Date.valueOf(reclamation.getDateSoumission()));
-            pstm.setString(4, reclamation.getStatut().name());
-            pstm.setString(5, reclamation.getPriorite().name());
-            pstm.setString(6, reclamation.getPieceJointe());
+            pstm.setString(3, reclamation.getIncidentType().name()); // Ajout de incidentType
+            pstm.setDate(4, Date.valueOf(reclamation.getDateSoumission()));
+            pstm.setString(5, reclamation.getStatut().name());
+            pstm.setString(6, reclamation.getPriorite().name());
+            pstm.setString(7, reclamation.getPieceJointe());
 
             pstm.executeUpdate();
             System.out.println("Réclamation ajoutée avec succès.");
@@ -37,24 +38,25 @@ public class ServiceReclamation implements IService<Reclamation> {
 
     @Override
     public List<Reclamation> getAll() {
-        //create Qry sql
-        //execution
-        //Mapping data
-
-
         List<Reclamation> reclamations = new ArrayList<>();
-        String qry ="SELECT * FROM `reclamation`";
+        String qry = "SELECT * FROM `reclamation`";
 
         try {
             Statement stm = cnx.createStatement();
             ResultSet rs = stm.executeQuery(qry);
 
-            while (rs.next()){
+            while (rs.next()) {
                 Reclamation p = new Reclamation();
                 p.setIdR(rs.getInt("idR"));
-                //p.setTitre(rs.getString(2));
                 p.setTitre(rs.getString("titre"));
                 p.setDescription(rs.getString("description"));
+
+                // Récupérer et convertir incidentType en Enum
+                String incidentTypeStr = rs.getString("incidentType");
+                if (incidentTypeStr != null) {
+                    p.setIncidentType(Reclamation.IncidentType.valueOf(incidentTypeStr));
+                }
+
                 p.setDateSoumission(rs.getDate("dateSoumission").toLocalDate());
                 p.setStatut(Reclamation.StatutReclamation.valueOf(rs.getString("statut")));
                 p.setPriorite(Reclamation.PrioriteReclamation.valueOf(rs.getString("priorite")));
@@ -63,8 +65,6 @@ public class ServiceReclamation implements IService<Reclamation> {
                 reclamations.add(p);
             }
 
-
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -72,21 +72,33 @@ public class ServiceReclamation implements IService<Reclamation> {
         return reclamations;
     }
 
+
     @Override
     public void update(Reclamation reclamation) {
-        String qry = "UPDATE `reclamation` SET `titre`=?, `description`=?, `dateSoumission`=?, `statut`=?, `priorite`=?, `pieceJointe`=? WHERE `idR`=?";
+        String qry = "UPDATE `reclamation` SET `titre`=?, `description`=?, `incidentType`=?, `dateSoumission`=?, `statut`=?, `priorite`=?, `pieceJointe`=? WHERE `idR`=?";
+
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setString(1, reclamation.getTitre());
             pstm.setString(2, reclamation.getDescription());
-            pstm.setDate(3, Date.valueOf(reclamation.getDateSoumission()));
-            pstm.setString(4, reclamation.getStatut().name());
-            pstm.setString(5, reclamation.getPriorite().name());
-            pstm.setString(6, reclamation.getPieceJointe());
-            pstm.setInt(7, reclamation.getIdR());
+
+            // Ajout de incidentType
+            if (reclamation.getIncidentType() != null) {
+                pstm.setString(3, reclamation.getIncidentType().name());
+            } else {
+                pstm.setNull(3, Types.VARCHAR);
+            }
+
+            pstm.setDate(4, Date.valueOf(reclamation.getDateSoumission()));
+            pstm.setString(5, reclamation.getStatut().name());
+            pstm.setString(6, reclamation.getPriorite().name());
+            pstm.setString(7, reclamation.getPieceJointe());
+            pstm.setInt(8, reclamation.getIdR());
+
             pstm.executeUpdate();
+            System.out.println("Réclamation mise à jour avec succès.");
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erreur lors de la mise à jour de la réclamation: " + e.getMessage());
         }
     }
 
