@@ -70,7 +70,7 @@ public class MainFX extends Application {
         try {
 
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("certification_view.fxml"));
-            VBox certificationsView = loader.load();
+            FlowPane certificationsView = loader.load();
 
             // Mettre à jour la vue dans le centre du BorderPane
             rootLayout.setCenter(certificationsView);
