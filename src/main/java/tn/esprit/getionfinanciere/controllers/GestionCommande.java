@@ -1,29 +1,33 @@
 package tn.esprit.getionfinanciere.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
-import javafx.event.ActionEvent;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.Stage;
 import tn.esprit.MainFX;
 import tn.esprit.getionfinanciere.models.Commande;
 import tn.esprit.getionfinanciere.models.Fournisseur;
-import tn.esprit.getionfinanciere.services.ServiceCommande;
-import tn.esprit.getionfinanciere.services.ServiceFournisseur;
+import tn.esprit.getionfinanciere.repository.CommandeRepository;
+import tn.esprit.getionfinanciere.repository.FournisseurRepository;
 
 import java.io.IOException;
+
+import static tn.esprit.getionfinanciere.utils.Constants.SAISIE_INVALIDE;
 
 public class GestionCommande {
 
     @FXML
     private DatePicker dpDateCommande;
     @FXML
-    private TextField tfMontantTotal;
+    private TextField tfquantite;
     @FXML
-    private ComboBox<String> cbStatutCommande;
+    private TextField dpquantite;
+    @FXML
+    private TextField tfDescription;
     @FXML
     private Button ajouterButton;
     @FXML
@@ -33,12 +37,11 @@ public class GestionCommande {
     @FXML
     private ComboBox<Fournisseur> nomFournissuer;
 
-    private final ServiceCommande serviceCommande = new ServiceCommande();
+    private final CommandeRepository serviceCommande = new CommandeRepository();
+    private final FournisseurRepository serviceFournisseur = new FournisseurRepository();
 
-    private final ServiceFournisseur serviceFournisseur = new ServiceFournisseur();
     @FXML
     public void initialize() {
-        cbStatutCommande.getItems().setAll("En attente", "Validée", "Annulée");
         nomFournissuer.getItems().setAll(serviceFournisseur.getAll());
         nomFournissuer.setCellFactory(param -> new ListCell<Fournisseur>() {
             @Override
@@ -59,36 +62,41 @@ public class GestionCommande {
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    setText(item.getNomFournisseur());  // Affichez uniquement le nom du fournisseur dans le ComboBox
+                    setText(item.getNomFournisseur());
                 }
+            }
+        });
+        tfquantite.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) { // Accepte uniquement les chiffres
+                tfquantite.setText(oldValue);
             }
         });
     }
 
     @FXML
     public void ajouterCommande(ActionEvent actionEvent) {
-        if (dpDateCommande.getValue() == null || tfMontantTotal.getText().isEmpty() || cbStatutCommande.getValue() == null) {
+        if (dpDateCommande.getValue() == null || tfquantite.getText().isEmpty() || tfDescription.getText().isEmpty()) {
             showAlert(AlertType.ERROR, "Formulaire incomplet", "Tous les champs doivent être remplis.");
             return;
         }
         String dateCommande = dpDateCommande.getValue().toString();
-        double montant;
+        int quantite;
         try {
-            montant = Double.parseDouble(tfMontantTotal.getText());
-            if (montant <= 0) {
-                showAlert(AlertType.ERROR, "Saisie invalide", "Le montant doit être un nombre positif.");
+            quantite = Integer.parseInt(tfquantite.getText());
+            if (quantite <= 0) {
+                showAlert(AlertType.ERROR, SAISIE_INVALIDE, "Le quantite doit être un nombre positif.");
                 return;
             }
         } catch (NumberFormatException e) {
-            showAlert(AlertType.ERROR, "Saisie invalide", "Le montant doit être un nombre.");
+            showAlert(AlertType.ERROR, SAISIE_INVALIDE, "Le quantite doit être un nombre.");
             return;
         }
-        String statutCommande = cbStatutCommande.getValue();
+        String description = tfDescription.getText();
         int idFournisseur = nomFournissuer.valueProperty().getValue().getId();
         Commande commande = new Commande();
         commande.setDateCommande(dateCommande);
-        commande.setMontantTotal(montant);
-        commande.setStatutCommande(statutCommande);
+        commande.setQuantite(quantite);
+        commande.setDescription(description);
         commande.setIdFournisseur(idFournisseur);
         commande.setIdResponsable(1);
 
@@ -117,7 +125,7 @@ public class GestionCommande {
     @FXML
     public void retour(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(MainFX.class.getResource("home_view.fxml")); // Remplacez "home_view.fxml" par le chemin de votre vue d'accueil
+            FXMLLoader loader = new FXMLLoader(MainFX.class.getResource("home_view.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) retourButton.getScene().getWindow();
             Scene scene = new Scene(root);
@@ -138,7 +146,7 @@ public class GestionCommande {
 
     private void clearFields() {
         dpDateCommande.setValue(null);
-        tfMontantTotal.clear();
-        cbStatutCommande.setValue(null);
+        tfquantite.clear();
+        tfDescription.clear();
     }
 }

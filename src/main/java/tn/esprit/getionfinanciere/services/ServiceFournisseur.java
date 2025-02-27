@@ -1,91 +1,39 @@
 package tn.esprit.getionfinanciere.services;
 
 
-import tn.esprit.getionfinanciere.interfaces.IService;
+import javafx.scene.control.Alert;
 import tn.esprit.getionfinanciere.models.Fournisseur;
-import tn.esprit.getionfinanciere.models.enums.TypeService;
-import tn.esprit.getionfinanciere.utils.MyDatabase;
+import tn.esprit.getionfinanciere.repository.FournisseurRepository;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class ServiceFournisseur implements IService<Fournisseur> {
-    private final Connection cnx;
+import static tn.esprit.getionfinanciere.utils.Utils.showAlert;
 
-    public ServiceFournisseur() {
-        cnx = MyDatabase.getInstance().getCnx();
+
+public class ServiceFournisseur {
+
+    private final FournisseurRepository fournisseurRepository = new FournisseurRepository();
+    private final Logger log = Logger.getLogger(ServiceFournisseur.class.getName());
+
+    public void ajouterFournisseur(Fournisseur fournisseur) {
+        fournisseurRepository.add(fournisseur);
+        log.log(Level.INFO, "Fournisseur ajouté {0} ", fournisseur);  // String formatting only applied if needed
+        showAlert(Alert.AlertType.INFORMATION, "Fournisseur ajouté", "Le fournisseur a été ajouté.");
     }
 
-    @Override
-    public void add(Fournisseur fournisseur) {
-        String qry = "INSERT INTO `Fournisseur`(`nomFournisseur`, `adresse`, `contact`, `typeService`) VALUES (?,?,?,?)";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry);
-            pstm.setString(1, fournisseur.getNomFournisseur());
-            pstm.setString(2, fournisseur.getAdresse());
-            pstm.setString(3, fournisseur.getContact());
-            pstm.setString(4, fournisseur.getTypeService().name());
-
-            pstm.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    @Override
     public List<Fournisseur> getAll() {
-        List<Fournisseur> fournisseurs = new ArrayList<>();
-        String qry = "SELECT * FROM `Fournisseur`";
-
-        try {
-            Statement stm = cnx.createStatement();
-            ResultSet rs = stm.executeQuery(qry);
-
-            while (rs.next()) {
-                Fournisseur f = new Fournisseur();
-                f.setId(rs.getInt("id"));
-                f.setNomFournisseur(rs.getString("nomFournisseur"));
-                f.setAdresse(rs.getString("adresse"));
-                f.setContact(rs.getString("contact"));
-                f.setTypeService(TypeService.valueOf(rs.getString("typeService")));
-
-                fournisseurs.add(f);
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
-        return fournisseurs;
+        return fournisseurRepository.getAll();
     }
 
-    @Override
+    public void delete(Fournisseur selectedFournisseur) {
+        fournisseurRepository.delete(selectedFournisseur);
+        showAlert(Alert.AlertType.INFORMATION, "Suppression réussie", "Le fournisseur a été supprimé.");
+    }
+
     public void update(Fournisseur fournisseur) {
-        String qry = "UPDATE `Fournisseur` SET `nomFournisseur`=?, `adresse`=?, `contact`=?, `typeService`=? WHERE `id`=?";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry);
-            pstm.setString(1, fournisseur.getNomFournisseur());
-            pstm.setString(2, fournisseur.getAdresse());
-            pstm.setString(3, fournisseur.getContact());
-            pstm.setString(4, fournisseur.getTypeService().name());
-            pstm.setInt(5, fournisseur.getId());
-
-            pstm.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    @Override
-    public void delete(Fournisseur fournisseur) {
-        String qry = "DELETE FROM `Fournisseur` WHERE `id`=?";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry);
-            pstm.setInt(1, fournisseur.getId());
-
-            pstm.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        fournisseurRepository.update(fournisseur);
+        showAlert(Alert.AlertType.INFORMATION, "Mise à jour réussie", "Le fournisseur a été modifié.");
     }
 }

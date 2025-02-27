@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.getionfinanciere.controllers.GestionBudget">
+
+    <stylesheets>
+        <URL value="@Style.css" />
+    </stylesheets>
+    <children>
+        <!-- Champ pour la date de début -->
+        <Label layoutX="259.0" layoutY="142.0" text="Date de début :" />
+        <DatePicker fx:id="dpDateDebut" layoutX="420.0" layoutY="126.0" prefHeight="52.0" prefWidth="200.0" />
+
+        <!-- Champ pour la date de fin -->
+        <Label layoutX="259.0" layoutY="200.0" text="Date de fin :" />
+        <DatePicker fx:id="dpDateFin" layoutX="420.0" layoutY="186.0" prefHeight="52.0" prefWidth="200.0" />
+
+        <!-- Champ pour le montant alloué -->
+        <Label layoutX="307.0" layoutY="268.0" text="Montant alloué :" />
+        <TextField fx:id="tfMontantAlloue" layoutX="420.0" layoutY="260.0" prefWidth="200.0" promptText="Saisir le montant" />
+
+        <!-- Champ pour le type de budget -->
+        <Label layoutX="310.0" layoutY="338.0" text="Type de budget :" />
+        <TextField fx:id="tfTypeBudget" layoutX="420.0" layoutY="330.0" prefWidth="200.0" promptText="Saisir le type de budget" />
+
+        <!-- Boutons -->
+        <Button fx:id="ajouterButton" layoutX="470.0" layoutY="426.0" onAction="#ajouterBudget" prefHeight="20.0" prefWidth="100.0" text="Ajouter" />
+        <Button fx:id="afficherButton" layoutX="31.0" layoutY="238.0" onAction="#afficherBudgets" prefHeight="41.0" prefWidth="183.0" text="Afficher Budgets" />
+        <Button fx:id="retourButton" layoutX="31.0" layoutY="318.0" onAction="#retour" prefHeight="41.0" prefWidth="183.0" text="Retour" />
+
+        <Label layoutX="449.0" layoutY="40.0" text="Saisir Budget">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+    </children>
+</AnchorPane>

@@ -5,10 +5,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
-import tn.esprit.MainFX;
+import tn.esprit.getionfinanciere.utils.Utils;
 
+import java.io.IOException;
 
 public class HomeController {
     @FXML
@@ -20,44 +22,30 @@ public class HomeController {
     @FXML
     private Button hoDepence;
     @FXML
-    public void openGF(ActionEvent actionEvent) {
+    private BarChart<String, Number> budgetDepenseChart;
 
-
-        try {
-            FXMLLoader loader = new FXMLLoader(MainFX.class.getResource("gestion_fournisseur.fxml"));
-            Parent root = loader.load();
-
-            // Get the current stage and set the new scene
-            Stage stage = (Stage) hoFournisseur.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @FXML
+    public void openGF() {
+        Utils.actionButton("gestion_fournisseur.fxml", hoFournisseur);
     }
 
     @FXML
     public void openGC(ActionEvent actionEvent) {
-
-
-        try {
-            FXMLLoader loader = new FXMLLoader(MainFX.class.getResource("gestion_commande.fxml"));
-            Parent root = loader.load();
-
-            // Get the current stage and set the new scene
-            Stage stage = (Stage) hoCommande.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Utils.actionButton("gestion_commande.fxml", hoCommande);
     }
 
-    public void openGB(ActionEvent actionEvent) {
+    @FXML
+    public void openGB() {
+        Utils.actionButton("gestion_budget.fxml", hoBudget);
     }
 
-    public void openGD(ActionEvent actionEvent) {
+    @FXML
+    public void openGD() {
+        Utils.actionButton("Dashboard.fxml", hoDepence);
+    }
+
+    @FXML
+    private void ouvrirDashboard(ActionEvent event) {
+        Utils.actionButton("Dashboard.fxml", hoDepence);
     }
 }

@@ -16,27 +16,26 @@
    </stylesheets>
    <children>
       <!-- Champ pour la date -->
-      <Label layoutX="67.0" layoutY="132.0" text="Date de commande :" />
-      <DatePicker fx:id="dpDateCommande" layoutX="240.0" layoutY="119.0" prefWidth="200.0" />
+      <Label layoutX="260.0" layoutY="168.0" text="Date de commande :" />
+      <DatePicker fx:id="dpDateCommande" layoutX="424.0" layoutY="152.0" prefWidth="200.0" />
 
-      <!-- Champ pour le montant -->
-      <Label layoutX="66.0" layoutY="200.0" text="Montant total :" />
-      <TextField fx:id="tfMontantTotal" layoutX="240.0" layoutY="194.0" prefWidth="200.0" promptText="Saisir le montant" />
+      <Label layoutX="328.0" layoutY="242.0" text="Quantité :" />
+      <TextField fx:id="tfquantite" layoutX="424.0" layoutY="234.0" prefWidth="200.0" promptText="Saisir la quantité" />
 
-      <!-- Champ pour le statut de commande -->
-      <Label layoutX="51.0" layoutY="329.0" text="Statut de commande :" />
-      <ComboBox fx:id="cbStatutCommande" layoutX="240.0" layoutY="257.0" prefWidth="200.0" promptText="Choisir un statut" />
+      <!-- Champ pour la description -->
+      <Label layoutX="312.0" layoutY="311.0" text="Description :" />
+      <TextField fx:id="tfDescription" layoutX="424.0" layoutY="303.0" prefWidth="200.0" promptText="Saisir une description" />
 
-
-      <Label layoutX="66.0" layoutY="268.0" text="Fournisseur" />
-      <ComboBox fx:id="nomFournissuer" layoutX="240.0" layoutY="318.0" prefWidth="200.0" promptText="Choisir un fournisseur" />
-
+      <!-- Champ pour le fournisseur -->
+      <Label layoutX="310.0" layoutY="394.0" text="Fournisseur :" />
+      <ComboBox fx:id="nomFournissuer" layoutX="424.0" layoutY="381.0" prefWidth="200.0" promptText="Choisir un fournisseur" />
 
       <!-- Boutons -->
-      <Button fx:id="ajouterButton" layoutX="278.0" layoutY="433.0" onAction="#ajouterCommande" prefHeight="20.0" prefWidth="100.0" text="Ajouter" />
-      <Button fx:id="afficherButton" layoutX="467.0" layoutY="505.0" onAction="#afficherCommandes" prefHeight="41.0" prefWidth="183.0" text="Afficher Commandes" />
-      <Button fx:id="retourButton" layoutX="38.0" layoutY="507.0" onAction="#retour" text="Retour" />
-      <Label layoutX="271.0" layoutY="45.0" text="Saisir Commande">
+      <Button fx:id="ajouterButton" layoutX="490.0" layoutY="478.0" onAction="#ajouterCommande" prefHeight="20.0" prefWidth="100.0" text="Ajouter" />
+      <Button fx:id="afficherButton" layoutX="31.0" layoutY="241.0" onAction="#afficherCommandes" prefHeight="41.0" prefWidth="183.0" text="Afficher Commandes" />
+      <Button fx:id="retourButton" layoutX="31.0" layoutY="319.0" onAction="#retour" prefHeight="41.0" prefWidth="183.0" text="Retour" />
+
+      <Label layoutX="445.0" layoutY="68.0" text="Saisir Commande">
          <font>
             <Font size="14.0" />
          </font>

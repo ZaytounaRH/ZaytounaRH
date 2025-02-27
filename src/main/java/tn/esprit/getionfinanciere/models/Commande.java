@@ -1,24 +1,29 @@
 package tn.esprit.getionfinanciere.models;
 
+import tn.esprit.getionfinanciere.models.enums.Status;
+
 public class Commande {
 
     private int id;
     private String dateCommande;
-    private double montantTotal;
+    private int quantite;
     private String statutCommande;
     private int idFournisseur;
     private int idResponsable;
+    private String description;
+
 
     // Constructeurs
     public Commande() {
     }
 
-    public Commande(String dateCommande, double montantTotal, String statutCommande, int idFournisseur, int idResponsable) {
+    public Commande(String dateCommande, int quantite, int idFournisseur, int idResponsable, String description ) {
         this.dateCommande = dateCommande;
-        this.montantTotal = montantTotal;
-        this.statutCommande = statutCommande;
+        this.quantite = quantite;
+        this.statutCommande = Status.PENDING.getLabel();
         this.idFournisseur = idFournisseur;
         this.idResponsable = idResponsable;
+        this.description = description;
     }
 
 
@@ -40,12 +45,12 @@ public class Commande {
         this.dateCommande = dateCommande;
     }
 
-    public double getMontantTotal() {
-        return montantTotal;
+    public int getQuantite() {
+        return quantite;
     }
 
-    public void setMontantTotal(double montantTotal) {
-        this.montantTotal = montantTotal;
+    public void setQuantite(int quantite) {
+        this.quantite = quantite;
     }
 
     public String getStatutCommande() {
@@ -71,6 +76,12 @@ public class Commande {
     public void setIdResponsable(int idResponsable) {
         this.idResponsable = idResponsable;
     }
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
 
 
@@ -79,10 +90,11 @@ public class Commande {
         return "Commande{" +
                 "idCommande=" + id +
                 ", dateCommande='" + dateCommande + '\'' +
-                ", montantTotal=" + montantTotal +
+                ", quantite=" + quantite +
                 ", statutCommande='" + statutCommande + '\'' +
                 ", idFournisseur=" + idFournisseur +
                 ", idResponsable=" + idResponsable +
+                ", description='" + description + '\'' +
                 "}\n";
     }
 

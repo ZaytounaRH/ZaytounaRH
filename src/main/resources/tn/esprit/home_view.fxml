@@ -22,10 +22,10 @@
       </ImageView>
 
 
-      <Button fx:id="hoFournisseur" layoutX="244.0" layoutY="245.0" mnemonicParsing="false" onAction="#openGF" prefHeight="40.0" prefWidth="202.0" text="Genstion Fournissuer" />
+      <Button fx:id="hoFournisseur" layoutX="244.0" layoutY="245.0" mnemonicParsing="false" onAction="#openGF" prefHeight="40.0" prefWidth="202.0" text="Gestion Fournissuer" />
       <Button fx:id="hoCommande" layoutX="647.0" layoutY="244.0" mnemonicParsing="false" onAction="#openGC" prefHeight="41.0" prefWidth="202.0" text="Gestion de commande" />
       <Button fx:id="hoBudget" layoutX="244.0" layoutY="441.0" mnemonicParsing="false" onAction="#openGB" prefHeight="41.0" prefWidth="202.0" text="Gestion de Budget" />
-      <Button fx:id="hoDepence" layoutX="647.0" layoutY="441.0" mnemonicParsing="false" onAction="#openGD" prefHeight="42.0" prefWidth="202.0" text="Gestion de Dépense" />
+      <Button fx:id="hoDepence" layoutX="647.0" layoutY="441.0" mnemonicParsing="false" onAction="#ouvrirDashboard" prefHeight="42.0" prefWidth="202.0" text="Gestion de Dépense" />
       <Label layoutX="471.0" layoutY="119.0" text="Zaytouna RH">
          <font>
             <Font size="55.0" />
