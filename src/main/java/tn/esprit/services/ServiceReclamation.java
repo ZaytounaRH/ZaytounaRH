@@ -6,6 +6,8 @@ import tn.esprit.utils.MyDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import java.sql.*;
 
@@ -129,6 +131,56 @@ public class ServiceReclamation implements IService<Reclamation> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public Map<String, Object> getStatistiquesReclamations() {
+        Map<String, Object> stats = new HashMap<>();
+
+        try {
+            // Total des réclamations
+            String qryTotal = "SELECT COUNT(*) AS total FROM reclamation";
+            Statement stmTotal = cnx.createStatement();
+            ResultSet rsTotal = stmTotal.executeQuery(qryTotal);
+            rsTotal.next();
+            int total = rsTotal.getInt("total");
+
+            // Nombre de réclamations par statut
+            String qryStatut = "SELECT statut, COUNT(*) AS count FROM reclamation GROUP BY statut";
+            Statement stmStatut = cnx.createStatement();
+            ResultSet rsStatut = stmStatut.executeQuery(qryStatut);
+
+            int enAttente = 0, enCours = 0, resolu = 0;
+            while (rsStatut.next()) {
+                String statut = rsStatut.getString("statut");
+                int count = rsStatut.getInt("count");
+                switch (statut) {
+                    case "EN_ATTENTE":
+                        enAttente = count;
+                        break;
+                    case "EN_COURS":
+                        enCours = count;
+                        break;
+                    case "RESOLU":
+                        resolu = count;
+                        break;
+                }
+            }
+
+            // Calcul du pourcentage des réclamations résolues
+            double pourcentageResolues = (total > 0) ? ((double) resolu / total) * 100 : 0;
+
+            // Ajout des statistiques au Map
+            stats.put("Total", total);
+            stats.put("En Attente", enAttente);
+            stats.put("En Cours", enCours);
+            stats.put("Résolu", resolu);
+            stats.put("Pourcentage Résolu", pourcentageResolues);
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération des statistiques : " + e.getMessage());
+        }
+
+        return stats;
     }
 
 }

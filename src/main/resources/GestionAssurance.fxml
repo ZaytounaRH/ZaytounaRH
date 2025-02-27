@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.text.Text?>
 
 <ScrollPane prefHeight="720.0" prefWidth="1080.0"
             xmlns="http://javafx.com/javafx/23.0.1"
@@ -41,6 +42,22 @@
 
                 <!-- FlowPane pour afficher les réclamations -->
                 <FlowPane fx:id="flowPaneReclamations" layoutX="50.0" layoutY="700.0" hgap="20" vgap="20" prefWidth="950.0" prefHeight="300.0" />
+
+                <!-- Bouton pour tester les statistiques, aligné en haut à droite -->
+                <Button layoutX="950.0" layoutY="20.0" text="Tester Stats" onAction="#testerStats" />
+
+                <!-- Section pour afficher les résultats des statistiques -->
+                <FlowPane fx:id="flowPaneStats" layoutX="50.0" layoutY="650.0" hgap="20" vgap="20" prefWidth="950.0" prefHeight="100.0">
+                    <children>
+                        <!-- Labels pour afficher les statistiques -->
+                        <Label fx:id="lbTotal" text="Total: " />
+                        <Label fx:id="lbEnAttente" text="En Attente: " />
+                        <Label fx:id="lbEnCours" text="En Cours: " />
+                        <Label fx:id="lbResolu" text="Résolu: " />
+                        <Label fx:id="lbPourcentageResolues" text="Pourcentage Résolu: " />
+                        <Label fx:id="lbDelaiMoyen" text="Délai Moyen (jours): " />
+                    </children>
+                </FlowPane>
             </children>
         </AnchorPane>
     </content>

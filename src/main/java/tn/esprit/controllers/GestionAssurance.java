@@ -30,7 +30,8 @@ import javafx.geometry.Insets;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import tn.esprit.utils.MyDatabase;
-
+import java.util.HashMap;
+import java.util.Map;
 import java.time.LocalDate;
 
 public class GestionAssurance {
@@ -68,6 +69,29 @@ public class GestionAssurance {
         cbTypeAssurance.getSelectionModel().clearSelection(); // Effacer la sélection dans la ComboBox
         dpDateExpiration.setValue(null); // Réinitialiser la date
     }
+
+    @FXML
+    private void testerStats() {
+        ServiceReclamation serviceReclamation = new ServiceReclamation();
+        Map<String, Object> resultats = serviceReclamation.getStatistiquesReclamations(); // Retourne une map
+
+        // Affichage des statistiques dans les labels
+        afficherStats(resultats);
+    }
+
+    @FXML
+    private Label lbTotal, lbEnAttente, lbEnCours, lbResolu, lbPourcentageResolues, lbDelaiMoyen;
+
+    public void afficherStats(Map<String, Object> stats) {
+        lbTotal.setText("Total: " + stats.get("Total"));
+        lbEnAttente.setText("En Attente: " + stats.get("En Attente"));
+        lbEnCours.setText("En Cours: " + stats.get("En Cours"));
+        lbResolu.setText("Résolu: " + stats.get("Résolu"));
+        lbPourcentageResolues.setText("Pourcentage Résolu: " + stats.get("Pourcentage Résolu"));
+        lbDelaiMoyen.setText("Délai Moyen (jours): " + stats.get("Délai Moyen (jours)"));
+    }
+
+
 
     @FXML
     public void ajouterOuMettreAJourAssurance(ActionEvent actionEvent) {
