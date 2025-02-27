@@ -12,6 +12,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import tn.esprit.interfaces.IService;
 import tn.esprit.models.Certification;
 import tn.esprit.models.EmployeCertification;
@@ -228,6 +229,89 @@ catch (Exception e) {
 
     @FXML
     public void initialize(){
+
+        // Charger toutes les formations
+        List<Formation> formations = serviceFormation.getAll();
+
+        // Définir un StringConverter pour afficher uniquement les noms des formations
+        cbFormation.setCellFactory(param -> new ListCell<Formation>() {
+            @Override
+            protected void updateItem(Formation formation, boolean empty) {
+                super.updateItem(formation, empty);
+                if (empty || formation == null) {
+                    setText(null);
+                } else {
+                    setText(formation.getNomFormation());  // Afficher uniquement le nom
+                }
+            }
+        });
+
+        // Utiliser un StringConverter pour afficher uniquement le nom
+        cbFormation.setConverter(new StringConverter<Formation>() {
+            @Override
+            public String toString(Formation formation) {
+                return formation == null ? "" : formation.getNomFormation();  // Affiche le nom
+            }
+
+            @Override
+            public Formation fromString(String string) {
+                return null;  // La conversion inverse n'est pas nécessaire ici
+            }
+        });
+
+        // Remplir le ComboBox avec la liste des formations
+        cbFormation.setItems(FXCollections.observableArrayList(formations));
+
+        List<Employee> employes = serviceEmployee.getAll();
+       comboBoxEmploye.setCellFactory(param -> new ListCell<Employee>() {
+@Override
+           protected void updateItem(Employee employe, boolean empty) {
+    super.updateItem(employe, empty);
+    if (empty || employe == null) {
+        setText(null);
+    }
+    else {
+        setText(employe.getNom());
+    }
+}
+       });
+       comboBoxEmploye.setConverter(new StringConverter<Employee>() {
+           @Override
+           public String toString(Employee employee) {
+               return employee == null ? "" : employee.getNom();
+           }
+           @Override
+           public Employee fromString(String string) {
+               return null;
+           }
+       });
+       comboBoxEmploye.setItems(FXCollections.observableArrayList(employes));
+
+        List<Certification> certifications = serviceCertification.getAll();
+comboBoxCertification.setCellFactory(param -> new ListCell<Certification>() {
+    @Override
+    protected void updateItem(Certification certification, boolean empty) {
+        super.updateItem(certification, empty);
+        if (empty || certification == null) {
+            setText(null);
+        }
+        else {
+            setText(certification.getTitreCertif());
+        }
+    }
+        });
+comboBoxCertification.setConverter(new StringConverter<Certification>() {
+    @Override
+    public String toString(Certification certification) {
+        return certification == null ? "" : certification.getTitreCertif();
+    }
+    @Override
+    public Certification fromString(String string) {
+        return null;
+    }
+});
+comboBoxCertification.setItems(FXCollections.observableArrayList(certifications));
+        /*
         List<Formation> formations = serviceFormation.getAll();
         cbFormation.setItems(FXCollections.observableArrayList(formations));
 
@@ -238,6 +322,8 @@ catch (Exception e) {
        List<Certification> certifications = serviceCertification.getAll();
         comboBoxCertification.setItems(FXCollections.observableArrayList(certifications));
 
+
+         */
 
     }
 

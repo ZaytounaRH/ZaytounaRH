@@ -186,68 +186,49 @@ public class ServiceFormation implements IService<Formation> {
         }
         return false;
     }
-    public Formation getByName(String nomFormation) {
-        Formation formation = null;
-        String query = "SELECT * FROM formation WHERE nomFormation = ?";
+    public List<String> getNomsFormations() {
+        List<String> nomsFormations = new ArrayList<>();
+        String query = "SELECT nomFormation FROM formation ORDER BY nomFormation";
 
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(query);
-            pstm.setString(1, nomFormation);
-            ResultSet resultSet = pstm.executeQuery();
+        try (PreparedStatement stmt = cnx.prepareStatement(query)){
 
-            if (resultSet.next()) {
-                formation = new Formation();
-                formation.setIdFormation(resultSet.getInt("idFormation"));
-                formation.setNomFormation(resultSet.getString("nomFormation"));
-                formation.setDescriptionFormation(resultSet.getString("descriptionFormation"));
-                formation.setDateDebutFormation(resultSet.getDate("dateDebutFormation"));
-                formation.setDateFinFormation(resultSet.getDate("dateFinFormation"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return formation;
-    }
-
-
-
-    public List<Rh> getAllRH() {
-        List<Rh> rhList = new ArrayList<>();
-        String query = "SELECT * FROM rh"; // Table RH
-
-        try (Statement stmt = cnx.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
+             ResultSet rs = stmt.executeQuery() ;
 
             while (rs.next()) {
-                Rh rh = new Rh();
-                rh.setRh_id(rs.getInt("idRH"));
-                rh.setNom(rs.getString("nom"));
-                rhList.add(rh);
+                nomsFormations.add(rs.getString("nomFormation"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return rhList;
+        return nomsFormations;
     }
+    public List<Formation> searchByName(String keyword) {
+        String query = "SELECT * FROM formation WHERE nomFormation LIKE ?";
+        List<Formation> formations = new ArrayList<>();
 
-    public List<Certification> getAllCertifications() {
-        List<Certification> certifications = new ArrayList<>();
-        String query = "SELECT * FROM certification";
-
-        try (Statement stmt = cnx.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
+        try (PreparedStatement stmt = cnx.prepareStatement(query)) {
+            stmt.setString(1, "%" + keyword + "%"); // Recherche partielle
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Certification certif = new Certification();
-                certif.setIdCertif(rs.getInt("idCertif"));
-                certif.setTitreCertif(rs.getString("titreCertif"));
-                certifications.add(certif);
+                Formation formation = new Formation(
+                        rs.getInt("idFormation"),
+                        rs.getString("nomFormation"),
+                        rs.getString("descriptionFormation"),
+                        rs.getDate("dateDebutFormation"),
+                        rs.getDate("dateFinFormation")
+                );
+                formations.add(formation);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return certifications;
+        return formations;
     }
+
+
+
+
+
 
 }

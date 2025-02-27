@@ -16,8 +16,8 @@
 
             <Label text="formation"/>
             <ComboBox fx:id="cbFormation" promptText="Sélectionner une formation" />
-            <ComboBox fx:id="comboBoxEmploye" layoutX="50" layoutY="50" />
-            <ComboBox fx:id="comboBoxCertification" layoutX="50" layoutY="100" />
+            <ComboBox fx:id="comboBoxEmploye" promptText="Sélectionner un employe" layoutX="50" layoutY="50" />
+            <ComboBox fx:id="comboBoxCertification" promptText="Sélectionner une certification" layoutX="50" layoutY="100" />
             <Button text="Affecter Certification" onAction="#affecterCertification" layoutX="50" layoutY="150" />
 
             <HBox spacing="10" alignment="CENTER_LEFT">

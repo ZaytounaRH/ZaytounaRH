@@ -4,14 +4,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import tn.esprit.models.Employee;
 import tn.esprit.models.Formation;
 import tn.esprit.models.User;
@@ -19,10 +20,7 @@ import tn.esprit.services.ServiceEmployeFormation;
 import tn.esprit.services.ServiceEmployee;
 import tn.esprit.services.ServiceFormation;
 import tn.esprit.utils.SessionManager;
-import tn.esprit.controllers.DatePickerDialog;
-
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -91,9 +89,7 @@ public class GestionFormation {
     }
 
 
-
-
-public void afficherFormations(ActionEvent actionEvent) {
+    public void afficherFormations(ActionEvent actionEvent) {
 
         User rhUser = new User();
         rhUser.setUserType("RH");
@@ -105,49 +101,37 @@ public void afficherFormations(ActionEvent actionEvent) {
             System.out.println("Erreur : Seuls les RH peuvent ajouter une formation !");
             return;
         }
-        formationFlowPane.getChildren().clear();
-    Stage nouveauStage = new Stage();
 
-    // Crée un FlowPane pour afficher les formations
-    FlowPane formationFlowPane = new FlowPane();
-    formationFlowPane.setVgap(20);
-    formationFlowPane.setHgap(20);
+        Stage nouveauStage = new Stage();
 
-        // Loop through the formations and create cards
-        for (Formation formation : serviceFormation.getAll()) {
-            HBox card = new HBox(10);
-            card.setStyle("-fx-padding: 10px; -fx-border-color: #cccccc; -fx-background-color: #f9f9f9; -fx-border-radius: 5px;");
+        // Barre de recherche
+        TextField searchField = new TextField();
+        searchField.setPromptText("Rechercher une formation...");
+        searchField.setPrefWidth(300);
 
-            Label nomLabel = new Label(formation.getNomFormation());
-            nomLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
-            Label descriptionLabel = new Label(formation.getDescriptionFormation());
-            descriptionLabel.setStyle("-fx-font-size: 14px;");
-            Label dateDebutLabel = new Label("Début : " + formation.getDateDebutFormation().toString());
-            dateDebutLabel.setStyle("-fx-font-size: 12px;");
-            Label dateFinLabel = new Label("Fin : " + formation.getDateFinFormation().toString());
-            dateFinLabel.setStyle("-fx-font-size: 12px;");
+        // FlowPane pour afficher les formations
+        formationFlowPane = new FlowPane();
+        formationFlowPane.setVgap(20);
+        formationFlowPane.setHgap(20);
 
-            // Bouton de modification
-            Button btnModifier = new Button("Modifier");
-            btnModifier.setOnAction(e ->updateFormation(formation));
-             /*
-            // Bouton de suppression
-            Button deleteButton = new Button("Supprimer");
-            deleteButton.setStyle("-fx-background-color: red; -fx-text-fill: white;");
-            deleteButton.setOnAction(e -> deleteFormation(formation));
+        // Ajout de l'écouteur pour filtrer la liste
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            List<Formation> filteredFormations = serviceFormation.searchByName(newValue);
+            updateFormationList(filteredFormations);
+        });
 
+        // Conteneur principal (VBox)
+        VBox root = new VBox(10, searchField, formationFlowPane);
+        root.setPadding(new Insets(10));
 
-             */
- VBox cardContent = new VBox(5, nomLabel, descriptionLabel, dateDebutLabel, dateFinLabel, btnModifier);
-            card.getChildren().add(cardContent);
+        // Chargement initial des formations
+        updateFormationList(serviceFormation.getAll());
 
-            // Add the card to the existing formationFlowPane
-            formationFlowPane.getChildren().add(card);
-        }
-    Scene scene = new Scene(formationFlowPane, 800, 600);
-    nouveauStage.setScene(scene);
-    nouveauStage.setTitle("Formations");
-    nouveauStage.show();
+        // Ajout du VBox à la scène (au lieu du FlowPane seul)
+        Scene scene = new Scene(root, 800, 600);
+        nouveauStage.setScene(scene);
+        nouveauStage.setTitle("Formations");
+        nouveauStage.show();
     }
 
     @FXML
@@ -224,71 +208,71 @@ public void afficherFormations(ActionEvent actionEvent) {
     }
 
 
-
-
-
-    /*
     @FXML
-    public void updateFormation(ActionEvent actionEvent) {
-        User rhUser = new User();
-        rhUser.setUserType("RH");
-        SessionManager.getInstance().login(rhUser);
+    public void deleteFormation(Formation formation) {
+        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationAlert.setTitle("Confirmation de suppression");
+        confirmationAlert.setHeaderText("Êtes-vous sûr de vouloir supprimer cette formation ?");
+        confirmationAlert.setContentText("Cette action est irréversible.");
 
-        User currentUser = SessionManager.getInstance().getCurrentUser();
-
-        if (currentUser == null || !"RH".equalsIgnoreCase(currentUser.getUserType())) {
-            System.out.println("Erreur : Seuls les RH peuvent ajouter une formation !");
-            return;
-        }
-        String nomFormation = tfNomFormation.getText();
-        Formation formationExistante = serviceFormation.getByName(nomFormation);
-
-
-        if (formationExistante != null) {
-            formationExistante.setNomFormation(tfNomFormation.getText());
-            formationExistante.setDescriptionFormation(tfDescriptionFormation.getText());
-            formationExistante.setDateDebutFormation(Date.valueOf(dateDebutPicker.getValue()));
-            formationExistante.setDateFinFormation(Date.valueOf(dateFinPicker.getValue()));
-
-            serviceFormation.update(formationExistante);
-            afficherFormations(actionEvent);
-        } else {
-            lbFormations.setText("Formation non trouvée !");
-        }
-    }
-
-
- */
-    @FXML
-    public void deleteFormation(ActionEvent actionEvent) {
-        String nomFormation = tfNomFormation.getText();
-        Formation formation = serviceFormation.getByName(nomFormation);
-
-        if (formation != null) {
-            int idFormation = formation.getIdFormation();
+        Optional<ButtonType> result = confirmationAlert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Si l'utilisateur confirme, on supprime la certification
             serviceFormation.delete(formation);
-            afficherFormations(actionEvent);
 
-            // Afficher un message de confirmation ou de succès
-            System.out.println("Formation supprimée avec succès !");
+            // Rafraîchir l'affichage après suppression
+            afficherFormations(new ActionEvent());
         } else {
-            // Si aucune formation avec ce nom n'est trouvée
-            System.out.println("Aucune formation trouvée avec ce nom !");
+            System.out.println("Suppression annulée.");
         }
     }
 
     @FXML
     public void initialize() {
 
+        // Charger toutes les formations
         List<Formation> formations = serviceFormation.getAll();
+
+        // Définir un StringConverter pour afficher uniquement les noms des formations
+        formationsComboBox.setCellFactory(param -> new ListCell<Formation>() {
+            @Override
+            protected void updateItem(Formation formation, boolean empty) {
+                super.updateItem(formation, empty);
+                if (empty || formation == null) {
+                    setText(null);
+                } else {
+                    setText(formation.getNomFormation());  // Afficher uniquement le nom
+                }
+            }
+        });
+
+        // Utiliser un StringConverter pour afficher uniquement le nom
+        formationsComboBox.setConverter(new StringConverter<Formation>() {
+            @Override
+            public String toString(Formation formation) {
+                return formation == null ? "" : formation.getNomFormation();  // Affiche le nom
+            }
+
+            @Override
+            public Formation fromString(String string) {
+                return null;  // La conversion inverse n'est pas nécessaire ici
+            }
+        });
+
+        // Remplir le ComboBox avec la liste des formations
         formationsComboBox.setItems(FXCollections.observableArrayList(formations));
 
 
         List<Employee> employes = serviceEmployee.getAll();
+
+
         employesListView.setItems(FXCollections.observableArrayList(employes));
         employesListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         employesListView.setItems(FXCollections.observableArrayList(serviceEmployee.getAll()));
+
+
     }
+
 
 
     @FXML
@@ -319,8 +303,6 @@ public void afficherFormations(ActionEvent actionEvent) {
 
         alert.showAndWait();
     }
-
-
 
 
     @FXML
@@ -361,6 +343,7 @@ public void afficherFormations(ActionEvent actionEvent) {
             }
         }
     }
+
     @FXML
     private void modifierEmployesFormation() {
         // Récupérer la formation sélectionnée
@@ -386,6 +369,7 @@ public void afficherFormations(ActionEvent actionEvent) {
         // Afficher un message de confirmation
         showAlert("Succès", "La liste des employés a été mise à jour.");
     }
+
     @FXML
     private void supprimerEmployeFormation() {
         // Récupérer la formation sélectionnée
@@ -416,36 +400,50 @@ public void afficherFormations(ActionEvent actionEvent) {
         showAlert("Succès", "L'employé a été supprimé de la formation.");
     }
 
+    private void updateFormationList(List<Formation> formations) {
+        if (formationFlowPane == null) {
+            System.out.println("Erreur : formationFlowPane n'est pas initialisé !");
+            return;
+        }
+
+        formationFlowPane.getChildren().clear(); // Nettoyer avant d'ajouter
+
+        for (Formation formation : formations) {
+            HBox card = new HBox(10);
+            card.setStyle("-fx-padding: 10px; -fx-border-color: #cccccc; -fx-background-color: #f9f9f9; -fx-border-radius: 5px;");
+
+            Label nomLabel = new Label(formation.getNomFormation());
+            nomLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+
+            Label descriptionLabel = new Label(formation.getDescriptionFormation());
+            descriptionLabel.setStyle("-fx-font-size: 14px;");
+
+            Label dateDebutLabel = new Label("Début : " + formation.getDateDebutFormation().toString());
+            dateDebutLabel.setStyle("-fx-font-size: 12px;");
+
+            Label dateFinLabel = new Label("Fin : " + formation.getDateFinFormation().toString());
+            dateFinLabel.setStyle("-fx-font-size: 12px;");
+
+            Button btnModifier = new Button("Modifier");
+            btnModifier.setOnAction(e -> updateFormation(formation));
+
+            Button deleteButton = new Button("Supprimer");
+            deleteButton.setStyle("-fx-background-color: red; -fx-text-fill: white;");
+            deleteButton.setOnAction(e -> deleteFormation(formation));
+
+            VBox cardContent = new VBox(5, nomLabel, descriptionLabel, dateDebutLabel, dateFinLabel, btnModifier, deleteButton);
+            card.getChildren().add(cardContent);
+
+            formationFlowPane.getChildren().add(card);
+        }
+    }
+
 }
 
 
 
 
-    /*
-    public void chargerListes() {
-        ServiceFormation serviceFormation = new ServiceFormation();
 
-
-       List<Employee> employes = serviceFormation.g();
-       comboBoxEmploye.getItems().addAll(employes);
-
-
-        List<Rh> rhList = serviceFormation.getAllRH();
-        comboBoxRH.getItems().addAll(rhList);
-
-
-        List<Certification> certifications = serviceFormation.getAllCertifications();
-        comboBoxCertification.getItems().addAll(certifications);
-    }
-/////////////
-@FXML
-    private void handleEmployeSelection() {
-        Employee selectedEmploye = comboBoxEmploye.getSelectionModel().getSelectedItem();
-        if (selectedEmploye != null) {
-            System.out.println("Employé sélectionné : " + selectedEmploye.getNom());
-        }
-    }
-     */
 
 
 

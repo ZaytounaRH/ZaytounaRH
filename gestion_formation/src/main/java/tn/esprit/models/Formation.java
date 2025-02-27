@@ -23,6 +23,15 @@ public class Formation {
 
         this.certifications = certifications;
     }
+    public Formation(int idFormation, String nomFormation, String descriptionFormation, Date dateDebutFormation,Date dateFinFormation) {
+        this.idFormation = idFormation;
+        this.nomFormation = nomFormation;
+        this.descriptionFormation = descriptionFormation;
+        this.dateDebutFormation = dateDebutFormation;
+        this.dateFinFormation = dateFinFormation;
+    }
+
+
     public Formation(String nomFormation, String descriptionFormation, Date dateDebutFormation,Date dateFinFormation) {
         this.nomFormation = nomFormation;
         this.descriptionFormation = descriptionFormation;
