@@ -19,15 +19,20 @@ public class ServiceReclamation implements IService<Reclamation> {
 
     @Override
     public void add(Reclamation reclamation) {
-        String qry = "INSERT INTO `reclamation`(`titre`, `description`, `incidentType`, `dateSoumission`, `statut`, `priorite`, `pieceJointe`) VALUES (?,?,?,?,?,?,?)";
+        String qry = "INSERT INTO `reclamation`(`titre`, `description`, `incidentType`, `dateSoumission`, `statut`, `priorite`, `pieceJointe`, `idAssurance`) VALUES (?,?,?,?,?,?,?,?)";
         try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
             pstm.setString(1, reclamation.getTitre());
             pstm.setString(2, reclamation.getDescription());
-            pstm.setString(3, reclamation.getIncidentType().name()); // Ajout de incidentType
+            pstm.setString(3, reclamation.getIncidentType().name());
             pstm.setDate(4, Date.valueOf(reclamation.getDateSoumission()));
             pstm.setString(5, reclamation.getStatut().name());
             pstm.setString(6, reclamation.getPriorite().name());
             pstm.setString(7, reclamation.getPieceJointe());
+            if (reclamation.getIdAssurance() != null) {
+                pstm.setInt(8, reclamation.getIdAssurance());
+            } else {
+                pstm.setNull(8, Types.INTEGER);
+            }
 
             pstm.executeUpdate();
             System.out.println("Réclamation ajoutée avec succès.");
@@ -35,6 +40,7 @@ public class ServiceReclamation implements IService<Reclamation> {
             System.err.println("Erreur lors de l'ajout de la réclamation: " + e.getMessage());
         }
     }
+
 
     @Override
     public List<Reclamation> getAll() {
@@ -51,7 +57,6 @@ public class ServiceReclamation implements IService<Reclamation> {
                 p.setTitre(rs.getString("titre"));
                 p.setDescription(rs.getString("description"));
 
-                // Récupérer et convertir incidentType en Enum
                 String incidentTypeStr = rs.getString("incidentType");
                 if (incidentTypeStr != null) {
                     p.setIncidentType(Reclamation.IncidentType.valueOf(incidentTypeStr));
@@ -62,9 +67,14 @@ public class ServiceReclamation implements IService<Reclamation> {
                 p.setPriorite(Reclamation.PrioriteReclamation.valueOf(rs.getString("priorite")));
                 p.setPieceJointe(rs.getString("pieceJointe"));
 
+                // Récupération de idAssurance
+                int idAssurance = rs.getInt("idAssurance");
+                if (!rs.wasNull()) {
+                    p.setIdAssurance(idAssurance);
+                }
+
                 reclamations.add(p);
             }
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -75,14 +85,13 @@ public class ServiceReclamation implements IService<Reclamation> {
 
     @Override
     public void update(Reclamation reclamation) {
-        String qry = "UPDATE `reclamation` SET `titre`=?, `description`=?, `incidentType`=?, `dateSoumission`=?, `statut`=?, `priorite`=?, `pieceJointe`=? WHERE `idR`=?";
+        String qry = "UPDATE `reclamation` SET `titre`=?, `description`=?, `incidentType`=?, `dateSoumission`=?, `statut`=?, `priorite`=?, `pieceJointe`=?, `idAssurance`=? WHERE `idR`=?";
 
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setString(1, reclamation.getTitre());
             pstm.setString(2, reclamation.getDescription());
 
-            // Ajout de incidentType
             if (reclamation.getIncidentType() != null) {
                 pstm.setString(3, reclamation.getIncidentType().name());
             } else {
@@ -93,7 +102,14 @@ public class ServiceReclamation implements IService<Reclamation> {
             pstm.setString(5, reclamation.getStatut().name());
             pstm.setString(6, reclamation.getPriorite().name());
             pstm.setString(7, reclamation.getPieceJointe());
-            pstm.setInt(8, reclamation.getIdR());
+
+            if (reclamation.getIdAssurance() != null) {
+                pstm.setInt(8, reclamation.getIdAssurance());
+            } else {
+                pstm.setNull(8, Types.INTEGER);
+            }
+
+            pstm.setInt(9, reclamation.getIdR());
 
             pstm.executeUpdate();
             System.out.println("Réclamation mise à jour avec succès.");
@@ -101,6 +117,7 @@ public class ServiceReclamation implements IService<Reclamation> {
             System.err.println("Erreur lors de la mise à jour de la réclamation: " + e.getMessage());
         }
     }
+
 
     @Override
     public void delete(Reclamation reclamation) {
