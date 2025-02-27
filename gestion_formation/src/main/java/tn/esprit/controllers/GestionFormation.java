@@ -44,6 +44,8 @@ public class GestionFormation {
 
     @FXML
     private Button affecterButton;
+    @FXML
+    private VBox cardsContainer;
 
     ServiceFormation serviceFormation = new ServiceFormation();
     private ServiceEmployeFormation serviceEmployeFormation = new ServiceEmployeFormation();
@@ -212,6 +214,46 @@ public void afficherFormations(ActionEvent actionEvent) {
     }
 
 
+
+
+    @FXML
+    public void afficherEmployesParFormation() {
+        Formation formationChoisie = formationsComboBox.getSelectionModel().getSelectedItem();
+
+        if (formationChoisie == null) {
+            showAlert("Erreur", "Veuillez sélectionner une formation.");
+            return;
+        }
+
+        // Appeler la méthode pour obtenir la liste des employés inscrits
+        List<Employee> employees = serviceEmployeFormation.afficherEmployesParFormation(formationChoisie.getIdFormation());
+
+        // Vider le conteneur avant d'ajouter de nouvelles cartes
+        cardsContainer.getChildren().clear();
+
+        // Si aucun employé n'est inscrit, afficher un message
+        if (employees.isEmpty()) {
+            Label noEmployeesLabel = new Label("Aucun employé inscrit à cette formation.");
+            cardsContainer.getChildren().add(noEmployeesLabel);
+        } else {
+            // Ajouter une carte pour chaque employé
+            for (Employee emp : employees) {
+                // Créer une carte pour chaque employé
+                VBox employeeCard = new VBox(10);
+                employeeCard.setStyle("-fx-border-color: #0078D4; -fx-border-width: 2; -fx-padding: 10;");
+
+                // Ajouter les informations de l'employé dans la carte
+                Label nameLabel = new Label("Nom: " + emp.getNom() + " " + emp.getPrenom());
+                Label emailLabel = new Label("Email: " + emp.getEmail());
+
+                // Ajouter les labels à la carte
+                employeeCard.getChildren().addAll(nameLabel, emailLabel);
+
+                // Ajouter la carte au conteneur
+                cardsContainer.getChildren().add(employeeCard);
+            }
+        }
+    }
 }
 
 

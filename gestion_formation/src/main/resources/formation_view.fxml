@@ -46,6 +46,11 @@
 
             <!-- Bouton d'affectation -->
             <Button fx:id="affecterButton" text="Affecter Formation" onAction="#affecterFormation"/>
+            <VBox fx:id="cardsContainer" spacing="10" alignment="TOP_CENTER">
+                <!-- Les cartes des employés seront ajoutées ici dynamiquement -->
+            </VBox>
+
+            <Button text="Afficher Employés" onAction="#afficherEmployesParFormation" />
 
         </VBox>
 

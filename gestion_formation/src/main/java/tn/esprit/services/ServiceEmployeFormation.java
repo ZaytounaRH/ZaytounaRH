@@ -57,25 +57,30 @@ public class ServiceEmployeFormation implements IService<EmployeFormation> {
         return false;
     }
 
-    public void afficherEmployesParFormation(int idFormation) {
+    public List<Employee> afficherEmployesParFormation(int idFormation) {
         // 1. Récupérer le nom de la formation
         String nomFormation = "Formation inconnue";
         String queryFormation = "SELECT nomFormation FROM formation WHERE idFormation = ?";
+
+        List<Employee> employeesInFormation = new ArrayList<>();
 
         try (PreparedStatement pstmFormation = cnx.prepareStatement(queryFormation)) {
             pstmFormation.setInt(1, idFormation);
             ResultSet rsFormation = pstmFormation.executeQuery();
             if (rsFormation.next()) {
                 nomFormation = rsFormation.getString("nomFormation");
+            } else {
+                System.out.println("Formation non trouvée.");
+                return employeesInFormation; // Si aucune formation n'est trouvée, on retourne une liste vide
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération du nom de la formation : " + e.getMessage());
-            return; // Stoppe l'exécution si la formation n'existe pas
+            return employeesInFormation;
         }
 
         // 2. Récupérer tous les employés via getAll()
         List<Employee> allEmployees = serviceEmploye.getAll();
-        List<Employee> employeesInFormation = new ArrayList<>();
+       // List<Employee> employeesInFormation = new ArrayList<>();
 
         // 3. Filtrer ceux qui sont inscrits à la formation
         String queryEmployes = "SELECT employee_id FROM employe_formation WHERE idFormation = ?";
@@ -97,18 +102,10 @@ public class ServiceEmployeFormation implements IService<EmployeFormation> {
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération des employés inscrits à la formation : " + e.getMessage());
-            return;
-        }
 
-        System.out.println(" Liste des employés inscrits à la formation : " + nomFormation);
-
-        if (employeesInFormation.isEmpty()) {
-            System.out.println(" Aucun employé inscrit à cette formation.");
-        } else {
-            for (Employee emp : employeesInFormation) {
-                System.out.println("➡ " + emp.getNom() + " " + emp.getPrenom() + " | Email: " + emp.getEmail());
-            }
         }
+        return employeesInFormation;
+
     }
     public void modifierListeEmployesFormation(int idFormation, List<Integer> newEmployeIds) {
         List<Integer> currentEmployeeIds = getEmployesInscrits(idFormation);
