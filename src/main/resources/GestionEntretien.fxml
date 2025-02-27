@@ -1,83 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.geometry.Pos?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="tn.esprit.controllers.GestionEntretien" stylesheets="@css/styles.css">
+    <center>
+        <VBox spacing="10" alignment="CENTER" styleClass="form-container">
+            <Label text="Ajout d'un Entretien" styleClass="form-title" />
 
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.ListView?>
-
-<FlowPane fx:id="entretienCards" hgap="20" vgap="20" alignment="CENTER" prefWidth="1000" prefHeight="800" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17" fx:controller="tn.esprit.controllers.GestionEntretien">
-    <children>
-        <!-- Title -->
-        <Label layoutX="400.0" layoutY="20.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Gestion des Entretiens" />
-
-        <!-- Section for Adding/Updating an Entretien -->
-        <VBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 10px;">
-            <Label text="Nom de l'Entretien" />
-            <TextField fx:id="tfNomEntretien" promptText="Nom de l'Entretien" />
-
-            <Label text="Date de l'Entretien" />
-            <DatePicker fx:id="dateEntretienPicker" />
-
-            <Label text="Type d'Entretien" />
-            <ComboBox fx:id="typeEntretienComboBox" promptText="Choisir le type d'entretien">
-                <items>
-                    <FXCollections fx:factory="observableArrayList">
-                        <String>PRESENTIEL</String>
-                        <String>DISTANCIEL</String>
-                        <String>TELEPHONIQUE</String>
-                    </FXCollections>
-                </items>
-            </ComboBox>
-
-            <Label text="Statut de l'Entretien" />
-            <ComboBox fx:id="statutEntretienComboBox" promptText="Choisir le statut de l'entretien">
-                <items>
-                    <FXCollections fx:factory="observableArrayList">
-                        <String>PLANIFIE</String>
-                        <String>EN_COURS</String>
-                        <String>TERMINE</String>
-                        <String>ANNULE</String>
-                    </FXCollections>
-                </items>
-            </ComboBox>
-
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Button text="Ajouter Entretien" onAction="#ajouterEntretien" />
+            <HBox spacing="10">
+                <Label text="Date de l'entretien :" />
+                <DatePicker fx:id="dateEntretienPicker" />
             </HBox>
 
-            <!-- Sélectionner les Candidats -->
-            <Label text="Sélectionnez un Candidat:"/>
-            <ComboBox fx:id="candidatsComboBox" promptText="Choisir un Candidat"/>
+            <HBox spacing="10">
+                <Label text="Heure de l'entretien :" />
+                <Spinner fx:id="heureEntretienSpinner" />
+            </HBox>
 
-            <!-- Bouton d'affectation -->
-            <Button fx:id="affecterEntretienButton" text="Affecter Entretien au Candidat" onAction="#affecterEntretien"/>
+            <HBox spacing="10">
+                <Label text="Type d'entretien :" />
+                <ComboBox fx:id="typeEntretienComboBox" promptText="Sélectionnez le type" />
+            </HBox>
 
-            <VBox fx:id="cardsContainer" spacing="10" alignment="TOP_CENTER">
-                <!-- Les cartes des entretiens seront ajoutées ici dynamiquement -->
-            </VBox>
+            <HBox spacing="10">
+                <Label text="Statut de l'entretien :" />
+                <ComboBox fx:id="statutEntretienComboBox" promptText="Sélectionnez le statut" />
+            </HBox>
 
-            <Button text="Afficher Candidats" onAction="#afficherCandidatsParEntretien" />
-            <Button text="Modifier Candidats" onAction="#modifierCandidatsEntretien" />
-            <Button text="Supprimer Candidat de l'entretien" onAction="#supprimerCandidatEntretien" />
+            <HBox spacing="10">
+                <Label text="Commentaire :" />
+                <TextArea fx:id="commentaireTextArea" prefRowCount="3" prefColumnCount="20" />
+            </HBox>
 
+            <Button fx:id="ajouterButton" text="Ajouter" onAction="#ajouterEntretien" styleClass="add-button" />
         </VBox>
-
-        <!-- Section for Displaying Entretien Details -->
-        <Label layoutX="-50.0" layoutY="950.0" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Liste des Entretiens" />
-
-        <!-- FlowPane for dynamically added Entretien Cards -->
-        <FlowPane fx:id="entretienFlowPane" hgap="10" vgap="10" alignment="CENTER" prefWidth="900" prefHeight="600">
-            <!-- Dynamically added Entretien Cards will appear here -->
-        </FlowPane>
-
-        <!-- Label for displaying messages -->
-        <Label fx:id="lbEntretiens" layoutX="50.0" layoutY="640.0" prefWidth="980.0" style="-fx-text-fill: red;" />
-    </children>
-</FlowPane>
+    </center>
+</BorderPane>

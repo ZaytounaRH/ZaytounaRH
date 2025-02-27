@@ -17,12 +17,12 @@ public class MainFX extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        FXMLLoader loader =new FXMLLoader(getClass().getResource("/GestionEntretien.fxml"));
+        FXMLLoader loader =new FXMLLoader(getClass().getResource("/Login.fxml"));
         try {
             Parent root = loader.load();
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
-            primaryStage.setTitle("---- Gestion Offre Emploi -----");
+            primaryStage.setTitle("---- Gestion Personne -----");
             primaryStage.show();
 
         } catch (IOException e) {

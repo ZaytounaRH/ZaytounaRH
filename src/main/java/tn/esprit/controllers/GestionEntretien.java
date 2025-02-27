@@ -1,19 +1,15 @@
 package tn.esprit.controllers;
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.control.SpinnerValueFactory;
 import tn.esprit.models.Entretien;
 import tn.esprit.services.ServiceEntretien;
-import javafx.collections.FXCollections;
+import tn.esprit.models.Candidat;
+import tn.esprit.models.OffreEmploi;
+
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class GestionEntretien {
@@ -22,7 +18,7 @@ public class GestionEntretien {
     private DatePicker dateEntretienPicker;
 
     @FXML
-    private Spinner<Integer> heureEntretienSpinner;
+    private Spinner<LocalTime> heureEntretienSpinner;
 
     @FXML
     private ComboBox<String> typeEntretienComboBox;
@@ -34,134 +30,89 @@ public class GestionEntretien {
     private TextArea commentaireTextArea;
 
     @FXML
-    private TextField idEntretienField;
-
-    @FXML
     private Button ajouterButton;
-
-    @FXML
-    private Button updateButton;
-
-    @FXML
-    private TableView<Entretien> tableEntretien;
 
     private ServiceEntretien serviceEntretien;
 
     public GestionEntretien() {
-        serviceEntretien = new ServiceEntretien();
+        this.serviceEntretien = new ServiceEntretien();
     }
 
     @FXML
-    public void initialize() {
-        // Remplir les ComboBox avec les options de type et statut
+    private void initialize() {
+        // Initialisation des ComboBox
         typeEntretienComboBox.setItems(FXCollections.observableArrayList("PRESENTIEL", "DISTANCIEL", "TELEPHONIQUE"));
         statutEntretienComboBox.setItems(FXCollections.observableArrayList("PLANIFIE", "EN_COURS", "TERMINE", "ANNULE"));
 
-        // Initialisation du Spinner avec une plage d'heure
-        heureEntretienSpinner.setValueFactory(new IntegerSpinnerValueFactory(0, 23, 9)); // Plage de 0 à 23 heures, valeur par défaut : 9 heures
-    }
+        // Configurer le Spinner pour l'heure de l'entretien
+        SpinnerValueFactory<LocalTime> valueFactory = new SpinnerValueFactory<LocalTime>() {
+            @Override
+            public void decrement(int steps) {
+                LocalTime currentTime = heureEntretienSpinner.getValue();
+                if (currentTime != null) {
+                    // Décrémenter l'heure par 30 minutes (ou vous pouvez ajuster l'intervalle selon votre besoin)
+                    LocalTime newTime = currentTime.minusMinutes(30 * steps);
+                    setValue(newTime);
+                }
+            }
 
-    // Méthode pour ajouter un entretien
-    @FXML
-    public void ajouterEntretien() {
-        if (isInputValid()) {
-            Entretien entretien = new Entretien();
-            entretien.setDateEntretien(dateEntretienPicker.getValue());
+            @Override
+            public void increment(int steps) {
+                LocalTime currentTime = heureEntretienSpinner.getValue();
+                if (currentTime != null) {
+                    // Incrémenter l'heure par 30 minutes (ou vous pouvez ajuster l'intervalle selon votre besoin)
+                    LocalTime newTime = currentTime.plusMinutes(30 * steps);
+                    setValue(newTime);
+                }
+            }
+        };
 
-            // Convertir l'heure (Integer) en LocalTime
-            LocalTime heure = LocalTime.of(heureEntretienSpinner.getValue(), 0); // 0 pour les minutes par défaut
-            entretien.setHeureEntretien(heure);
+        // Définir une valeur de départ pour le spinner (par exemple, 9h00)
+        valueFactory.setValue(LocalTime.of(9, 0));
 
-            // Convertir le String en TypeEntretien
-            String typeEntretienString = typeEntretienComboBox.getValue();
-            Entretien.TypeEntretien typeEntretien = Entretien.TypeEntretien.valueOf(typeEntretienString);
-            entretien.setTypeEntretien(typeEntretien);
-
-            // Convertir le String en StatutEntretien
-            String statutEntretienString = statutEntretienComboBox.getValue();
-            Entretien.StatutEntretien statutEntretien = Entretien.StatutEntretien.valueOf(statutEntretienString);
-            entretien.setStatut(statutEntretien);
-
-            entretien.setCommentaire(commentaireTextArea.getText());
-
-            serviceEntretien.add(entretien);
-
-            clearFields();
-            showAlert("Succès", "L'entretien a été ajouté avec succès!", AlertType.INFORMATION);
-        }
+        heureEntretienSpinner.setValueFactory(valueFactory);
     }
 
     @FXML
-    public void updateEntretien() {
-        if (isInputValid()) {
-            String idText = idEntretienField.getText();
-            if (idText.isEmpty()) {
-                showAlert("Erreur", "L'ID de l'entretien ne peut pas être vide!", AlertType.ERROR);
-                return;
-            }
-
-            int idEntretien;
-            try {
-                idEntretien = Integer.parseInt(idText); // Assurez-vous que l'ID est un entier valide
-            } catch (NumberFormatException e) {
-                showAlert("Erreur", "L'ID de l'entretien doit être un nombre valide!", AlertType.ERROR);
-                return;
-            }
-
-            Entretien entretien = new Entretien();
-            entretien.setIdEntretien(idEntretien);
-            entretien.setDateEntretien(dateEntretienPicker.getValue());
-
-            // Convertir l'heure (Integer) en LocalTime
-            LocalTime heure = LocalTime.of(heureEntretienSpinner.getValue(), 0); // minutes = 0 par défaut
-            entretien.setHeureEntretien(heure);
-
-            // Convertir le String en TypeEntretien
-            String typeEntretienString = typeEntretienComboBox.getValue();
-            Entretien.TypeEntretien typeEntretien = Entretien.TypeEntretien.valueOf(typeEntretienString);
-            entretien.setTypeEntretien(typeEntretien);
-
-            // Convertir le String en StatutEntretien
-            String statutEntretienString = statutEntretienComboBox.getValue();
-            Entretien.StatutEntretien statutEntretien = Entretien.StatutEntretien.valueOf(statutEntretienString);
-            entretien.setStatut(statutEntretien);
-
-            entretien.setCommentaire(commentaireTextArea.getText());
-
-            // Appel du service pour mettre à jour l'entretien
-            serviceEntretien.update(entretien);
-
-            clearFields();
-            showAlert("Succès", "L'entretien a été mis à jour avec succès!", AlertType.INFORMATION);
-        }
-    }
-
-    // Vérifie si les champs sont valides
-    private boolean isInputValid() {
+    private void ajouterEntretien() {
+        // Vérification des champs
         if (dateEntretienPicker.getValue() == null || heureEntretienSpinner.getValue() == null ||
                 typeEntretienComboBox.getValue() == null || statutEntretienComboBox.getValue() == null) {
-            showAlert("Erreur", "Tous les champs doivent être remplis!", AlertType.ERROR);
-            return false;
+            // Afficher un message d'erreur si des champs sont vides
+            showAlert("Erreur", "Tous les champs doivent être remplis.", Alert.AlertType.ERROR);
+            return;
         }
-        return true;
+
+        // Créer un objet Entretien
+        Entretien entretien = new Entretien();
+        entretien.setDateEntretien(dateEntretienPicker.getValue());
+        entretien.setHeureEntretien(heureEntretienSpinner.getValue());
+        entretien.setTypeEntretien(Entretien.TypeEntretien.valueOf(typeEntretienComboBox.getValue()));
+        entretien.setStatut(Entretien.StatutEntretien.valueOf(statutEntretienComboBox.getValue()));
+        entretien.setCommentaire(commentaireTextArea.getText());
+
+        // Créer un candidat fictif pour la démonstration
+        Candidat candidat = new Candidat();
+        candidat.setCandidat_id(1); // Exemple d'ID fictif
+        entretien.setCandidat(candidat);
+
+        // Lier l'entretien à une offre d'emploi fictive
+        OffreEmploi offreEmploi = new OffreEmploi();
+        offreEmploi.setIdOffre(1); // Exemple d'ID fictif
+        entretien.setOffreEmploi(offreEmploi);
+
+        // Ajouter l'entretien via le service
+        serviceEntretien.add(entretien);
+
+        // Afficher un message de succès
+        showAlert("Succès", "Entretien ajouté avec succès.", Alert.AlertType.INFORMATION);
     }
 
-    // Affiche une alerte
-    private void showAlert(String title, String message, AlertType type) {
-        Alert alert = new Alert(type);
+    // Méthode utilitaire pour afficher des alertes
+    private void showAlert(String title, String content, Alert.AlertType alertType) {
+        Alert alert = new Alert(alertType);
         alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
+        alert.setContentText(content);
         alert.showAndWait();
-    }
-
-    // Réinitialise les champs
-    private void clearFields() {
-        dateEntretienPicker.setValue(null);
-        heureEntretienSpinner.getValueFactory().setValue(9); // Remise à zéro de l'heure (9 heures par défaut)
-        typeEntretienComboBox.setValue(null);
-        statutEntretienComboBox.setValue(null);
-        commentaireTextArea.clear();
-        idEntretienField.clear();
     }
 }
