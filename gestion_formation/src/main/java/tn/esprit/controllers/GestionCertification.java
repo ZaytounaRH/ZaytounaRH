@@ -58,6 +58,8 @@ public class GestionCertification {
     }
     @FXML
     public void afficherCertification(ActionEvent event) {
+
+
         certificationFlowPane.getChildren().clear();
         for (Certification certification : serviceCertification.getAll()) {
             HBox card = new HBox(10);
@@ -68,7 +70,14 @@ public class GestionCertification {
             organismeLabel.setStyle("-fx-font-size: 14px;");
             Label formationLabel=new Label(certification.getFormation().getNomFormation());
             formationLabel.setStyle("-fx-font-size: 14px;");
-            VBox cardContent = new VBox(4,titreLabel,organismeLabel,formationLabel);
+            // Bouton de modification
+            Button btnModifier = new Button("Modifier");
+            btnModifier.setOnAction(e -> modifierCertification(certification));
+            // Bouton de suppression
+            Button deleteButton = new Button("Supprimer");
+            deleteButton.setStyle("-fx-background-color: red; -fx-text-fill: white;");
+            deleteButton.setOnAction(e -> deleteCertification(certification));
+            VBox cardContent = new VBox(5,titreLabel,organismeLabel,formationLabel,btnModifier,deleteButton);
             card.getChildren().add(cardContent);
 
             // Add the card to the existing formationFlowPane
@@ -76,7 +85,61 @@ public class GestionCertification {
         }
 
     }
+    @FXML
+    public void modifierCertification(Certification certification) {
+        TextInputDialog titreDialog = new TextInputDialog(certification.getTitreCertif());
+        titreDialog.setTitle("Modification");
+        titreDialog.setHeaderText("Modifier la certification");
+        titreDialog.setContentText("Nouveau titre :");
+        Optional<String> titreResult = titreDialog.showAndWait();
 
+        // Boîte de dialogue pour modifier l'organisme
+        TextInputDialog organismeDialog = new TextInputDialog(certification.getOrganismeCertif());
+        organismeDialog.setTitle("Modification");
+        organismeDialog.setHeaderText("Modifier l'organisme");
+        organismeDialog.setContentText("Nouvel organisme :");
+        Optional<String> organismeResult = organismeDialog.showAndWait();
+
+        // Récupérer la liste des formations existantes
+        List<Formation> formations = serviceFormation.getAll(); // Assure-toi que ce service existe
+        ChoiceDialog<Formation> formationDialog = new ChoiceDialog<>(certification.getFormation(), formations);
+        formationDialog.setTitle("Modification");
+        formationDialog.setHeaderText("Modifier la formation");
+        formationDialog.setContentText("Sélectionnez une formation :");
+        Optional<Formation> formationResult = formationDialog.showAndWait();
+
+        // Vérifier si l'utilisateur a entré des nouvelles valeurs
+        if (titreResult.isPresent() && organismeResult.isPresent()) {
+            certification.setTitreCertif(titreResult.get());
+            certification.setOrganismeCertif(organismeResult.get());
+            certification.setFormation(formationResult.get());
+
+            // Mettre à jour dans la base de données
+            serviceCertification.update(certification);
+
+            // Rafraîchir l'affichage
+            afficherCertification(new ActionEvent());
+        }
+    }
+@FXML
+public void deleteCertification(Certification certification) {
+    Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+    confirmationAlert.setTitle("Confirmation de suppression");
+    confirmationAlert.setHeaderText("Êtes-vous sûr de vouloir supprimer cette certification ?");
+    confirmationAlert.setContentText("Cette action est irréversible.");
+
+    Optional<ButtonType> result = confirmationAlert.showAndWait();
+
+    if (result.isPresent() && result.get() == ButtonType.OK) {
+        // Si l'utilisateur confirme, on supprime la certification
+        serviceCertification.delete(certification);
+
+        // Rafraîchir l'affichage après suppression
+        afficherCertification(new ActionEvent());
+    } else {
+        System.out.println("Suppression annulée.");
+    }
+}
     @FXML
     public void initialize(){
         List<Formation> formations = serviceFormation.getAll();
