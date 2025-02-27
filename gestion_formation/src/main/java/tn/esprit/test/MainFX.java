@@ -3,6 +3,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -53,7 +54,7 @@ public class MainFX extends Application {
         try {
             // Charger la vue des formations
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("formation_view.fxml"));
-            FlowPane formationsView = loader.load();
+            ScrollPane formationsView = loader.load();
             GestionFormation formation = loader.getController();
             rootLayout.setCenter(formationsView);
 

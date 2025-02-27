@@ -1,6 +1,7 @@
 package tn.esprit.controllers;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -40,10 +41,13 @@ public class GestionFormation {
     private Label lbFormations;
     @FXML
     private FlowPane formationFlowPane;
+    @FXML
+    private ScrollPane FormationScrollPane;
 
     @FXML
     private ComboBox<Formation> formationsComboBox;
-
+@FXML
+private ComboBox<Employee> employeesComboBox;
     @FXML
     private ListView<Employee> employesListView;
 
@@ -70,8 +74,18 @@ public class GestionFormation {
             System.out.println("Erreur : Seuls les RH peuvent ajouter une formation !");
             return;
         }
-
-
+        if (tfNomFormation.getText() == "") {
+            showAlert("Erreur", "Veuillez entrer le nom de la formation.");
+            return;
+        }
+        if (tfDescriptionFormation.getText() == "") {
+            showAlert("Erreur", "Veuillez entrer la description de la formation.");
+            return;
+        }
+        if (dateDebutPicker.getValue() == null || dateFinPicker.getValue() == null) {
+            showAlert("Erreur", "Veuillez entrer la duree de formation.");
+            return;
+        }
         Formation formation = new Formation();
         formation.setNomFormation(tfNomFormation.getText());
         formation.setDescriptionFormation(tfDescriptionFormation.getText());
@@ -120,8 +134,12 @@ public class GestionFormation {
             updateFormationList(filteredFormations);
         });
 
+        // Création du ScrollPane pour afficher les formations de manière scrollable
+        ScrollPane formationScrollPane = new ScrollPane(formationFlowPane);
+        formationScrollPane.setFitToWidth(true);
+
         // Conteneur principal (VBox)
-        VBox root = new VBox(10, searchField, formationFlowPane);
+        VBox root = new VBox(10, searchField, formationScrollPane);
         root.setPadding(new Insets(10));
 
         // Chargement initial des formations
@@ -264,11 +282,37 @@ public class GestionFormation {
 
 
         List<Employee> employes = serviceEmployee.getAll();
+        ObservableList<Employee> employesObservableList = FXCollections.observableArrayList(employes);
 
+// Associer la liste à la ListView AVANT de configurer la sélection multiple
+        employesListView.setItems(employesObservableList);
 
-        employesListView.setItems(FXCollections.observableArrayList(employes));
+// Définir le mode de sélection multiple
+        employesListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        employesListView.setCellFactory(param -> new ListCell<Employee>() {
+            @Override
+            protected void updateItem(Employee employee, boolean empty) {
+                super.updateItem(employee, empty);
+                if (empty || employee == null) {
+                    setText(null);
+                } else {
+                    setText(employee.getNom() + " " + employee.getPrenom()); // Afficher Nom + Prénom
+                }
+            }
+        });
+        employesListView.getSelectionModel().getSelectedItems().addListener((ListChangeListener<Employee>) change -> {
+            System.out.println("Employés sélectionnés : " + employesListView.getSelectionModel().getSelectedItems());
+        });
+
+/*
         employesListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         employesListView.setItems(FXCollections.observableArrayList(serviceEmployee.getAll()));
+        //employesListView.setItems(FXCollections.observableArrayList(employes));
+
+
+
+ */
+
 
 
     }

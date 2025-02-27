@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<FlowPane fx:id="certificationFlowPane" hgap="20" vgap="20" alignment="CENTER" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"  fx:controller="tn.esprit.controllers.GestionCertification"  prefHeight="720.0" prefWidth="1080.0">
+<FlowPane fx:id="certificationFlowPane" hgap="20" vgap="20" alignment="CENTER" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"  fx:controller="tn.esprit.controllers.GestionCertification"  prefHeight="720.0" prefWidth="1080.0" stylesheets="style.css" >
     <children>
         <VBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 10px;">
             <Label text="Titre certification" />

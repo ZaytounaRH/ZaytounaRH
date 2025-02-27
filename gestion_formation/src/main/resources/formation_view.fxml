@@ -11,10 +11,12 @@
 
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ListView?>
-<FlowPane fx:id="formationFlowPane" hgap="10" vgap="10" alignment="CENTER" prefWidth="900" prefHeight="600" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17" fx:controller="tn.esprit.controllers.GestionFormation">
+<?import javafx.scene.control.ScrollPane?>
+<ScrollPane fx:id="scrollPane" prefWidth="900" prefHeight="600" style="-fx-background-color: white; -fx-border-color: #ccc;" fx:controller="tn.esprit.controllers.GestionFormation" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17">
+<content>
+<FlowPane fx:id="formationFlowPane" hgap="10" vgap="10" alignment="TOP_CENTER" prefWidth="2200" prefHeight="600" stylesheets="style.css">
     <children>
-        <!-- Title -->
-        <Label layoutX="400.0" layoutY="20.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Gestion des Formations" />
+
 
         <!-- Section for Adding/Updating a Formation -->
         <VBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 10px;">
@@ -57,11 +59,12 @@
 
         </VBox>
 
-        <!-- Section for Displaying Formations -->
-        <Label layoutX="-50.0" layoutY="950.0" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Liste des Formations" />
+
 
 
         <!-- Label for displaying messages -->
         <Label fx:id="lbFormations" layoutX="50.0" layoutY="640.0" prefWidth="980.0" style="-fx-text-fill: red;" />
     </children>
 </FlowPane>
+</content>
+</ScrollPane>
