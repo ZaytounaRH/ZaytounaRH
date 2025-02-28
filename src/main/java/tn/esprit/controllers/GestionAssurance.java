@@ -4,7 +4,11 @@ package tn.esprit.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.control.*;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import tn.esprit.interfaces.IService;
@@ -23,18 +27,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Button;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import tn.esprit.utils.MyDatabase;
-import java.util.HashMap;
 import java.time.LocalDate;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.chart.PieChart;
-import java.util.List;
 import java.util.Map;
 
 public class GestionAssurance {
@@ -69,8 +65,9 @@ public class GestionAssurance {
     @FXML
     private PieChart pieChartStats;
 
-    @FXML
-    private Label lbTotal, lbEnAttente, lbEnCours, lbResolu, lbPourcentageResolues, lbDelaiMoyen;
+    //@FXML
+    //private Label lbTotal, lbEnAttente, lbEnCours, lbResolu, lbPourcentageResolues, lbDelaiMoyen;
+
 
     private final IService<Assurance> sp = new ServiceAssurance();
     private Assurance assuranceAmodifier = null; // Variable pour stocker l'assurance en cours de modification
@@ -80,6 +77,12 @@ public class GestionAssurance {
         cbTypeAssurance.getItems().setAll(TypeAssurance.values()); // Remplit la ComboBox avec les types d'assurance
         cbFiltreType.getItems().setAll(Assurance.TypeAssurance.values()); // Remplit la ComboBox de filtre avec les types d'assurance
         afficherAssurances();
+        // Remplir la ComboBox avec les options pour le tri par date
+        cbTriDate.setItems(FXCollections.observableArrayList(
+                "Date d'expiration croissante",
+                "Date d'expiration décroissante"
+        ));
+
     }
 
     private void clearFields() {
@@ -94,6 +97,7 @@ public class GestionAssurance {
         Assurance.TypeAssurance selectedType = cbFiltreType.getValue();
         String selectedSort = cbTriDate.getValue();
 
+        // Récupérer toutes les assurances d'abord
         List<Assurance> assurances = sp.getAll();
 
         // 🔍 Filtrer par nom si un mot-clé est saisi
@@ -116,6 +120,7 @@ public class GestionAssurance {
         afficherAssurances(assurances);
     }
 
+
     private void afficherAssurances(List<Assurance> assurances) {
         flowPaneAssurances.getChildren().clear();
 
@@ -132,7 +137,7 @@ public class GestionAssurance {
         Map<String, Object> resultats = serviceReclamation.getStatistiquesReclamations(); // Retourne une map
 
         // Affichage des statistiques dans les labels
-        afficherStats(resultats);
+        //afficherStats(resultats);
 
         // Mise à jour du PieChart avec les données de réclamation
         int enAttente = (int) resultats.get("En Attente");
@@ -150,14 +155,14 @@ public class GestionAssurance {
         pieChartStats.setData(pieChartData);
     }
 
-    public void afficherStats(Map<String, Object> stats) {
+    /*public void afficherStats(Map<String, Object> stats) {
         lbTotal.setText("Total: " + stats.get("Total"));
         lbEnAttente.setText("En Attente: " + stats.get("En Attente"));
         lbEnCours.setText("En Cours: " + stats.get("En Cours"));
         lbResolu.setText("Résolu: " + stats.get("Résolu"));
         lbPourcentageResolues.setText("Pourcentage Résolu: " + stats.get("Pourcentage Résolu"));
         lbDelaiMoyen.setText("Délai Moyen (jours): " + stats.get("Délai Moyen (jours)"));
-    }
+    }*/
 
     @FXML
     public void ajouterOuMettreAJourAssurance(ActionEvent actionEvent) {

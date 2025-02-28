@@ -1,85 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.collections.FXCollections?>
-<?import javafx.scene.control.TextArea?>
-<?import java.lang.String?> <!-- Ajout de l'importation de String -->
 
 <ScrollPane prefHeight="720.0" prefWidth="1080.0"
             xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="tn.esprit.controllers.GestionAssurance">
-
     <content>
-        <AnchorPane prefHeight="720.0" prefWidth="1080.0">
-            <children>
-                <!-- Champ pour entrer le nom -->
-                <Label layoutX="50.0" layoutY="100.0" text="Nom :" />
-                <TextField fx:id="tfNom" layoutX="180.0" layoutY="95.0" promptText="Entrez le nom" />
+        <VBox spacing="20" style="-fx-padding: 20;">
 
-                <!-- Champ pour choisir le type d'assurance -->
-                <Label layoutX="50.0" layoutY="160.0" text="Type d'assurance :" />
-                <ComboBox fx:id="cbTypeAssurance" layoutX="180.0" layoutY="155.0" prefWidth="200.0" />
+            <!-- Section supérieure : Recherche, filtres, tri et statistiques -->
+            <VBox spacing="10" style="-fx-border-color: gray; -fx-padding: 10;">
+                <Label text="Recherche et filtres" style="-fx-font-weight: bold;" />
+                <HBox spacing="10">
+                    <TextField fx:id="tfSearch" prefWidth="250.0" promptText="Rechercher par nom" />
+                    <Button mnemonicParsing="false" onAction="#rechercherAssurances" text="Rechercher" />
+                </HBox>
+                <HBox spacing="10">
+                    <ComboBox fx:id="cbFiltreType" prefWidth="200.0" promptText="Filtrer par type" />
+                    <ComboBox fx:id="cbTriDate" prefWidth="200.0" promptText="Filtrer par date"/>
+                </HBox>
+                <PieChart fx:id="pieChartStats" prefWidth="950.0" prefHeight="200.0" />
+                <Button mnemonicParsing="false" onAction="#testerStats" text="Tester les statistiques" />
+            </VBox>
 
-                <!-- Champ pour sélectionner la date d'expiration -->
-                <Label layoutX="50.0" layoutY="220.0" text="Date d'expiration :" />
-                <DatePicker fx:id="dpDateExpiration" layoutX="180.0" layoutY="215.0" />
+            <!-- Section centrale : Formulaire d'ajout/modification -->
+            <VBox spacing="10" style="-fx-border-color: gray; -fx-padding: 10;">
+                <Label text="Gestion des assurances" style="-fx-font-weight: bold;" />
+                <Label text="Nom :" />
+                <TextField fx:id="tfNom" promptText="Entrez le nom" />
+                <Label text="Type d'assurance :" />
+                <ComboBox fx:id="cbTypeAssurance" prefWidth="200.0" />
+                <Label text="Date d'expiration :" />
+                <DatePicker fx:id="dpDateExpiration" />
+                <Label fx:id="lbMessage" textFill="RED" />
+                <Button mnemonicParsing="false" onAction="#ajouterOuMettreAJourAssurance" text="Ajouter/Mettre à jour" />
+            </VBox>
 
-                <!-- Label pour afficher les messages d'erreur ou de confirmation -->
-                <Label fx:id="lbMessage" layoutX="180.0" layoutY="270.0" textFill="RED" />
+            <!-- Section inférieure : Listes des assurances et réclamations -->
+            <VBox spacing="10" style="-fx-border-color: gray; -fx-padding: 10;">
+                <Label text="Liste des assurances" style="-fx-font-weight: bold;" />
+                <FlowPane fx:id="flowPaneAssurances" hgap="20" vgap="20" prefWidth="950.0" prefHeight="200.0" />
+                <Label text="Liste des réclamations" style="-fx-font-weight: bold;" />
+                <FlowPane fx:id="flowPaneReclamations" hgap="20" vgap="20" prefWidth="950.0" prefHeight="200.0" />
+            </VBox>
 
-                <!-- Bouton pour ajouter une assurance -->
-                <Button layoutX="180.0" layoutY="310.0" mnemonicParsing="false" onAction="#ajouterOuMettreAJourAssurance" text="Ajouter" />
-
-                <!-- 🔍 Barre de recherche -->
-                <TextField fx:id="tfSearch" layoutX="50.0" layoutY="360.0" prefWidth="250.0" promptText="Rechercher par nom" />
-
-                <!-- 📑 Filtrer par type d'assurance -->
-                <ComboBox fx:id="cbFiltreType" layoutX="320.0" layoutY="360.0" prefWidth="200.0" />
-
-                <!-- 📅 Trier par date d'expiration -->
-                <ComboBox fx:id="cbTriDate" layoutX="540.0" layoutY="360.0" prefWidth="200.0">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="Date d'expiration croissante" />
-                            <String fx:value="Date d'expiration décroissante" />
-                        </FXCollections>
-                    </items>
-                </ComboBox>
-
-                <!-- 🔎 Bouton de recherche -->
-                <Button layoutX="760.0" layoutY="360.0" mnemonicParsing="false" onAction="#rechercherAssurances" text="Rechercher" />
-
-                <!-- FlowPane pour afficher les assurances -->
-                <FlowPane fx:id="flowPaneAssurances" layoutX="50.0" layoutY="420.0" hgap="20" vgap="20" prefWidth="950.0" prefHeight="300.0" />
-
-                <!-- FlowPane pour afficher les réclamations -->
-                <FlowPane fx:id="flowPaneReclamations" layoutX="50.0" layoutY="740.0" hgap="20" vgap="20" prefWidth="950.0" prefHeight="300.0" />
-
-                <!-- PieChart pour afficher les statistiques -->
-                <PieChart fx:id="pieChartStats" layoutX="50.0" layoutY="1050.0" prefWidth="950.0" prefHeight="300.0" />
-
-                <!-- Labels pour afficher les statistiques -->
-                <Label fx:id="lbTotal" layoutX="50.0" layoutY="1400.0" text="Total: " />
-                <Label fx:id="lbEnAttente" layoutX="50.0" layoutY="1420.0" text="En Attente: " />
-                <Label fx:id="lbEnCours" layoutX="50.0" layoutY="1440.0" text="En Cours: " />
-                <Label fx:id="lbResolu" layoutX="50.0" layoutY="1460.0" text="Résolu: " />
-                <Label fx:id="lbPourcentageResolues" layoutX="50.0" layoutY="1480.0" text="Pourcentage Résolu: " />
-                <Label fx:id="lbDelaiMoyen" layoutX="50.0" layoutY="1500.0" text="Délai Moyen (jours): " />
-
-                <!-- Bouton pour tester les statistiques -->
-                <Button layoutX="50.0" layoutY="1520.0" mnemonicParsing="false" onAction="#testerStats" text="Tester les statistiques" />
-
-            </children>
-        </AnchorPane>
+        </VBox>
     </content>
-
 </ScrollPane>
