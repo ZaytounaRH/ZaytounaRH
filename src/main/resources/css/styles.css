@@ -1,6 +1,6 @@
 .root {
     -fx-font-family: "Lato";
-    -fx-background-color: #F4F4F4;
+    -fx-background-color: #f3f3f3;
 }
 
 .text-field, .choice-box {
@@ -51,7 +51,10 @@
 }
 
 .label {
-
     -fx-text-fill: red;
     -fx-font-size: 12px;
+}
+
+.password-field {
+    -fx-font-size: 10px;
 }
