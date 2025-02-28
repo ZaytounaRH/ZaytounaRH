@@ -85,4 +85,80 @@ public class ServiceAssurance implements IService<Assurance> {
             e.printStackTrace();
         }
     }
+
+    // Méthode de recherche par nom (recherche partielle, insensible à la casse)
+    public List<Assurance> searchByName(String keyword) {
+        List<Assurance> assurances = new ArrayList<>();
+        String qry = "SELECT * FROM `assurance` WHERE LOWER(`nom`) LIKE LOWER(?)";
+
+        try {
+            PreparedStatement pstm = cnx.prepareStatement(qry);
+            pstm.setString(1, "%" + keyword + "%"); // Recherche partielle
+            ResultSet rs = pstm.executeQuery();
+
+            while (rs.next()) {
+                Assurance a = new Assurance();
+                a.setIdA(rs.getInt("idA"));
+                a.setNom(rs.getString("nom"));
+                a.setType(Assurance.TypeAssurance.valueOf(rs.getString("type")));
+                a.setDateExpiration(rs.getDate("dateExpiration").toLocalDate());
+                assurances.add(a);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return assurances;
+    }
+
+    // Méthode de recherche par type d'assurance
+    public List<Assurance> searchByType(Assurance.TypeAssurance type) {
+        List<Assurance> assurances = new ArrayList<>();
+        String qry = "SELECT * FROM `assurance` WHERE `type` = ?";
+
+        try {
+            PreparedStatement pstm = cnx.prepareStatement(qry);
+            pstm.setString(1, type.name()); // Utilisation de name() pour convertir l'enum en String
+            ResultSet rs = pstm.executeQuery();
+
+            while (rs.next()) {
+                Assurance a = new Assurance();
+                a.setIdA(rs.getInt("idA"));
+                a.setNom(rs.getString("nom"));
+                a.setType(Assurance.TypeAssurance.valueOf(rs.getString("type")));
+                a.setDateExpiration(rs.getDate("dateExpiration").toLocalDate());
+                assurances.add(a);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return assurances;
+    }
+
+    // Méthode pour trier les assurances par date d'expiration
+    public List<Assurance> sortByDateExpiration(boolean ascending) {
+        List<Assurance> assurances = new ArrayList<>();
+        String order = ascending ? "ASC" : "DESC";
+        String qry = "SELECT * FROM `assurance` ORDER BY `dateExpiration` " + order;
+
+        try {
+            Statement stm = cnx.createStatement();
+            ResultSet rs = stm.executeQuery(qry);
+
+            while (rs.next()) {
+                Assurance a = new Assurance();
+                a.setIdA(rs.getInt("idA"));
+                a.setNom(rs.getString("nom"));
+                a.setType(Assurance.TypeAssurance.valueOf(rs.getString("type")));
+                a.setDateExpiration(rs.getDate("dateExpiration").toLocalDate());
+                assurances.add(a);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return assurances;
+    }
+
 }

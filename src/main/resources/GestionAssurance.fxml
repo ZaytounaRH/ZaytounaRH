@@ -7,10 +7,11 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.chart.PieChart?>
-<?import javafx.scene.text.Text?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.TextArea?>
+<?import java.lang.String?> <!-- Ajout de l'importation de String -->
 
 <ScrollPane prefHeight="720.0" prefWidth="1080.0"
             xmlns="http://javafx.com/javafx/23.0.1"
@@ -38,30 +39,45 @@
                 <!-- Bouton pour ajouter une assurance -->
                 <Button layoutX="180.0" layoutY="310.0" mnemonicParsing="false" onAction="#ajouterOuMettreAJourAssurance" text="Ajouter" />
 
-                <!-- FlowPane pour afficher les assurances sous forme de cartes -->
-                <FlowPane fx:id="flowPaneAssurances" layoutX="50.0" layoutY="380.0" hgap="20" vgap="20" prefWidth="950.0" prefHeight="300.0" />
+                <!-- 🔍 Barre de recherche -->
+                <TextField fx:id="tfSearch" layoutX="50.0" layoutY="360.0" prefWidth="250.0" promptText="Rechercher par nom" />
+
+                <!-- 📑 Filtrer par type d'assurance -->
+                <ComboBox fx:id="cbFiltreType" layoutX="320.0" layoutY="360.0" prefWidth="200.0" />
+
+                <!-- 📅 Trier par date d'expiration -->
+                <ComboBox fx:id="cbTriDate" layoutX="540.0" layoutY="360.0" prefWidth="200.0">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Date d'expiration croissante" />
+                            <String fx:value="Date d'expiration décroissante" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+
+                <!-- 🔎 Bouton de recherche -->
+                <Button layoutX="760.0" layoutY="360.0" mnemonicParsing="false" onAction="#rechercherAssurances" text="Rechercher" />
+
+                <!-- FlowPane pour afficher les assurances -->
+                <FlowPane fx:id="flowPaneAssurances" layoutX="50.0" layoutY="420.0" hgap="20" vgap="20" prefWidth="950.0" prefHeight="300.0" />
 
                 <!-- FlowPane pour afficher les réclamations -->
-                <FlowPane fx:id="flowPaneReclamations" layoutX="50.0" layoutY="700.0" hgap="20" vgap="20" prefWidth="950.0" prefHeight="300.0" />
+                <FlowPane fx:id="flowPaneReclamations" layoutX="50.0" layoutY="740.0" hgap="20" vgap="20" prefWidth="950.0" prefHeight="300.0" />
 
-                <!-- Bouton pour tester les statistiques, aligné en haut à droite -->
-                <Button layoutX="950.0" layoutY="20.0" text="Tester Stats" onAction="#testerStats" />
+                <!-- PieChart pour afficher les statistiques -->
+                <PieChart fx:id="pieChartStats" layoutX="50.0" layoutY="1050.0" prefWidth="950.0" prefHeight="300.0" />
 
-                <!-- Section pour afficher les résultats des statistiques -->
-                <FlowPane fx:id="flowPaneStats" layoutX="50.0" layoutY="650.0" hgap="20" vgap="20" prefWidth="950.0" prefHeight="100.0">
-                    <children>
-                        <!-- Labels pour afficher les statistiques -->
-                        <Label fx:id="lbTotal" text="Total: " />
-                        <Label fx:id="lbEnAttente" text="En Attente: " />
-                        <Label fx:id="lbEnCours" text="En Cours: " />
-                        <Label fx:id="lbResolu" text="Résolu: " />
-                        <Label fx:id="lbPourcentageResolues" text="Pourcentage Résolu: " />
-                        <Label fx:id="lbDelaiMoyen" text="Délai Moyen (jours): " />
-                    </children>
-                </FlowPane>
+                <!-- Labels pour afficher les statistiques -->
+                <Label fx:id="lbTotal" layoutX="50.0" layoutY="1400.0" text="Total: " />
+                <Label fx:id="lbEnAttente" layoutX="50.0" layoutY="1420.0" text="En Attente: " />
+                <Label fx:id="lbEnCours" layoutX="50.0" layoutY="1440.0" text="En Cours: " />
+                <Label fx:id="lbResolu" layoutX="50.0" layoutY="1460.0" text="Résolu: " />
+                <Label fx:id="lbPourcentageResolues" layoutX="50.0" layoutY="1480.0" text="Pourcentage Résolu: " />
+                <Label fx:id="lbDelaiMoyen" layoutX="50.0" layoutY="1500.0" text="Délai Moyen (jours): " />
 
-                <!-- Graphique de type pie chart pour les statistiques -->
-                <PieChart fx:id="pieChartStats" layoutX="650.0" layoutY="100.0" prefWidth="350.0" prefHeight="350.0" />
+                <!-- Bouton pour tester les statistiques -->
+                <Button layoutX="50.0" layoutY="1520.0" mnemonicParsing="false" onAction="#testerStats" text="Tester les statistiques" />
+
             </children>
         </AnchorPane>
     </content>
