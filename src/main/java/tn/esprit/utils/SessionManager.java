@@ -39,7 +39,12 @@ public class SessionManager {
     }
     zidou choufou m3a chat chnowa intom tist7a9ou
 */
-
+public boolean isUserType(String userType) {
+    if (currentUser != null && currentUser.getUserType() != null) {
+        return currentUser.getUserType().equals(userType);
+    }
+    return false;
+}
 
     public void setCurrentUser(User user) {
         this.currentUser= user;

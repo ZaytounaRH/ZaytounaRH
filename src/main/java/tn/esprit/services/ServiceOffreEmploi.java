@@ -23,18 +23,7 @@ public class ServiceOffreEmploi implements Iservice<OffreEmploi> {
 
     @Override
     public void add(OffreEmploi offreEmploi) {
-        // Récupérer le RH actuellement connecté via la session
-        User currentUser = SessionManager.getInstance().getCurrentUser();
 
-        // Vérifier si l'utilisateur connecté est bien le RH attendu
-        if (currentUser == null || !(currentUser instanceof RH)) {
-            System.out.println("Erreur : Seul le RH connecté peut ajouter une offre d'emploi !");
-            return;
-        }
-
-        // Associer automatiquement le RH connecté à l'offre d'emploi
-        RH currentRH = (RH) currentUser;
-        offreEmploi.setRh(currentRH);
 
         // Préparer la requête SQL avec tous les attributs de l'offre d'emploi
         String qry = "INSERT INTO `OffreEmploi`(`titreOffre`, `description`, `datePublication`, `salaire`, `statut`, `idRH`) "
@@ -46,7 +35,7 @@ public class ServiceOffreEmploi implements Iservice<OffreEmploi> {
             pstm.setDate(3, new java.sql.Date(offreEmploi.getDatePublication().getTime()));
             pstm.setDouble(4, offreEmploi.getSalaire());
             pstm.setString(5, offreEmploi.getStatut().name());
-            pstm.setInt(6, currentRH.getIdRH()); // Utiliser l'ID du RH connecté
+            pstm.setInt(6, 2); // Utiliser l'ID du RH connecté
 
             // Exécuter l'insertion dans la base de données
             pstm.executeUpdate();
@@ -130,20 +119,7 @@ public class ServiceOffreEmploi implements Iservice<OffreEmploi> {
 
     @Override
     public void update(OffreEmploi offreEmploi) {
-        // Récupérer l'utilisateur actuellement connecté via SessionManager
-        User currentUser = SessionManager.getInstance().getCurrentUser();
 
-        // Vérifier si l'utilisateur est un RH
-        if (currentUser == null || !(currentUser instanceof RH)) {
-            System.out.println("Erreur : Seuls les RH peuvent modifier une offre d'emploi !");
-            return;  // Interrompre l'exécution si ce n'est pas un RH
-        }
-
-        // Vérifier que l'ID de l'offre est valide
-        if (offreEmploi.getIdOffre() == 0) {
-            System.out.println("Erreur : L'ID de l'offre d'emploi est invalide !");
-            return;
-        }
 
         // Préparer la requête SQL pour vérifier si l'offre d'emploi existe
         String checkQuery = "SELECT idOffre FROM OffreEmploi WHERE idOffre = ?";

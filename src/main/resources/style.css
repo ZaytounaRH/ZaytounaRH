@@ -1,30 +1,53 @@
 /* ----- Styles généraux ----- */
 .root {
-    -fx-background-color: #edecd3; /* Fond beige clair */
+    -fx-background-color: #f4f4f9; /* Fond gris clair */
     -fx-font-family: 'Segoe UI', sans-serif;
-    -fx-padding: 20px;
+    -fx-padding: 30px;
 }
 
-/* ----- Titre principal ----- */
+/* ----- Titre de la page ----- */
 .title-label {
-    -fx-font-size: 24px;
+    -fx-font-size: 28px;
     -fx-font-weight: bold;
     -fx-text-fill: #32a9c7; /* Bleu clair */
-    -fx-padding: 10px;
+    -fx-padding: 20px;
     -fx-alignment: center;
 }
 
-/* ----- Styles des boutons ----- */
+/* ----- Labels ----- */
+.form-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #555555; /* Gris foncé */
+    -fx-label-padding: 5px;
+}
+
+/* ----- Champs de saisie ----- */
+.form-input {
+    -fx-background-color: #ffffff; /* Fond blanc pour les champs */
+    -fx-border-color: #cccccc; /* Bordure grise légère */
+    -fx-border-radius: 8px;
+    -fx-padding: 10px;
+    -fx-font-size: 16px;
+    -fx-pref-width: 200px;
+}
+
+/* ----- Focus sur les champs de texte ----- */
+.form-input:focused {
+    -fx-border-color: #32a9c7; /* Bordure bleue au focus */
+    -fx-background-color: #f1f7f9; /* Fond plus clair au focus */
+}
+
+/* ----- Boutons ----- */
 .button {
-    -fx-background-color: linear-gradient(to bottom, #59cb32, #32a9c7); /* Dégradé vert et bleu */
+    -fx-background-color: linear-gradient(to bottom, #32a9c7, #59cb32); /* Dégradé bleu-vert */
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-padding: 10px 20px;
+    -fx-padding: 12px 24px;
     -fx-border-radius: 8px;
     -fx-background-radius: 8px;
     -fx-cursor: hand;
-    -fx-border-color: #14d6ea; /* Bordure bleue */
 }
 
 .button:hover {
@@ -33,73 +56,14 @@
     -fx-scale-y: 1.05;
 }
 
-/* ----- Styles des champs de texte ----- */
-.text-field {
-    -fx-background-color: #fafafa; /* Fond beige clair */
-    -fx-border-color: #c8c8c8; /* Bordure grise légère */
-    -fx-border-radius: 10px;
-    -fx-padding: 12px;
-    -fx-font-size: 16px;
+/* ----- HBox des boutons ----- */
+.hbox {
+    -fx-alignment: center;
+    -fx-spacing: 15px;
 }
 
-.text-field:focused {
-    -fx-border-color: #32a9c7; /* Bordure bleue au focus */
-    -fx-background-color: #f1f7f9; /* Fond plus clair au focus */
-}
-
-/* ----- Liste des offres (ListView) ----- */
-.list-view {
-    -fx-background-color: #fafafa; /* Fond beige clair pour la ListView */
-    -fx-border-color: #c8c8c8; /* Bordure grise claire */
-    -fx-border-radius: 10px;
-    -fx-padding: 12px;
-    -fx-spacing: 10px; /* Espacement plus clair entre les éléments */
-}
-
-.list-cell {
-    -fx-padding: 10px;
-    -fx-background-color: #ffffff; /* Fond blanc pour chaque cellule */
-    -fx-border-color: #dcdcdc; /* Bordure grise très légère */
-    -fx-border-radius: 8px;
-    -fx-font-size: 14px;
-}
-
-.list-cell:hover {
-    -fx-background-color: #f0f8ff; /* Fond bleu clair au survol */
-}
-
-/* ----- Section de formulaire pour les responsables ----- */
-.section-title {
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #32a9c7; /* Bleu clair pour les titres */
-    -fx-padding: 10px;
-}
-
-/* ----- Effet de focus sur les champs de texte ----- */
-.text-field:focused {
-    -fx-border-color: #32a9c7; /* Bordure bleue au focus */
-    -fx-background-color: #f1f7f9; /* Fond plus clair au focus */
-}
-
-
-/* Style pour l'ImageView */
-#imageView {
-    -fx-border-radius: 10px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.5, 0, 2); /* Ombre pour ajouter de la profondeur */
-    -fx-padding: 10px;
-    -fx-background-color: #ffffff; /* Fond blanc autour de l'image */
-}
-
-.combo-box {
-    -fx-background-color: #fafafa; /* Fond beige clair */
-    -fx-border-color: #c8c8c8; /* Bordure grise claire */
-    -fx-border-radius: 10px;
-    -fx-padding: 5px 12px;
-    -fx-font-size: 16px;
-}
-
-.combo-box:focused {
-    -fx-border-color: #32a9c7; /* Bordure bleue au focus */
-    -fx-background-color: #f1f7f9; /* Fond plus clair au focus */
+/* ----- Espacement entre les éléments ----- */
+.grid-pane {
+    -fx-hgap: 20px;
+    -fx-vgap: 15px;
 }

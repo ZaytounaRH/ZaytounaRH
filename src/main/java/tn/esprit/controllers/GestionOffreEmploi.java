@@ -3,6 +3,7 @@ package tn.esprit.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -218,5 +219,37 @@ public class GestionOffreEmploi {
             e.printStackTrace();
         }
 
+    }
+
+    /*@FXML
+    public void allerGestionEntretien(ActionEvent event) {
+        // Logique pour naviguer vers la page de gestion des entretiens
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/GestionEntretien.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }*/
+
+    @FXML
+    private void allerGestionConge() {
+        try {
+            // Charger le fichier FXML de la gestion des congés
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/GestionConge.fxml"));
+            Parent root = loader.load();
+
+            // Créer une nouvelle scène pour la gestion des congés
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Gestion des Congés");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

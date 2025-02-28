@@ -3,38 +3,41 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
+<AnchorPane fx:controller="tn.esprit.controllers.GestionEntretien"
+            xmlns:fx="http://javafx.com/fxml"
+            stylesheets="@style.css">
 
-<GridPane fx:controller="tn.esprit.controllers.GestionEntretien"
-          xmlns:fx="http://javafx.com/fxml"
-          alignment="CENTER"
-          hgap="10" vgap="10"
-          stylesheets="@style.css"
-          styleClass="grid-pane">
+    <!-- Titre de la page aligné tout en haut -->
+    <Label text="Ajout d'un entretien pour une offre"
+           styleClass="title-label" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+           AnchorPane.topAnchor="0"/>
 
-    <Label text="Date de l'entretien:" />
-    <DatePicker fx:id="dateEntretienPicker" GridPane.columnIndex="1" />
+    <!-- Contenu de la page -->
+    <GridPane alignment="CENTER" hgap="10" vgap="10" AnchorPane.topAnchor="50">
+        <Label text="Date de l'entretien:" />
+        <DatePicker fx:id="dateEntretienPicker" GridPane.columnIndex="1" />
 
-    <Label text="Heure de l'entretien:" GridPane.rowIndex="1" />
-    <Spinner fx:id="heureEntretienSpinner" GridPane.columnIndex="1" GridPane.rowIndex="1"
-             editable="true" prefWidth="100" />
+        <Label text="Heure de l'entretien:" GridPane.rowIndex="1" />
+        <Spinner fx:id="heureEntretienSpinner" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                 editable="true" prefWidth="100" />
 
-    <Label text="Type d'entretien:" GridPane.rowIndex="2" />
-    <ComboBox fx:id="typeEntretienComboBox" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <Label text="Type d'entretien:" GridPane.rowIndex="2" />
+        <ComboBox fx:id="typeEntretienComboBox" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-    <Label text="Statut de l'entretien:" GridPane.rowIndex="3" />
-    <ComboBox fx:id="statutEntretienComboBox" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        <Label text="Statut de l'entretien:" GridPane.rowIndex="3" />
+        <ComboBox fx:id="statutEntretienComboBox" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-    <Label text="Commentaire:" GridPane.rowIndex="4" />
-    <TextArea fx:id="commentaireField" GridPane.columnIndex="1" GridPane.rowIndex="4"
-              prefRowCount="3" wrapText="true" />
+        <Label text="Commentaire:" GridPane.rowIndex="4" />
+        <TextArea fx:id="commentaireField" GridPane.columnIndex="1" GridPane.rowIndex="4"
+                  prefRowCount="3" wrapText="true" />
 
-    <Label text="ID de l'offre d'emploi:" GridPane.rowIndex="5" />
-    <TextField fx:id="idOffreField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+        <Label text="Nom de l'offre d'emploi:" GridPane.rowIndex="5" />
+        <TextField fx:id="idOffreField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
-    <HBox spacing="10" alignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="6">
-        <Button text="Ajouter" fx:id="addButton" onAction="#addEntretien" />
-        <Button text="Mettre à jour" fx:id="updateButton" onAction="#updateEntretien" />
-        <Button text="Supprimer" fx:id="deleteButton" onAction="#deleteEntretien" />
-    </HBox>
-
-</GridPane>
+        <HBox spacing="10" alignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="6">
+            <Button text="Ajouter" fx:id="addButton" onAction="#addEntretien" />
+            <Button text="Mettre à jour" fx:id="updateButton" onAction="#updateEntretien" />
+            <Button text="Supprimer" fx:id="deleteButton" onAction="#deleteEntretien" />
+        </HBox>
+    </GridPane>
+</AnchorPane>

@@ -1,4 +1,4 @@
-/*package tn.esprit.services;
+package tn.esprit.services;
 
 import tn.esprit.interfaces.Iservice;
 import tn.esprit.models.Employee;
@@ -24,6 +24,7 @@ public class ServiceEmployee implements Iservice<Employee> {
             return;
         }
 
+        // Insert into the 'users' table first
         String userQuery = "INSERT INTO users (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pst = cnx.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS)) {
@@ -43,12 +44,13 @@ public class ServiceEmployee implements Iservice<Employee> {
             try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int userId = generatedKeys.getInt(1);
-                    employee.setIdEmployee(userId);
+                    employee.setIdEmployee(userId);  // Store the generated user ID as Employee ID
                     System.out.println("Utilisateur Employee ajouté avec succès !");
                 }
             }
 
-            String employeeQuery = "INSERT INTO employee (user_id) VALUES (?)";
+            // Now insert the Employee-specific information into the 'employee' table
+            String employeeQuery = "INSERT INTO employee (user_id) VALUES (?)";  // Reference the 'user_id' from the 'users' table
             try (PreparedStatement pstEmp = cnx.prepareStatement(employeeQuery)) {
                 pstEmp.setInt(1, employee.getIdEmployee());
                 pstEmp.executeUpdate();
@@ -63,13 +65,15 @@ public class ServiceEmployee implements Iservice<Employee> {
     @Override
     public List<Employee> getAll() {
         List<Employee> employees = new ArrayList<>();
-        String query = "SELECT numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password FROM users WHERE user_type = 'EMPLOYEE'";
+        // Change 'idEmployee' to 'id' in the SELECT query
+        String query = "SELECT id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password FROM users WHERE user_type = 'EMPLOYEE'";
 
         try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(query)) {
 
             while (rs.next()) {
                 Employee employee = new Employee(
+                        rs.getInt("id"),  // Fetching the 'id' field
                         rs.getString("numTel"),
                         rs.getInt("joursOuvrables"),
                         rs.getString("nom"),
@@ -90,33 +94,47 @@ public class ServiceEmployee implements Iservice<Employee> {
         return employees;
     }
 
-    @Override
     public void update(Employee employee) {
-        String query = "UPDATE employee SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, user_type=?, password=? WHERE idEmployee=?";
+        String query = "UPDATE users SET numTel = ?, joursOuvrables = ?, nom = ?, prenom = ?, address = ?, email = ?, gender = ?, dateDeNaissance = ?, user_type = ?, password = ? WHERE id = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(query)) {
+            ps.setString(1, employee.getNumTel());
+            ps.setInt(2, employee.getJoursOuvrables());
+            ps.setString(3, employee.getNom());
+            ps.setString(4, employee.getPrenom());
+            ps.setString(5, employee.getAddress());
+            ps.setString(6, employee.getEmail());
+            ps.setString(7, employee.getGender());
+            ps.setDate(8, employee.getDateDeNaissance());
+            ps.setString(9, employee.getUserType());
+            ps.setString(10, employee.getPassword());
+            ps.setInt(11, employee.getId());  // Ensure the ID is set here
 
-        try (PreparedStatement pst = cnx.prepareStatement(query)) {
-            pst.setString(1, employee.getNumTel());
-            pst.setInt(2, employee.getJoursOuvrables());
-            pst.setString(3, employee.getNom());
-            pst.setString(4, employee.getPrenom());
-            pst.setString(5, employee.getAddress());
-            pst.setString(6, employee.getEmail());
-            pst.setString(7, employee.getGender());
-            pst.setDate(8, employee.getDateDeNaissance());
-            pst.setString(9, employee.getUserType());
-            pst.setString(10, employee.getPassword());
-            pst.setInt(11, employee.getIdEmployee());
-
-            pst.executeUpdate();
-            System.out.println("Employee mis à jour avec succès !");
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Employee updated successfully.");
+            } else {
+                System.out.println("No employee found with the given ID.");
+            }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la mise à jour de l'Employee : " + e.getMessage());
+            System.out.println("Error updating employee: " + e.getMessage());
         }
+    }
+
+    // Méthode d'authentification de l'employé
+    public Employee authenticate(String email, String password) {
+        List<Employee> employees = getAll();  // Utiliser getAll() pour récupérer les employés depuis la base de données
+
+        for (Employee employee : employees) {
+            if (employee.getEmail().equals(email) && employee.getPassword().equals(password)) {
+                return employee;  // Authentification réussie
+            }
+        }
+        return null;  // Authentification échouée
     }
 
     @Override
     public void remove(int id) {
-        String query = "DELETE FROM employee WHERE idEmployee=?";
+        String query = "DELETE FROM users WHERE id = ?"; // Corrected the table name from 'user' to 'users'
 
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setInt(1, id);
@@ -125,11 +143,10 @@ public class ServiceEmployee implements Iservice<Employee> {
             if (rowsDeleted > 0) {
                 System.out.println("Employee supprimé avec succès !");
             } else {
-                System.out.println("Aucun Employee trouvé avec cet ID.");
+                System.out.println("Aucun employee trouvé avec cet ID.");
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la suppression de l'Employee : " + e.getMessage());
         }
     }
 }
-*/
