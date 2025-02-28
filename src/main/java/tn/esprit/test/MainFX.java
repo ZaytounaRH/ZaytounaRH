@@ -16,9 +16,10 @@ public class MainFX extends Application {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
             Parent root = loader.load();
 
-            primaryStage.setTitle("Gestion des Employés");
+            primaryStage.setTitle("Dashboard RH ");
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
+            
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -28,19 +28,6 @@ public class SessionManager {
     }
 
 
-
-/*
-    public User getCurrentUser() {
-        if (currentUser == null) {
-            currentUser = new User(); // Initialise un utilisateur vide pour éviter NullPointerException
-            currentUser.setAddress("Adresse par défaut"); // Exemple d'initialisation
-        }
-        return currentUser;
-    }
-    zidou choufou m3a chat chnowa intom tist7a9ou
-*/
-
-
     public void setCurrentUser(User user) {
          this.currentUser= user;
     }

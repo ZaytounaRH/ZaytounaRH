@@ -1,15 +1,13 @@
 package tn.esprit.controllers;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import tn.esprit.models.RH;
+import tn.esprit.models.User;
 import tn.esprit.services.ServiceRH;
+import tn.esprit.utils.SessionManager;
 
 public class Login {
 
@@ -57,8 +55,17 @@ public class Login {
         RH authenticatedRH = serviceRH.authenticate(email, password);
 
         if (authenticatedRH != null) {
-            showSuccess("Connexion réussie !", "Bienvenue, " + authenticatedRH.getNom());
-            navigateToDashboard();
+            // Save user session
+            SessionManager.getInstance().login(authenticatedRH);
+
+            // Check user role
+            if (authenticatedRH instanceof RH) {
+                showSuccess("Connexion réussie !", "Bienvenue, " + authenticatedRH.getNom());
+                navigateToDashboard();
+            } else {
+                showError("Accès refusé", "Vous n'avez pas les droits pour accéder à cette section.");
+                SessionManager.getInstance().logout(); // Clear session if unauthorized
+            }
         } else {
             showError("Échec de connexion", "Email ou mot de passe incorrect.");
         }
