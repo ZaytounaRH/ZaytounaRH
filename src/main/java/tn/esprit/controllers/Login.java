@@ -1,68 +1,96 @@
 package tn.esprit.controllers;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import java.util.regex.Pattern;
+import tn.esprit.models.RH;
+import tn.esprit.services.ServiceRH;
 
 public class Login {
 
     @FXML
     private TextField emailField;
+
     @FXML
     private PasswordField passwordField;
+
     @FXML
-    private Label emailError, passwordError;
+    private Button loginButton;
+
+    @FXML
+    private Label emailError;
+
+    @FXML
+    private Label passwordError;
+
+    private final ServiceRH serviceRH = new ServiceRH(); // Service to get RH details
 
     @FXML
     private void handleLogin() {
+        // Get user input
         String email = emailField.getText().trim();
         String password = passwordField.getText().trim();
 
+        // Reset error labels
         emailError.setVisible(false);
         passwordError.setVisible(false);
 
-        boolean isValid = true;
-
-        if (!isValidEmail(email)) {
-            emailError.setText("Format d'email invalide !");
+        // Validate input fields
+        if (email.isEmpty()) {
+            emailError.setText("L'email est requis !");
             emailError.setVisible(true);
-            isValid = false;
+            return;
         }
 
         if (password.isEmpty()) {
-            passwordError.setText("Mot de passe requis !");
+            passwordError.setText("Le mot de passe est requis !");
             passwordError.setVisible(true);
-            isValid = false;
+            return;
         }
 
-        if (isValid) {
-            openAfficherEmployee();
+        // Authenticate user
+        RH authenticatedRH = serviceRH.authenticate(email, password);
+
+        if (authenticatedRH != null) {
+            showSuccess("Connexion réussie !", "Bienvenue, " + authenticatedRH.getNom());
+            navigateToDashboard();
+        } else {
+            showError("Échec de connexion", "Email ou mot de passe incorrect.");
         }
     }
 
-    private boolean isValidEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-        return Pattern.matches(emailRegex, email);
-    }
-
-    private void openAfficherEmployee() {
+    private void navigateToDashboard() {
         try {
-            Stage stage = (Stage) emailField.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageEmployee.fxml"));
-            Scene scene = new Scene(loader.load());
+            // Load the RH Dashboard interface
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/AfficherEmployee.fxml"));
+            AnchorPane dashboardPage = loader.load();
+
+            // Get the current stage and set the new scene
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            javafx.scene.Scene scene = new javafx.scene.Scene(dashboardPage);
             stage.setScene(scene);
-            stage.setTitle("Liste des Employés");
+            stage.setTitle("Dashboard RH");
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Erreur", "Impossible d'ouvrir la page des employés.");
+            showError("Erreur", "Impossible d'ouvrir le tableau de bord.");
         }
     }
 
-    private void showAlert(String title, String message) {
+    private void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showSuccess(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);

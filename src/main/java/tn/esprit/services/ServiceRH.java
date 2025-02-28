@@ -95,7 +95,7 @@ public class ServiceRH implements IService<RH> {
 
     @Override
     public void update(RH rh) {
-        String query = "UPDATE rh SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, user_type=?, password=? WHERE idRH=?";
+        String query = "UPDATE user SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, user_type=?, password=? WHERE id=?";
 
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setString(1, rh.getNumTel());
@@ -130,4 +130,34 @@ public class ServiceRH implements IService<RH> {
             System.out.println("Erreur lors de la suppression du RH : " + e.getMessage());
         }
     }
+    public RH authenticate(String email, String password) {
+        String query = "SELECT * FROM users WHERE email = ? AND password = ? AND user_type = 'RH'";
+
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setString(1, email);
+            pst.setString(2, password);
+
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return new RH(
+                            rs.getInt("id"),
+                            rs.getString("numTel"),
+                            rs.getInt("joursOuvrables"),
+                            rs.getString("nom"),
+                            rs.getString("prenom"),
+                            rs.getString("address"),
+                            rs.getString("email"),
+                            rs.getString("gender"),
+                            rs.getDate("dateDeNaissance"),
+                            rs.getString("user_type"),
+                            rs.getString("password")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de l'authentification : " + e.getMessage());
+        }
+        return null;
+    }
+
 }
