@@ -4,20 +4,20 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import tn.esprit.models.Employee;
 import tn.esprit.services.ServiceEmployee;
 import javafx.scene.layout.HBox;
-import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.KeyEvent;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AfficherEmployee {
 
@@ -36,6 +36,9 @@ public class AfficherEmployee {
     @FXML
     private Button buttonDeleteEmploye;
 
+    @FXML
+    private TextField searchField; // The search bar
+
     private final ServiceEmployee serviceEmployee = new ServiceEmployee();
 
     @FXML
@@ -43,6 +46,12 @@ public class AfficherEmployee {
         vboxEmployes.getChildren().clear(); // Clean up before displaying
 
         List<Employee> employees = serviceEmployee.getAll();
+        displayEmployees(employees); // Display all employees
+    }
+
+    // Method to display employees in the VBox
+    private void displayEmployees(List<Employee> employees) {
+        vboxEmployes.getChildren().clear(); // Clear current list
 
         for (Employee employee : employees) {
             // Create an HBox for each employee
@@ -57,7 +66,7 @@ public class AfficherEmployee {
             Label addressLabel = new Label("Address: " + employee.getAddress());
             Label workingDaysLabel = new Label("Working Days: " + employee.getJoursOuvrables());
             Label genderLabel = new Label("Gender: " + employee.getGender());
-            Label idLabel = new Label("ID: " + employee.getIdEmployee());  // Add the ID label
+            Label idLabel = new Label("ID: " + employee.getIdEmployee());
 
             // Create a region to space out the labels
             Region spacer = new Region();
@@ -145,7 +154,7 @@ public class AfficherEmployee {
     public void supprimerEmploye() {
         if (selectedEmployee != null) {
             // Confirmation dialog before deletion
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Delete Employee");
             alert.setHeaderText("Are you sure you want to delete this employee?");
             alert.setContentText("This action cannot be undone.");
@@ -184,9 +193,20 @@ public class AfficherEmployee {
         }
     }
 
+    // Method to filter employees based on search
+    @FXML
+    public void onSearch(KeyEvent event) {
+        String searchText = searchField.getText().toLowerCase(); // Get text from search field
+        List<Employee> employees = serviceEmployee.getAll(); // Get all employees
+        List<Employee> filteredEmployees = employees.stream()
+                .filter(emp -> (emp.getNom() + " " + emp.getPrenom()).toLowerCase().contains(searchText))
+                .collect(Collectors.toList()); // Filter by full name
+        displayEmployees(filteredEmployees); // Display filtered employees
+    }
+
     // Method to show an error alert
     private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+        Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText(null);
         alert.setContentText(message);
