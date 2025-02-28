@@ -4,7 +4,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -141,6 +143,53 @@ public class AfficherEmployee {
 
     @FXML
     public void supprimerEmploye() {
-        // Logique pour supprimer un employé
+        if (selectedEmployee != null) {
+            // Confirmation dialog before deletion
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Delete Employee");
+            alert.setHeaderText("Are you sure you want to delete this employee?");
+            alert.setContentText("This action cannot be undone.");
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    try {
+                        // Delete the employee from the database using the service
+                        serviceEmployee.delete(selectedEmployee);
+
+                        // Remove the employee from the VBox
+                        vboxEmployes.getChildren().removeIf(node -> {
+                            if (node instanceof HBox) {
+                                HBox hbox = (HBox) node;
+                                // Match the HBox based on the employee ID or another unique identifier
+                                Label idLabel = (Label) hbox.getChildren().stream()
+                                        .filter(child -> child instanceof Label)
+                                        .filter(child -> ((Label) child).getText().contains("ID: " + selectedEmployee.getIdEmployee()))
+                                        .findFirst()
+                                        .orElse(null);
+
+                                return idLabel != null;
+                            }
+                            return false;
+                        });
+
+                        // Reset selected employee after deletion
+                        selectedEmployee = null;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        showError("Error deleting the employee.");
+                    }
+                }
+            });
+        } else {
+            showError("No employee selected to delete.");
+        }
+    }
+
+    // Method to show an error alert
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

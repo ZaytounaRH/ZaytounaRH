@@ -127,15 +127,24 @@ public class ServiceEmployee implements IService<Employee> {
 
     @Override
     public void delete(Employee employee) {
-        String query = "DELETE FROM user WHERE id=?";
+        String deleteEmployeeQuery = "DELETE FROM employee WHERE user_id=?";
+        String deleteUserQuery = "DELETE FROM users WHERE id=?";
 
-        try (PreparedStatement pst = cnx.prepareStatement(query)) {
-            pst.setInt(1, employee.getIdEmployee());
+        try (PreparedStatement pst1 = cnx.prepareStatement(deleteEmployeeQuery);
+             PreparedStatement pst2 = cnx.prepareStatement(deleteUserQuery)) {
 
-            pst.executeUpdate();
-            System.out.println("Employee supprimé avec succès !");
+            // Delete the employee record first (since it's linked to the users table)
+            pst1.setInt(1, employee.getIdEmployee());
+            pst1.executeUpdate();
+
+            // Now delete the user record
+            pst2.setInt(1, employee.getId());
+            pst2.executeUpdate();
+
+            System.out.println("Employee and corresponding user deleted successfully!");
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la suppression de l'Employee : " + e.getMessage());
+            System.out.println("Error deleting the employee: " + e.getMessage());
         }
     }
+
 }
