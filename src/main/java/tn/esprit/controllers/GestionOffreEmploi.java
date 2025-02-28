@@ -240,7 +240,7 @@ public class GestionOffreEmploi {
     private void allerGestionConge() {
         try {
             // Charger le fichier FXML de la gestion des congés
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/GestionConge.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionConge.fxml"));
             Parent root = loader.load();
 
             // Créer une nouvelle scène pour la gestion des congés
