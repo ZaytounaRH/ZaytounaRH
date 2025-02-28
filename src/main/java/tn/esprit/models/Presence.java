@@ -10,8 +10,8 @@ public class présence {
     private Date heureDepart;
     private String statut;
     private int idEmploye;
-    private Congé congé;  //
-    private employe employe;
+    private Conge congé;  //
+    private Employe employe;
 // Instance de Congé
 
     public présence(int id_présence, Date date, Date heureArrivé, Date heureDepart, String statut, int idEmploye) {
@@ -26,7 +26,7 @@ public class présence {
     public présence() {
     }
 
-    public présence(Date datePrésence, Date heureArrivé, Date heureDepart, String statut, employe employe) {
+    public présence(Date datePrésence, Date heureArrivé, Date heureDepart, String statut, Employe employe) {
         this.date = datePrésence;
         this.heureArrivé = heureArrivé;
         this.heureDepart = heureDepart;
@@ -43,11 +43,11 @@ public class présence {
     }
     // Getters et Setters
 
-    public Congé getCongé() {
+    public Conge getCongé() {
         return congé;
     }
 
-    public void setCongé(Congé congé) {
+    public void setCongé(Conge congé) {
         this.congé = congé;
     }
 
@@ -98,11 +98,11 @@ public class présence {
     public void setIdEmploye(int idEmploye) {
         this.idEmploye = idEmploye;
     }
-    public employe getEmploye() {
+    public Employe getEmploye() {
         return employe;
     }
 
-    public void setEmploye(employe employe) {
+    public void setEmploye(Employe employe) {
         this.employe = employe;
     }
 

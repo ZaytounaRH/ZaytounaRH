@@ -1,108 +1,152 @@
 package tn.esprit.test;
 
-import tn.esprit.models.Congé;
-import tn.esprit.models.présence;
-import tn.esprit.services.ServiceCongé;
-import tn.esprit.services.ServicePrésence;
+import tn.esprit.models.Conge;
+import tn.esprit.models.Employee;
+import tn.esprit.models.User;
+import tn.esprit.services.ServiceConge;
+import tn.esprit.utils.MyDatabase;
+import tn.esprit.utils.SessionManager;
+import tn.esprit.models.Presence;
+import tn.esprit.services.PresenceService;
+import java.sql.Time;
+import java.sql.Date;
+import java.sql.Connection;
 import java.util.List;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        ServiceCongé spCongé = new ServiceCongé(); // Service pour gérer les congés
-        ServicePrésence spPrésence = new ServicePrésence(); // Service pour gérer les présences
-        Scanner scanner = new Scanner(System.in);
-
-        // Format de date
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat sdfHeure = new SimpleDateFormat("HH:mm:ss");
-
-        try {
-            // Demande des informations pour la présence
-            System.out.println("\nVeuillez entrer la date de la présence (format: yyyy-MM-dd) :");
-            String datePrésenceInput = scanner.nextLine();
-            Date datePrésence = sdf.parse(datePrésenceInput);
-
-            System.out.println("Veuillez entrer l'heure d'arrivée de la présence (format: HH:mm:ss) :");
-            String heureArrivéInput = scanner.nextLine();
-            Date heureArrivé = sdfHeure.parse(heureArrivéInput);
-
-            System.out.println("Veuillez entrer l'heure de départ de la présence (format: HH:mm:ss) :");
-            String heureDepartInput = scanner.nextLine();
-            Date heureDepart = sdfHeure.parse(heureDepartInput);
-
-            System.out.println("Veuillez entrer le statut de la présence (ex: présent, absent) :");
-            String statutInput = scanner.nextLine();
-
-            System.out.println("Veuillez entrer l'ID de l'employé :");
-            int idEmployeInput = Integer.parseInt(scanner.nextLine());
-
-            System.out.println("Veuillez entrer l'ID du congé associé (si aucun, entrez 0) :");
-            String input = scanner.nextLine().trim();
-
-            Integer idCongé = null;
-
-            if (!input.equals("0")) {
-                try {
-                    idCongé = Integer.parseInt(input);
-                } catch (NumberFormatException e) {
-                    System.out.println("Entrée invalide pour l'ID du congé. Veuillez entrer un nombre valide ou 0.");
-                    return;
-                }
-            }
-
-            // Création de l'objet présence
-            présence presence = new présence(datePrésence, heureArrivé, heureDepart, statutInput, idEmployeInput);
-
-            // Association avec un congé si applicable
-            if (idCongé != null) {
-                Congé congé = new Congé();
-                congé.setId_congé(idCongé);
-                presence.setCongé(congé);
-            }
-
-            // Ajout de la présence en base de données
-            spPrésence.add(presence);
-            System.out.println("Présence ajoutée avec succès!");
-
-            // Affichage des présences enregistrées
-            afficherPrésencesAvecCongés(spPrésence);
-
-        } catch (Exception e) {
-            System.out.println("Erreur lors de la gestion des entrées : " + e.getMessage());
-        } finally {
-            scanner.close();
-        }
-    }
-
-
-    // Fonction pour afficher toutes les présences, avec les employés et congés associés
-    public static void afficherPrésencesAvecCongés(ServicePrésence spPrésence) {
-        List<présence> listePrésences = spPrésence.getAll(); // Récupérer les présences depuis le service
-
-        if (listePrésences.isEmpty()) {
-            System.out.println("⚠️ Aucune présence enregistrée.");
-            return;
+        // 1️⃣ Connexion à la base de données
+        Connection connection = MyDatabase.getInstance().getCnx();
+        if (connection == null) {
+            System.out.println("❌ Erreur : Connexion non établie !");
+        } else {
+            System.out.println("✅ Connexion réussie !");
         }
 
-        System.out.println(" Liste des présences :");
-        for (présence p : listePrésences) {
-            System.out.println(p);
+        System.out.println("✅ Connexion établie avec la base de données.");
 
-            // Vérifier si l'employé est bien associé
-            if (p.getEmploye() != null) {
-                System.out.println("  -> Employé associé : " + p.getEmploye().getNom() + " " + p.getEmploye().getPrenom());
+        // 2️⃣ Création d'un employé et connexion (simuler un employé)
+        Employee employe = new Employee();
+        employe.setIdEmployee(3);  // Assurez-vous que cet ID existe dans la table employee !
+        employe.setNom("Dupont");
+        employe.setPrenom("Jean");
+        employe.setUserType("EMPLOYE");
+        employe.setEmail("jean.dupont@example.com");
+        employe.setNumTel("123456789");
+
+        // Connexion de l'employé via le SessionManager
+        User currentUser = new User();
+        currentUser.setId(3);
+        currentUser.setUserType("Employee");
+        SessionManager.getInstance().setCurrentUser(currentUser);
+        System.out.println("ℹ️ Utilisateur connecté : " + currentUser.getUserType());
+
+        // 3️⃣ Création d'un congé pour l'employé
+        ServiceConge serviceConge = new ServiceConge(connection);
+
+        Conge conge = new Conge();
+        conge.setDateDebut(new java.util.Date()); // Date actuelle
+        conge.setDateFin(new java.util.Date());  // Vous pouvez ajuster la date de fin
+        conge.setMotif("Maladie");
+        conge.setStatut(Conge.statut.EN_ATTENTE);
+
+        serviceConge.add(conge);
+
+        // 4️⃣ Récupération et affichage des congés de l'employé connecté
+        List<Conge> conges = serviceConge.getAll();
+        if (conges.isEmpty()) {
+            System.out.println("❌ Aucun congé trouvé.");
+        } else {
+            System.out.println("✅ Liste des congés de l'employé connecté :");
+            for (Conge c : conges) {
+                System.out.println("ℹ️ Congé ID: " + c.getIdConge() +
+                        ", Date début: " + c.getDateDebut() +
+                        ", Date fin: " + c.getDateFin() +
+                        ", Motif: " + c.getMotif() +
+                        ", Statut: " + c.getStatut());
+            }
+        }
+
+        // 5️⃣ Mettre à jour un congé (pour un RH uniquement)
+        // Simuler un utilisateur RH
+        User rhUser = new User();
+        rhUser.setId(1);
+        rhUser.setUserType("RH");
+        SessionManager.getInstance().setCurrentUser(rhUser);
+
+        // 6️⃣ Récupération et affichage des congés pour l'utilisateur RH
+        System.out.println("✅ Liste des congés pour le RH :");
+        List<Conge> allCongeForRH = serviceConge.getAll(); // RH peut voir tous les congés
+        if (allCongeForRH.isEmpty()) {
+            System.out.println("❌ Aucun congé trouvé.");
+        } else {
+            for (Conge c : allCongeForRH) {
+                System.out.println("ℹ️ Congé ID: " + c.getIdConge() +
+                        ", Date début: " + c.getDateDebut() +
+                        ", Date fin: " + c.getDateFin() +
+                        ", Motif: " + c.getMotif() +
+                        ", Statut: " + c.getStatut());
+            }
+        }
+
+        // 5️⃣ Mettre à jour un congé (pour un RH uniquement)
+        Conge congeToUpdate = serviceConge.getById(37);  // Utiliser un ID existant
+        if (congeToUpdate != null) {
+            // Modifier tous les champs
+            congeToUpdate.setDateDebut(new java.util.Date());  // Exemple de nouvelle date de début
+            congeToUpdate.setDateFin(new java.util.Date());    // Exemple de nouvelle date de fin
+            congeToUpdate.setMotif("Maladie prolongée");       // Modifier le motif
+            congeToUpdate.setStatut(Conge.statut.ACCEPTE);
+            // Mettre à jour le congé dans la base de données
+            // Mettre à jour le congé dans la base de données
+            serviceConge.update(congeToUpdate);
+            System.out.println("✅ Le congé ID " + congeToUpdate.getIdConge() + " a été mis à jour avec succès.");
+        } else {
+            System.out.println("❌ Aucun congé trouvé à mettre à jour.");
+        }
+
+        // 7️⃣ Suppression d'un congé (seul un RH peut le faire)
+        int idCongeASupprimer = 33; // Remplace par un ID de congé existant
+
+// Vérifier l'utilisateur connecté
+        currentUser = SessionManager.getInstance().getCurrentUser();
+        if (currentUser != null && "RH".equalsIgnoreCase(currentUser.getUserType())) {
+            System.out.println("ℹ️ RH connecté : Suppression du congé en cours...");
+
+            // Vérifier si le congé existe avant de supprimer
+            Conge congeASupprimer = serviceConge.getById(idCongeASupprimer);
+            if (congeASupprimer != null) {
+                serviceConge.remove(idCongeASupprimer);
+                System.out.println("✅ Congé ID " + idCongeASupprimer + " supprimé avec succès !");
             } else {
-                System.out.println("  -> Employé associé :  Inconnu");
+                System.out.println("❌ Erreur : Aucun congé trouvé avec l'ID " + idCongeASupprimer);
             }
-
-            // Vérifier si un congé est associé
-            if (p.getCongé() != null) {
-                System.out.println("  -> Congé associé : " + p.getCongé());
-            }
+        } else {
+            System.out.println("❌ Erreur : Seul un RH peut supprimer un congé !");
         }
-    }
+
+
+        // 4️⃣ Création du service de présence
+        PresenceService servicePresence = new PresenceService(connection);
+
+// 🔍 Récupérer l'utilisateur connecté depuis SessionManager
+        currentUser = SessionManager.getInstance().getCurrentUser();
+
+        if (currentUser != null && ("EMPLOYE".equalsIgnoreCase(currentUser.getUserType()) || "RH".equalsIgnoreCase(currentUser.getUserType()))) {
+            // 🔍 Afficher les informations de l'utilisateur connecté
+            System.out.println("🔍 Utilisateur connecté : " + currentUser.getUserType());
+
+            // 🔽 Création et initialisation de la présence
+            Presence presence = new Presence();
+            presence.setUser(currentUser); // ✅ Associer l'utilisateur connecté sans forcer le type
+            presence.setDate(new Date(System.currentTimeMillis()));
+            presence.setHeureArrivee(Time.valueOf("08:30:00"));
+            presence.setHeureDepart(Time.valueOf("18:00:00"));
+
+            // ✅ Ajouter la présence via le service
+            servicePresence.add(presence);
+
+        }
 }
+    }
+
