@@ -5,10 +5,15 @@
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.collections.FXCollections?>
 
+<?import java.net.URL?>
 <ScrollPane prefHeight="720.0" prefWidth="1080.0"
             xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="tn.esprit.controllers.GestionAssurance">
+    <stylesheets>
+        <URL value="@Style.css" />
+    </stylesheets>
+
     <content>
         <VBox spacing="20" style="-fx-padding: 20;">
 
