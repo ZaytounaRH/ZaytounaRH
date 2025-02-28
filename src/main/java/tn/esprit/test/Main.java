@@ -25,8 +25,8 @@ public class Main {
         SessionManager.getInstance().setCurrentUser(candidat);  // Simule un candidat connecté
 
         // 🟢 INITIALISATION DE LA SESSION POUR LE RH
-        RH rh = new RH(1, "1234567890", 5, "Nom", "Prenom", "Adresse", "email@example.com", "Femme", Date.valueOf("2000-01-01"), "admin", "password123", 1);
-        SessionManager.getInstance().setCurrentUser(rh);
+        //RH rh = new RH(1, "1234567890", 5, "Nom", "Prenom", "Adresse", "email@example.com", "Femme", Date.valueOf("2000-01-01"), "admin", "password123", 1);
+        //SessionManager.getInstance().setCurrentUser(rh);
         System.out.println("Utilisateur connecté : " + SessionManager.getInstance().getCurrentUser().getClass().getSimpleName());
 
         // 🔥 CREATION D'UNE NOUVELLE OFFRE D'EMPLOI
@@ -157,11 +157,11 @@ public class Main {
         }
 
         // 🟢 SUPPRESSION D'UN ENTRETIEN
-        if (!listeEntretiens.isEmpty()) {
+       /* if (!listeEntretiens.isEmpty()) {
             Entretien entretienToRemove = listeEntretiens.get(0);
             entretienService.remove(entretienToRemove.getIdEntretien());
             System.out.println("\n🗑️ Entretien supprimé avec succès : ID " + entretienToRemove.getIdEntretien());
-        }
+        }*/
 
         // 🔍 AFFICHAGE APRÈS SUPPRESSION
         listeEntretiens = entretienService.getAll();
