@@ -57,20 +57,17 @@ public class GestionEntretien {
         typeEntretienComboBox.setItems(FXCollections.observableArrayList(TypeEntretien.values()));
         statutEntretienComboBox.setItems(FXCollections.observableArrayList(StatutEntretien.values()));
 
+        // Définir des valeurs par défaut
+        if (!typeEntretienComboBox.getItems().isEmpty()) {
+            typeEntretienComboBox.setValue(typeEntretienComboBox.getItems().get(0));
+        }
         List<Entretien> entretiensList = serviceEntretien.getAll();
         listViewEntretiens.setItems(FXCollections.observableArrayList(entretiensList));
 
-        listViewEntretiens.setCellFactory(param -> new ListCell<Entretien>() {
-            @Override
-            protected void updateItem(Entretien item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(item.getDateEntretien() + " - " + item.getTypeEntretien());
-                }
-            }
-        });}
+        if (!statutEntretienComboBox.getItems().isEmpty()) {
+            statutEntretienComboBox.setValue(statutEntretienComboBox.getItems().get(0));
+        }
+    }
 
 
     // Méthode pour ajouter un entretien

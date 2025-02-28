@@ -91,3 +91,15 @@
     -fx-background-color: #ffffff; /* Fond blanc autour de l'image */
 }
 
+.combo-box {
+    -fx-background-color: #fafafa; /* Fond beige clair */
+    -fx-border-color: #c8c8c8; /* Bordure grise claire */
+    -fx-border-radius: 10px;
+    -fx-padding: 5px 12px;
+    -fx-font-size: 16px;
+}
+
+.combo-box:focused {
+    -fx-border-color: #32a9c7; /* Bordure bleue au focus */
+    -fx-background-color: #f1f7f9; /* Fond plus clair au focus */
+}
