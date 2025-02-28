@@ -72,69 +72,61 @@ public class ServiceOffreEmploi implements Iservice<OffreEmploi> {
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'ajout de l'offre d'emploi : " + e.getMessage());
         }
-    }
-    @Override
-    public List<OffreEmploi> getAll() {
-        List<OffreEmploi> offres = new ArrayList<>();
-        return offres;
-    }
-      /*  String qry = "SELECT o.idOffre, o.titreOffre, o.description, o.datePublication, o.salaire, o.statut, o.idRH, u.nom AS rh_nom " +
-                "FROM offreemploi o " +
-                "JOIN RH r ON o.idRH = r.rh_id " +  // Associe la table OffreEmploi à RH
-                "JOIN users u ON r.rh_id = u.id " +  // Remplace r.rh_id par r.idUser (si c'est l'ID du RH dans la table users)
-                "WHERE u.nom = Zheni";  // Filtrer par le nom du RH connecté
-        //String query = "SELECT e.*, o.*, c.*, u.nom AS nom_rh, u.prenom AS prenom_rh FROM offreemploi o " + "JOIN offreemploi o ON e.idOffre = o.idOffre " + "JOIN candidat c ON e.candidat_id = c.candidat_id " + "JOIN users u ON c.user_id = u.id";  // Assurez-vous d'ajouter cette jointure pour récupérer les données de User
-        try (PreparedStatement pstmt = cnx.prepareStatement(qry)) {
-            pstmt.setString(1, "NomRH");  // Remplacer "NomRH" par la variable contenant le nom du RH connecté
 
-            try (ResultSet rs = pstmt.executeQuery()) {
+    }
+        @Override
+        public List<OffreEmploi> getAll() {
+
+
+            // Liste pour stocker les offres d'emploi récupérées
+            List<OffreEmploi> offres = new ArrayList<>();
+
+            // Requête SQL pour récupérer les offres d'emploi et les informations associées (RH et Candidats)
+            String query = "SELECT o.idOffre, o.titreOffre, o.description, o.datePublication, o.salaire, o.statut, o.idRH, u.nom AS rh_nom " +
+                    "FROM offreemploi o " +
+                    "JOIN RH r ON o.idRH = r.rh_id " +
+                    "JOIN users u ON r.rh_id = u.id";
+
+            // Exécution de la requête et traitement du résultat
+            try (PreparedStatement stmt = cnx.prepareStatement(query);
+                 ResultSet rs = stmt.executeQuery()) {
+
                 while (rs.next()) {
-                    OffreEmploi offre = new OffreEmploi();
-                    offre.setIdOffre(rs.getInt("idOffre"));
-                    offre.setTitreOffre(rs.getString("titreOffre"));
-                    offre.setDescription(rs.getString("description"));
-                    offre.setDatePublication(rs.getDate("datePublication"));
-                    offre.setSalaire(rs.getDouble("salaire"));
+                    // Créer l'objet OffreEmploi
+                    OffreEmploi offreEmploi = new OffreEmploi();
+                    offreEmploi.setIdOffre(rs.getInt("idOffre"));
+                    offreEmploi.setTitreOffre(rs.getString("titreOffre"));
+                    offreEmploi.setDescription(rs.getString("description"));
+                    offreEmploi.setDatePublication(rs.getDate("datePublication"));
+                    offreEmploi.setSalaire(rs.getDouble("salaire"));
+                    offreEmploi.setStatut(OffreEmploi.StatutOffre.valueOf(rs.getString("statut").toUpperCase()));  // Assurez-vous de normaliser le statut
 
-                    String statutString = rs.getString("statut").toUpperCase();
-                    try {
-                        StatutOffre statutEnum = StatutOffre.valueOf(statutString);
-                        offre.setStatut(statutEnum);
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Statut invalide trouvé : " + statutString + ". Statut par défaut 'ENCOURS' utilisé.");
-                        offre.setStatut(StatutOffre.ENCOURS);
-                    }
+                    // Créer l'objet RH
+                    RH rh = new RH();
+                    rh.setIdRH(rs.getInt("idRH"));
+                    rh.setNom(rs.getString("rh_nom"));
+                    offreEmploi.setRh(rh);
 
-                    // Charger RH
-                    int rhId = rs.getInt("idRH");
-                    RH rh = null;
-                    if (rhId > 0) {
-                        String rhQry = "SELECT r.nom AS rh_nom FROM users r WHERE r.id = ? AND r.user_type = 'RH'";
-                        try (PreparedStatement pstmtRh = cnx.prepareStatement(rhQry)) {
-                            pstmtRh.setInt(1, rhId);
-                            try (ResultSet rsRh = pstmtRh.executeQuery()) {
-                                if (rsRh.next()) {
-                                    rh = new RH(rhId, rsRh.getString("rh_nom"));
-                                }
-                            }
-                        }
-                    }
-                    offre.setRh(rh);
+                    // Ajouter l'offre d'emploi à la liste
+                    offres.add(offreEmploi);
+                }
+            } catch (SQLException e) {
+                System.out.println("Erreur lors de la récupération des offres d'emploi : " + e.getMessage());
+            }
 
-                    // Charger les entretiens
-                    ServiceEntretien serviceEntretien = new ServiceEntretien();
-                    List<Entretien> entretiens = serviceEntretien.getAllByOffre(offre.getIdOffre());
-                    offre.setEntretiens(entretiens != null ? entretiens : new ArrayList<>());
-
-                    offres.add(offre);
+            // Afficher la liste des offres d'emploi dans la console (pour les tests ou l'affichage)
+            if (offres.isEmpty()) {
+                System.out.println("Aucune offre d'emploi disponible.");
+            } else {
+                System.out.println("Liste des offres d'emploi : ");
+                for (OffreEmploi offre : offres) {
+                    System.out.println(offre);
                 }
             }
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération des offres : " + e.getMessage());
+
+            return offres;
         }
 
-        return offres;
-    }*/
 
     @Override
     public void update(OffreEmploi offreEmploi) {
@@ -194,6 +186,54 @@ public class ServiceOffreEmploi implements Iservice<OffreEmploi> {
     }
 
     @Override
-    public void remove(int idOffre) {}
+    public void remove(int idOffre) {
+        // Récupérer l'utilisateur actuellement connecté via SessionManager
+        User currentUser = SessionManager.getInstance().getCurrentUser();
+
+        // Vérifier si l'utilisateur est un RH
+        if (currentUser == null || !(currentUser instanceof RH)) {
+            System.out.println("Erreur : Seuls les RH peuvent supprimer une offre d'emploi !");
+            return;  // Interrompre l'exécution si ce n'est pas un RH
+        }
+
+        // Vérifier que l'ID de l'offre est valide
+        if (idOffre == 0) {
+            System.out.println("Erreur : L'ID de l'offre d'emploi est invalide !");
+            return;
+        }
+
+        // Préparer la requête SQL pour vérifier si l'offre d'emploi existe
+        String checkQuery = "SELECT idOffre FROM OffreEmploi WHERE idOffre = ?";
+        try (PreparedStatement stmtCheck = cnx.prepareStatement(checkQuery)) {
+            stmtCheck.setInt(1, idOffre);
+            ResultSet rs = stmtCheck.executeQuery();
+
+            if (!rs.next()) {
+                System.out.println("Erreur : L'offre d'emploi avec l'ID " + idOffre + " n'existe pas.");
+                return;  // Si l'offre n'existe pas, on arrête ici
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la vérification de l'existence de l'offre d'emploi : " + e.getMessage());
+            return;
+        }
+
+        // Préparer la requête SQL pour supprimer l'offre d'emploi
+        String deleteQuery = "DELETE FROM OffreEmploi WHERE idOffre = ?";
+
+        try (PreparedStatement stmt = cnx.prepareStatement(deleteQuery)) {
+            stmt.setInt(1, idOffre); // idOffre (pour la condition WHERE)
+
+            // Exécuter la suppression
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Offre d'emploi supprimée avec succès !");
+            } else {
+                System.out.println("Erreur : Aucune suppression effectuée.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la suppression de l'offre d'emploi : " + e.getMessage());
+        }
+    }
+
 
 }

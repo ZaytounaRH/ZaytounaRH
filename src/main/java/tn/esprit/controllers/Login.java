@@ -107,13 +107,13 @@ public class Login {
     private void openGestionEntretienForRH() {
         try {
             Stage stage = (Stage) emailField.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/card_entretien.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionOffreEmploi.fxml"));
             Scene scene = new Scene(loader.load());
             stage.setScene(scene);
             stage.setTitle("Gestion des Entretiens (RH)");
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Erreur", "Impossible d'ouvrir la page des entretiens pour RH.");
+            showAlert("Erreur", "Impossible d'ouvrir la page des offres pour RH.");
         }
     }
 

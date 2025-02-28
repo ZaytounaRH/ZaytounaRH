@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="tn.esprit.controllers.GestionOffreEmploi">
+    <VBox alignment="CENTER" spacing="10" padding="20">
+        <TextField fx:id="titreOffreField" promptText="Titre de l'offre" />
+        <TextArea fx:id="descriptionField" promptText="Description de l'offre" />
+        <DatePicker fx:id="datePublicationField" promptText="Date de publication" />
+        <TextField fx:id="salaireField" promptText="Salaire" />
+        <ComboBox fx:id="statutField">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="ENCOURS" />
+                    <String fx:value="TERMINEE" />
+                    <String fx:value="ANNULÉE" />
+                </FXCollections>
+            </items>
+        </ComboBox>
+        <Button text="Ajouter l'offre" onAction="#handleAddOffre" />
+    </VBox>
+</AnchorPane>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="tn.esprit.controllers.GestionEntretien">
+    <!-- ListView pour afficher les entretiens -->
+    <ListView fx:id="listViewEntretiens" prefHeight="400.0" prefWidth="600.0" />
+</VBox>

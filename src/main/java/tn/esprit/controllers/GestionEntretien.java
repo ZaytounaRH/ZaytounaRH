@@ -1,6 +1,7 @@
 package tn.esprit.controllers;
 
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import tn.esprit.models.Entretien;
@@ -10,11 +11,15 @@ import tn.esprit.models.OffreEmploi;
 import tn.esprit.services.ServiceEntretien;
 
 import java.time.LocalTime;
+import java.util.List;
 
 public class GestionEntretien {
 
     @FXML
     private DatePicker dateEntretienPicker;
+    @FXML
+
+    private ListView<Entretien> listViewEntretiens;
 
     @FXML
     private Spinner<Integer> heureEntretienSpinner;
@@ -44,18 +49,28 @@ public class GestionEntretien {
 
     @FXML
     public void initialize() {
+        if (listViewEntretiens == null) {
+            System.out.println("La ListView est NULL !");
+            return;
+        }
+
         typeEntretienComboBox.setItems(FXCollections.observableArrayList(TypeEntretien.values()));
         statutEntretienComboBox.setItems(FXCollections.observableArrayList(StatutEntretien.values()));
 
-        // Définir des valeurs par défaut
-        if (!typeEntretienComboBox.getItems().isEmpty()) {
-            typeEntretienComboBox.setValue(typeEntretienComboBox.getItems().get(0));
-        }
+        List<Entretien> entretiensList = serviceEntretien.getAll();
+        listViewEntretiens.setItems(FXCollections.observableArrayList(entretiensList));
 
-        if (!statutEntretienComboBox.getItems().isEmpty()) {
-            statutEntretienComboBox.setValue(statutEntretienComboBox.getItems().get(0));
-        }
-    }
+        listViewEntretiens.setCellFactory(param -> new ListCell<Entretien>() {
+            @Override
+            protected void updateItem(Entretien item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getDateEntretien() + " - " + item.getTypeEntretien());
+                }
+            }
+        });}
 
 
     // Méthode pour ajouter un entretien
@@ -104,6 +119,17 @@ public class GestionEntretien {
         entretien.setOffreEmploi(offreEmploi);
 
         serviceEntretien.update(entretien);
+    }
+    @FXML
+    public void afficherEntretien(ActionEvent actionEvent) {
+        // Récupérer la liste des entretiens depuis le service
+        List<Entretien> entretiensList = serviceEntretien.getAll();
+
+        // Effacer les éléments existants dans le ListView avant d'ajouter les nouveaux
+        listViewEntretiens.getItems().clear();
+
+        // Ajouter les entretiens à la ListView
+        listViewEntretiens.getItems().addAll(entretiensList);  // Ajouter directement des objets Entretien
     }
 
     // Méthode pour supprimer un entretien
