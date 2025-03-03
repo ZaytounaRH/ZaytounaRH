@@ -25,7 +25,7 @@ public class ServiceEmployee implements IService<Employee> {
         }
 
         // Insert into the 'users' table first
-        String userQuery = "INSERT INTO users (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String userQuery = "INSERT INTO users (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pst = cnx.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS)) {
             pst.setString(1, employee.getNumTel());
@@ -38,6 +38,7 @@ public class ServiceEmployee implements IService<Employee> {
             pst.setDate(8, employee.getDateDeNaissance());
             pst.setString(9, userType);
             pst.setString(10, employee.getPassword());
+            pst.setString(11, employee.getImage());
 
             pst.executeUpdate();
 
@@ -66,7 +67,7 @@ public class ServiceEmployee implements IService<Employee> {
     public List<Employee> getAll() {
         List<Employee> employees = new ArrayList<>();
         // Change 'idEmployee' to 'id' in the SELECT query
-        String query = "SELECT id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password FROM users WHERE user_type = 'EMPLOYEE'";
+        String query = "SELECT id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password, image FROM users WHERE user_type = 'EMPLOYEE'";
 
         try (Statement st = cnx.createStatement();
              ResultSet rs = st.executeQuery(query)) {
@@ -83,7 +84,8 @@ public class ServiceEmployee implements IService<Employee> {
                         rs.getString("gender"),
                         rs.getDate("dateDeNaissance"),
                         rs.getString("user_type"),
-                        rs.getString("password")
+                        rs.getString("password"),
+                        rs.getString("image")
                 );
                 employees.add(employee);
             }
@@ -94,10 +96,9 @@ public class ServiceEmployee implements IService<Employee> {
         return employees;
     }
 
-
-
+    @Override
     public void update(Employee employee) {
-        String query = "UPDATE users SET numTel = ?, joursOuvrables = ?, nom = ?, prenom = ?, address = ?, email = ?, gender = ?, dateDeNaissance = ?, user_type = ?, password = ? WHERE id = ?";
+        String query = "UPDATE users SET numTel = ?, joursOuvrables = ?, nom = ?, prenom = ?, address = ?, email = ?, gender = ?, dateDeNaissance = ?, user_type = ?, password = ?, image = ? WHERE id = ?";
         try (PreparedStatement ps = cnx.prepareStatement(query)) {
             ps.setString(1, employee.getNumTel());
             ps.setInt(2, employee.getJoursOuvrables());
@@ -109,7 +110,8 @@ public class ServiceEmployee implements IService<Employee> {
             ps.setDate(8, employee.getDateDeNaissance());
             ps.setString(9, employee.getUserType());
             ps.setString(10, employee.getPassword());
-            ps.setInt(11, employee.getId());  // Ensure the ID is set here
+            ps.setString(11, employee.getImage());
+            ps.setInt(12, employee.getId());  // Ensure the ID is set here
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected > 0) {
@@ -121,9 +123,6 @@ public class ServiceEmployee implements IService<Employee> {
             System.out.println("Error updating employee: " + e.getMessage());
         }
     }
-
-
-
 
     @Override
     public void delete(Employee employee) {
@@ -146,5 +145,4 @@ public class ServiceEmployee implements IService<Employee> {
             System.out.println("Error deleting the employee: " + e.getMessage());
         }
     }
-
 }

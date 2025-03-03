@@ -24,7 +24,7 @@ public class ServiceUser implements IService<User> {
             return;
         }
 
-        String query = "INSERT INTO users (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO users (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pst = cnx.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             pst.setString(1, user.getNumTel());
@@ -37,6 +37,7 @@ public class ServiceUser implements IService<User> {
             pst.setDate(8, user.getDateDeNaissance());
             pst.setString(9, userType);
             pst.setString(10, user.getPassword());
+            pst.setString(11, user.getImage());
 
             pst.executeUpdate();
             ResultSet generatedKeys = pst.getGeneratedKeys();
@@ -48,7 +49,6 @@ public class ServiceUser implements IService<User> {
             System.out.println("Erreur lors de l'ajout de l'utilisateur : " + e.getMessage());
         }
     }
-
 
     @Override
     public List<User> getAll() {
@@ -70,7 +70,8 @@ public class ServiceUser implements IService<User> {
                         rs.getString("gender"),
                         rs.getDate("dateDeNaissance"),
                         rs.getString("user_type"),
-                        rs.getString("password")
+                        rs.getString("password"),
+                        rs.getString("image")
                 );
                 users.add(user);
             }
@@ -83,7 +84,7 @@ public class ServiceUser implements IService<User> {
 
     @Override
     public void update(User user) {
-        String query = "UPDATE users SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, user_type=?, password=? WHERE id=?";
+        String query = "UPDATE users SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, user_type=?, password=?, image=? WHERE id=?";
 
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setString(1, user.getNumTel());
@@ -96,7 +97,8 @@ public class ServiceUser implements IService<User> {
             pst.setDate(8, user.getDateDeNaissance());
             pst.setString(9, user.getUserType());
             pst.setString(10, user.getPassword());
-            pst.setInt(11, user.getId());
+            pst.setString(11, user.getImage());
+            pst.setInt(12, user.getId());
 
             int rowsUpdated = pst.executeUpdate();
             if (rowsUpdated > 0) {

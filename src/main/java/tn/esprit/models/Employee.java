@@ -5,19 +5,20 @@ import java.sql.Date;
 public class Employee extends User {
     protected int idEmployee;
 
-    public  Employee() {}
+    public Employee() {}
 
-    public Employee(String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password) {
-        super(numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password);
+    public Employee(String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, String image) {
+        super(numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password, image);
         this.idEmployee = idEmployee;
     }
 
-    public Employee(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, int idEmployee) {
-        super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password);
+    public Employee(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, String image, int idEmployee) {
+        super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password, image);
         this.idEmployee = idEmployee;
     }
-    public Employee(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password) {
-        super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password);
+
+    public Employee(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, String image) {
+        super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password, image);
     }
 
     public int getIdEmployee() {
@@ -43,6 +44,7 @@ public class Employee extends User {
                 ", dateDeNaissance=" + dateDeNaissance +
                 ", userType='" + userType + '\'' +
                 ", password='" + password + '\'' +
+                ", image='" + image + '\'' +
                 '}';
     }
 }
