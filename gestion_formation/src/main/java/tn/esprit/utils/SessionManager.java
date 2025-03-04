@@ -1,5 +1,6 @@
 package tn.esprit.utils;
 
+import tn.esprit.models.Employee;
 import tn.esprit.models.RH;
 import tn.esprit.utils.MyDatabase;
 import tn.esprit.models.User; // Assure-toi que l'import est correct
@@ -26,7 +27,16 @@ private Connection connection;
 
     // Méthode pour se connecter en tant qu'utilisateur
     public void login(User user) {
-        this.currentUser = user;
+        System.out.println("Utilisateur connecté : " + user.getClass().getName());
+        System.out.println("userType : " + user.getUserType());
+        if (user instanceof RH) {
+            this.currentUser = (RH) user;  // Cast de User à RH
+            System.out.println("Utilisateur connecté de type RH");
+        } else {
+            this.currentUser = user;
+            System.out.println("Utilisateur connecté de type User");
+        }
+        System.out.println("Type après connexion : " + (currentUser != null ? currentUser.getClass().getName() : "Aucun"));
     }
 
     // Méthode pour déconnecter l'utilisateur
@@ -36,6 +46,8 @@ private Connection connection;
 
     // Retourne l'utilisateur actuellement connecté
     public User getCurrentUser() {
+        System.out.println("Type de l'utilisateur actuel : " + (currentUser != null ? currentUser.getClass().getName() : "Aucun"));
+
         return currentUser;
     }
     public Connection getConnection() {
@@ -55,4 +67,44 @@ private Connection connection;
     public boolean isUserLoggedIn() {
         return currentUser != null;
     }
+
+    public int getCurrentRHId() {
+        if (currentUser == null) {
+            System.out.println("Aucun utilisateur connecté.");
+            return -1;
+        }
+        if (currentUser instanceof RH) {
+            RH rhUser = (RH) currentUser;
+            int rhId = rhUser.getIdRH();
+            if (rhId != 0) {
+                return rhId;
+            } else {
+                System.out.println("L'ID RH est invalide.");
+            }
+        }
+        System.out.println("L'utilisateur connecté n'est pas un RH.");
+        return -1;
+    }
+public int getCurrentEmployeeId() {
+        if (currentUser == null) {
+            System.out.println("Aucun utilisateur connecté");
+            return -1;
+        }
+        if (currentUser instanceof Employee) {
+            Employee employee = (Employee) currentUser;
+            int employeeId = employee.getIdEmployee();
+            if (employeeId != 0) {
+                return employeeId;
+
+            }
+            else {
+                System.out.println("L'ID Employee est invalide.");
+            }
+        }
+    System.out.println("L'utilisateur connecté n'est pas un employee");
+        return -1;
+}
+
+
+
 }

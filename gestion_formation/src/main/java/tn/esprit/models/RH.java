@@ -5,7 +5,10 @@ import java.sql.Date;
 public class RH extends User {
     private int idRH;
     public RH(){}
-
+    @Override
+    public String getUserType() {
+        return "RH";  // Renvoie "RH" pour un utilisateur de type RH
+    }
     public RH(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, int idRH) {
         super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password);
         this.idRH = idRH;

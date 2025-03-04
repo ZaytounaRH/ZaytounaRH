@@ -134,7 +134,7 @@ private ComboBox<Employee> employeesComboBox;
 
         try {
             List<Formation> formations = serviceFormation.getAll();
-            System.out.println("🎯 Formations affichées dans l'interface : " + formations);
+            //System.out.println("🎯 Formations affichées dans l'interface : " + formations);
             updateFormationList(formations);
         } catch (Exception e) {
             System.out.println("🔥 Erreur critique bloquant l'affichage !");
@@ -142,7 +142,7 @@ private ComboBox<Employee> employeesComboBox;
         }
 
         // Ajout du VBox à la scène (au lieu du FlowPane seul)
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 1080, 720);
         nouveauStage.setScene(scene);
         nouveauStage.setTitle("Formations");
         nouveauStage.show();
@@ -367,6 +367,12 @@ private ComboBox<Employee> employeesComboBox;
 
         // Appeler la méthode pour obtenir la liste des employés inscrits
         List<Employee> employees = serviceEmployeFormation.afficherEmployesParFormation(formationChoisie.getIdFormation());
+
+        System.out.println("Nombre d'employés trouvés : " + employees.size());
+        for (Employee emp : employees) {
+            System.out.println(emp.getId() + " - " + emp.getNom() + " " + emp.getPrenom());
+        }
+
 
         // Vider le conteneur avant d'ajouter de nouvelles cartes
         cardsContainer.getChildren().clear();

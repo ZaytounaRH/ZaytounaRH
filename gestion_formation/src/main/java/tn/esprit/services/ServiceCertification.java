@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 public class ServiceCertification implements IService<Certification> {
-    private final Connection cnx ;
+    private  Connection cnx ;
 
     public ServiceCertification() {
 
@@ -30,10 +30,14 @@ public class ServiceCertification implements IService<Certification> {
             return;
         }
 
-        String qry ="INSERT INTO `certification`(`titreCertif`, `organismeCertif`,`idFormation`) VALUES(?,?,?)";
         try {
-            PreparedStatement pstm = cnx.prepareStatement(qry);
-            pstm.setString(1,certification.getTitreCertif());
+            // Vérifiez si la connexion est ouverte avant de continuer
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDatabase.getInstance().getCnx();
+            }
+        String qry ="INSERT INTO `certification`(`titreCertif`, `organismeCertif`,`idFormation`) VALUES(?,?,?)";
+        try(PreparedStatement pstm = cnx.prepareStatement(qry)) {
+            pstm.setString(1, certification.getTitreCertif());
             pstm.setString(2, certification.getOrganismeCertif());
             pstm.setInt(3, certification.getFormation().getIdFormation());
 
@@ -41,7 +45,7 @@ public class ServiceCertification implements IService<Certification> {
             if (rowsAffected > 0) {
                 System.out.println("Certification ajoutée avec succès !");
             }
-            pstm.close();
+        }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -59,8 +63,6 @@ public class ServiceCertification implements IService<Certification> {
                 "LEFT JOIN formation f ON c.idFormation = f.idFormation";
 
         try {
-            // Vérifier et reconnecter si nécessaire
-            Connection cnx = MyDatabase.getInstance().getCnx();
             if (cnx == null || cnx.isClosed()) {
                 System.out.println("Connexion fermée ! Réouverture...");
                 cnx = MyDatabase.getInstance().getCnx();

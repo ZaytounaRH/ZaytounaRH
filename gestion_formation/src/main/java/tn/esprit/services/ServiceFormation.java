@@ -3,7 +3,7 @@ import tn.esprit.interfaces.IService;
 import tn.esprit.models.*;
 import tn.esprit.utils.MyDatabase;
 import tn.esprit.utils.SessionManager;
-
+import tn.esprit.models.Employee;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,13 +17,16 @@ private ServiceUser userService;
         cnx = MyDatabase.getInstance().getCnx();
     }
 
+
+
     @Override
     public void add(Formation formation) {
+
         if (!isValidFormation(formation)) {
             System.out.println("Erreur : données invalides, insertion annulée !");
             return;
         }
-        if(isFormationExists(formation.getNomFormation(), formation.getDescriptionFormation())){
+        if (isFormationExists(formation.getNomFormation(), formation.getDescriptionFormation())) {
             System.out.println("Erreur : Une formation avec le même nom et la même description existe déjà !");
             return;
         }
@@ -39,11 +42,11 @@ private ServiceUser userService;
 
  */
         SessionManager sm = SessionManager.getInstance();
-        if (!sm.isRH()){
+
+        if (!sm.isRH()) {
             System.out.println("Vous devez être un utilisateur de type RH pour ajouter une formation.");
 
-        }
-        else {
+        } else {
 
 
             try {
@@ -51,8 +54,9 @@ private ServiceUser userService;
                 if (cnx == null || cnx.isClosed()) {
                     cnx = MyDatabase.getInstance().getCnx();
                 }
+                System.out.println(SessionManager.getInstance().getCurrentRHId());
 
-
+                //System.out.println(RH.getId);
                 String qry = "INSERT INTO `formation`( `nomFormation`, `descriptionFormation`, `dateDebutFormation`, `dateFinFormation` ) VALUES (?,?,?,?)";
                 try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
                     //PreparedStatement pstm = cnx.prepareStatement(qry);

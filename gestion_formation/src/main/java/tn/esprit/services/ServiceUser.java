@@ -1,6 +1,9 @@
 package tn.esprit.services;
 
 import tn.esprit.interfaces.IService;
+import tn.esprit.models.Candidat;
+import tn.esprit.models.Employee;
+import tn.esprit.models.RH;
 import tn.esprit.models.User;
 import tn.esprit.utils.MyDatabase;
 import tn.esprit.utils.SessionManager;
@@ -111,8 +114,6 @@ public class ServiceUser implements IService<User> {
         User user = null;
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-
-
             // Paramétrer la requête avec l'email et le mot de passe
             statement.setString(1, email);
             statement.setString(2, password);
@@ -121,8 +122,61 @@ public class ServiceUser implements IService<User> {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                // Si l'utilisateur est trouvé, créer un objet User et le remplir avec les données de la base
-                user = new User();
+                String userType = resultSet.getString("user_type");
+
+                // Création de l'objet utilisateur selon son type
+                switch (userType) {
+                    case "RH":
+                        user = new RH();
+                        try (PreparedStatement rhStatement = connection.prepareStatement(
+                                "SELECT rh_id FROM rh WHERE user_id = ?")) {
+                            rhStatement.setInt(1, resultSet.getInt("id"));
+                            try (ResultSet rhResultSet = rhStatement.executeQuery()) {
+                                if (rhResultSet.next()) {
+                                    int idRH = rhResultSet.getInt("rh_id");
+                                    ((RH) user).setIdRH(idRH);
+                                    System.out.println("ID RH récupéré : " + idRH);
+                                }
+                            }
+                        }
+                        break;
+
+                    case "Employee":
+                        user = new Employee();
+                        try (PreparedStatement empStatement = connection.prepareStatement(
+                                "SELECT employee_id FROM employee WHERE user_id = ?")) {
+                            empStatement.setInt(1, resultSet.getInt("id"));
+                            try (ResultSet empResultSet = empStatement.executeQuery()) {
+                                if (empResultSet.next()) {
+                                    int idEmp = empResultSet.getInt("employee_id");
+                                    ((Employee) user).setIdEmployee(idEmp);
+                                    System.out.println("ID Employé récupéré : " + idEmp);
+                                }
+                            }
+                        }
+                        break;
+
+                    case "Candidat":
+                        user = new Candidat();
+                        try (PreparedStatement cStatement = connection.prepareStatement(
+                                "SELECT candidat_id FROM candidat WHERE user_id = ?")) {
+                            cStatement.setInt(1, resultSet.getInt("id"));
+                            try (ResultSet cResultSet = cStatement.executeQuery()) {
+                                if (cResultSet.next()) {
+                                    int idCandidat = cResultSet.getInt("candidat_id");
+                                    ((Candidat) user).setCandidat_id(idCandidat);
+                                    System.out.println("ID Candidat récupéré : " + idCandidat);
+                                }
+                            }
+                        }
+                        break;
+
+                    default:
+                        user = new User();
+                        break;
+                }
+
+                // Remplissage des informations utilisateur
                 user.setId(resultSet.getInt("id"));
                 user.setNumTel(resultSet.getString("numTel"));
                 user.setJoursOuvrables(resultSet.getInt("joursOuvrables"));
@@ -132,17 +186,20 @@ public class ServiceUser implements IService<User> {
                 user.setEmail(resultSet.getString("email"));
                 user.setGender(resultSet.getString("gender"));
                 user.setDateDeNaissance(resultSet.getDate("dateDeNaissance"));
-                user.setUserType(resultSet.getString("user_type"));
+                user.setUserType(userType);
                 user.setPassword(resultSet.getString("password"));
+
+                System.out.println("Utilisateur authentifié avec succès. Type : " + user.getUserType());
 
                 // Enregistrer l'utilisateur dans la session
                 SessionManager.getInstance().login(user);
             }
         } catch (SQLException e) {
+            System.err.println("Erreur lors de l'authentification de l'utilisateur : " + e.getMessage());
             e.printStackTrace();
         }
 
-        // Retourner l'utilisateur trouvé ou null si non trouvé
-        return user;
+        return user; // Retourner l'utilisateur trouvé ou null si non trouvé
     }
+
 }
