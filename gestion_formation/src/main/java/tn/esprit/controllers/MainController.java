@@ -8,19 +8,44 @@ public class MainController {
 
     @FXML
     private MainFX mainApp;
+    /*
+    @FXML
+    public void initialize() {
+        if (mainApp == null) {
+            System.err.println("⚠️ mainApp est null dans MainController");
+        } else {
+            System.out.println("✅ mainApp est bien défini après initialize() !");
+        }
+    }
 
+     */
     public void setMainApp(MainFX mainApp) {
+
         this.mainApp = mainApp;
+        if (mainApp != null) {
+            System.out.println("✅ mainApp correctement défini dans MainController !");
+        } else {
+            System.err.println("❌ mainApp est toujours NULL !");
+        }
     }
 
     @FXML
     public void showFormations(ActionEvent event) {
-        mainApp.showFormations();  // Affiche la vue des formations
+
+        if (mainApp != null) {
+            mainApp.showFormations();
+        } else {
+            System.err.println("❌ mainApp est NULL dans showFormations !");
+        }
     }
 
     @FXML
     public void showCertifications(ActionEvent event) {
-        mainApp.showCertifications();  // Affiche la vue des certifications
+        if (mainApp != null) {
+            mainApp.showCertifications();
+        } else {
+            System.err.println("❌ mainApp est NULL dans showCertifications !");
+        }
     }
 
 

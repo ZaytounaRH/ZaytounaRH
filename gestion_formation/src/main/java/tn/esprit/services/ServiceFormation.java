@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ServiceFormation implements IService<Formation> {
-    private final Connection cnx ;
-
+    private Connection cnx ;
+private ServiceUser userService;
     public ServiceFormation() {
         cnx = MyDatabase.getInstance().getCnx();
     }
@@ -27,28 +27,53 @@ public class ServiceFormation implements IService<Formation> {
             System.out.println("Erreur : Une formation avec le même nom et la même description existe déjà !");
             return;
         }
+/*
+        User currentUser=SessionManager.getInstance().getCurrentUser();
+        System.out.println("Classe de l'utilisateur actuel : " + currentUser.getClass().getName());
+
+        if (currentUser == null || !(currentUser instanceof RH)) {
+            System.out.println("Vous devez être un utilisateur de type RH pour ajouter une formation.");
+        return;
+        }
 
 
+ */
+        SessionManager sm = SessionManager.getInstance();
+        if (!sm.isRH()){
+            System.out.println("Vous devez être un utilisateur de type RH pour ajouter une formation.");
 
-        String qry = "INSERT INTO `formation`( `nomFormation`, `descriptionFormation`, `dateDebutFormation`, `dateFinFormation` ) VALUES (?,?,?,?)";
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry);
-            pstm.setString(1, formation.getNomFormation());
-            pstm.setString(2, formation.getDescriptionFormation());
-            pstm.setDate(3, formation.getDateDebutFormation());
-            pstm.setDate(4, formation.getDateFinFormation());
-
+        }
+        else {
 
 
-            pstm.executeUpdate();
-            System.out.println("Formation ajoutée avec succès !");
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            try {
+                // Vérifiez si la connexion est ouverte avant de continuer
+                if (cnx == null || cnx.isClosed()) {
+                    cnx = MyDatabase.getInstance().getCnx();
+                }
+
+
+                String qry = "INSERT INTO `formation`( `nomFormation`, `descriptionFormation`, `dateDebutFormation`, `dateFinFormation` ) VALUES (?,?,?,?)";
+                try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
+                    //PreparedStatement pstm = cnx.prepareStatement(qry);
+                    pstm.setString(1, formation.getNomFormation());
+                    pstm.setString(2, formation.getDescriptionFormation());
+                    pstm.setDate(3, formation.getDateDebutFormation());
+                    pstm.setDate(4, formation.getDateFinFormation());
+
+
+                    pstm.executeUpdate();
+                    System.out.println("Formation ajoutée avec succès !");
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
     @Override
     public List<Formation> getAll() {
+        System.out.println("🔎 getAll des formations() appelé !");
         List<Formation> formations = new ArrayList<>();
         Map<Integer, Formation> formationMap = new HashMap<>(); // Utiliser une Map pour éviter les doublons
 
@@ -58,6 +83,11 @@ public class ServiceFormation implements IService<Formation> {
                 "LEFT JOIN certification c ON f.idFormation = c.idFormation";
 
         try {
+            if (cnx == null || cnx.isClosed()) {
+                System.out.println("Connexion fermée ! Réouverture...");
+                cnx = MyDatabase.getInstance().getCnx();
+            }
+
             PreparedStatement pstm = cnx.prepareStatement(qry);
             ResultSet rs = pstm.executeQuery();
 
@@ -92,7 +122,10 @@ public class ServiceFormation implements IService<Formation> {
             pstm.close();
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération des formations : " + e.getMessage());
+            e.printStackTrace();
         }
+
+
 
         return formations;
     }

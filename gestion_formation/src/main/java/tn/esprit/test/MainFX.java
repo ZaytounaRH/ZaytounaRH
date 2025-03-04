@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import tn.esprit.controllers.GestionCertification;
 import tn.esprit.controllers.GestionFormation;
+import tn.esprit.controllers.Login;
 import tn.esprit.controllers.MainController;
 
 import java.io.IOException;
@@ -22,25 +23,53 @@ public class MainFX extends Application {
     private Stage primaryStage;
 
     public static void main(String[] args) {
-
         launch(args);
     }
+
     @Override
-    public void start(Stage primaryStage)  {
-    this.primaryStage=primaryStage;
+    public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Gestion des Formations et Certifications");
 
-        initRootLayout();
-        //showFormations();
+        initLoginView();  // Démarre la vue de login
+    }
 
+    public void initLoginView() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Login.fxml"));
+            Parent root = loader.load();
+            Login loginController = loader.getController();
+            loginController.setMainApp(this);  // Passe mainApp au contrôleur de login
+
+            Scene scene = new Scene(root);
+            primaryStage.setScene(scene);
+            primaryStage.show();
+
+            loginController.setOnLoginSuccess(() -> initRootLayout());  // Exemple d'usage
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
     public void initRootLayout() {
         try {
-            // Charger le layout principal (BorderPane)
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("main-view.fxml"));
-            rootLayout = loader.load();
+            rootLayout = loader.load();  // Utilisation de Parent au lieu de BorderPane
+
             MainController controller = loader.getController();
-            controller.setMainApp(this);
+            if (controller != null) {
+                controller.setMainApp(this);  // Passe `mainApp` au contrôleur
+                System.out.println("✅ MainController initialisé avec succès !");
+            } else {
+                System.err.println("❌ Impossible de récupérer MainController !");
+            }
+            if (rootLayout == null) {
+                System.err.println("⚠️ rootLayout est toujours NULL après initRootLayout !");
+            } else {
+                System.out.println("✅ rootLayout est correctement initialisé !");
+            }
+
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
             primaryStage.show();
@@ -50,78 +79,28 @@ public class MainFX extends Application {
     }
 
     public void showFormations() {
-        if (rootLayout != null) {
+        if (rootLayout == null) {
+            System.err.println("⚠️ rootLayout est NULL dans showFormations() !");
+            return;
+        }
         try {
-            // Charger la vue des formations
+            System.out.println("🔄 Chargement de formation_view.fxml...");
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("formation_view.fxml"));
             ScrollPane formationsView = loader.load();
-            GestionFormation formation = loader.getController();
             rootLayout.setCenter(formationsView);
-
-
-
         } catch (IOException e) {
+            System.out.println("Erreur lors du chargement de formation_view.fxml !");
             e.printStackTrace();
         }
-        } else {
-            System.err.println("rootLayout n'est pas initialisé !");
-        }
     }
+
     public void showCertifications() {
         try {
-
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("certification_view.fxml"));
             FlowPane certificationsView = loader.load();
-
-            // Mettre à jour la vue dans le centre du BorderPane
             rootLayout.setCenter(certificationsView);
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
-
-    }
-
-
-/*
-package tn.esprit.test;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
-import java.io.IOException;
-
-
-
-
-public class MainFX extends Application {
-    public static void main(String[] args) {
-
-        launch(args);
-    }
-    @Override
-    public void start(Stage primaryStage) throws IOException {
-
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("main-view.fxml"));
-        try{
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            primaryStage.setScene(scene);
-            primaryStage.setTitle("---- Gestion Personne -----");
-            primaryStage.show();
-
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        }
-
-
-
-    }
- */
+}

@@ -51,12 +51,20 @@ public class ServiceCertification implements IService<Certification> {
 
     @Override
     public List<Certification> getAll() {
+        System.out.println("🔎 getAll des certifs() appelé !");
+
         List<Certification> certifications = new ArrayList<>();
         String qry = "SELECT c.idCertif, c.titreCertif, c.organismeCertif, f.nomFormation " +
                 "FROM certification c " +
                 "LEFT JOIN formation f ON c.idFormation = f.idFormation";
 
         try {
+            // Vérifier et reconnecter si nécessaire
+            Connection cnx = MyDatabase.getInstance().getCnx();
+            if (cnx == null || cnx.isClosed()) {
+                System.out.println("Connexion fermée ! Réouverture...");
+                cnx = MyDatabase.getInstance().getCnx();
+            }
             Statement stm = cnx.createStatement();
             ResultSet rs = stm.executeQuery(qry);
 

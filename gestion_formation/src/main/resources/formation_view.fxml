@@ -12,9 +12,10 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
-<ScrollPane fx:id="scrollPane" prefWidth="900" prefHeight="600" style="-fx-background-color: white; -fx-border-color: #ccc;" fx:controller="tn.esprit.controllers.GestionFormation" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17">
+<ScrollPane fx:id="scrollPane" prefWidth="900" prefHeight="600" style="-fx-background-color: white; -fx-border-color: #ccc;" fx:controller="tn.esprit.controllers.GestionFormation" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17" stylesheets="style.css">
 <content>
-<FlowPane fx:id="formationFlowPane" hgap="10" vgap="10" alignment="TOP_CENTER" prefWidth="2200" prefHeight="600" stylesheets="style.css">
+<FlowPane fx:id="formationFlowPane" hgap="10" vgap="10" alignment="TOP_CENTER" prefWidth="2200" prefHeight="600" >
+
     <children>
 
 

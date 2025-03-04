@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 public class GestionFormation {
 
+
     @FXML
     private TextField tfNomFormation;
     @FXML
@@ -62,18 +63,12 @@ private ComboBox<Employee> employeesComboBox;
     private ServiceEmployee serviceEmployee = new ServiceEmployee();
     private DatePickerDialog datePickerDialog;
 
+    public GestionFormation() {
+        System.out.println("✅ GestionFormation chargé !");
+    }
     @FXML
     public void ajouterFormation(ActionEvent actionEvent) {
-        User rhUser = new User();
-        rhUser.setUserType("RH");
-        SessionManager.getInstance().login(rhUser);
 
-        User currentUser = SessionManager.getInstance().getCurrentUser();
-
-        if (currentUser == null || !"RH".equalsIgnoreCase(currentUser.getUserType())) {
-            System.out.println("Erreur : Seuls les RH peuvent ajouter une formation !");
-            return;
-        }
         if (tfNomFormation.getText() == "") {
             showAlert("Erreur", "Veuillez entrer le nom de la formation.");
             return;
@@ -105,16 +100,8 @@ private ComboBox<Employee> employeesComboBox;
 
     public void afficherFormations(ActionEvent actionEvent) {
 
-        User rhUser = new User();
-        rhUser.setUserType("RH");
-        SessionManager.getInstance().login(rhUser);
+        System.out.println(" afficherFormations() appelé !");
 
-        User currentUser = SessionManager.getInstance().getCurrentUser();
-
-        if (currentUser == null || !"RH".equalsIgnoreCase(currentUser.getUserType())) {
-            System.out.println("Erreur : Seuls les RH peuvent ajouter une formation !");
-            return;
-        }
 
         Stage nouveauStage = new Stage();
 
@@ -143,7 +130,16 @@ private ComboBox<Employee> employeesComboBox;
         root.setPadding(new Insets(10));
 
         // Chargement initial des formations
-        updateFormationList(serviceFormation.getAll());
+        //updateFormationList(serviceFormation.getAll());
+
+        try {
+            List<Formation> formations = serviceFormation.getAll();
+            System.out.println("🎯 Formations affichées dans l'interface : " + formations);
+            updateFormationList(formations);
+        } catch (Exception e) {
+            System.out.println("🔥 Erreur critique bloquant l'affichage !");
+            e.printStackTrace();
+        }
 
         // Ajout du VBox à la scène (au lieu du FlowPane seul)
         Scene scene = new Scene(root, 800, 600);
@@ -247,6 +243,15 @@ private ComboBox<Employee> employeesComboBox;
 
     @FXML
     public void initialize() {
+        if (formationFlowPane == null) {
+            System.out.println("❌ formationFlowPane est NULL !");
+        } else {
+            System.out.println("✅ formationFlowPane détecté !");
+        }
+        Label testLabel = new Label("Test Manuel !");
+        testLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: green;");
+        formationFlowPane.getChildren().add(testLabel);
+
 
         // Charger toutes les formations
         List<Formation> formations = serviceFormation.getAll();
@@ -313,6 +318,8 @@ private ComboBox<Employee> employeesComboBox;
 
  */
 
+
+        System.out.println("Nombre d'éléments dans formationFlowPane : " + formationFlowPane.getChildren().size());
 
 
     }

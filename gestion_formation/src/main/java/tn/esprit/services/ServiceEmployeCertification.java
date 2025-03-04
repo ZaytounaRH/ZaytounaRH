@@ -25,7 +25,7 @@ public class ServiceEmployeCertification implements IService<EmployeCertificatio
 
     public List<Certification> getCertificationsByEmployee(int employee_id) {
         List<Certification> certifications = new ArrayList<>();
-        String qry = "SELECT c.idCertif, c.titreCertif FROM certification c JOIN employe_certification ec ON c.idCertif = ec.idCertif WHERE ec.employee_id = ?";
+        String qry = "SELECT c.idCertif, c.titreCertif  FROM certification c JOIN employe_certification ec ON c.idCertif = ec.idCertif WHERE ec.employee_id = ?";
 
         try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
             pstm.setInt(1, employee_id);

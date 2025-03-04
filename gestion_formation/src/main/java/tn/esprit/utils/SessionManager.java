@@ -1,11 +1,22 @@
 package tn.esprit.utils;
-import tn.esprit.models.User;
+
+import tn.esprit.models.RH;
+import tn.esprit.utils.MyDatabase;
+import tn.esprit.models.User; // Assure-toi que l'import est correct
+
+import java.sql.Connection;
+
 public class SessionManager {
+
     private static SessionManager instance;
     private User currentUser;
+private Connection connection;
+    // Constructeur privé pour implémenter le singleton
+    private SessionManager() {
+        this.connection = MyDatabase.getInstance().getCnx();
+    }
 
-    private SessionManager() {}
-
+    // Retourne l'instance unique de SessionManager
     public static SessionManager getInstance() {
         if (instance == null) {
             instance = new SessionManager();
@@ -13,38 +24,35 @@ public class SessionManager {
         return instance;
     }
 
+    // Méthode pour se connecter en tant qu'utilisateur
     public void login(User user) {
         this.currentUser = user;
     }
 
+    // Méthode pour déconnecter l'utilisateur
     public void logout() {
         this.currentUser = null;
     }
 
+    // Retourne l'utilisateur actuellement connecté
     public User getCurrentUser() {
         return currentUser;
     }
+    public Connection getConnection() {
+        return connection;
+    }
 
 
-
-/*
-    public User getCurrentUser() {
-        if (currentUser == null) {
-            currentUser = new User(); // Initialise un utilisateur vide pour éviter NullPointerException
-            currentUser.setAddress("Adresse par défaut"); // Exemple d'initialisation
+    // Méthode pour vérifier si l'utilisateur connecté est un RH
+    public boolean isRH() {
+        if (currentUser != null && currentUser.getUserType().equals("RH")) {
+            return true;
         }
-        return currentUser;
-    }
-    zidou choufou m3a chat chnowa intom tist7a9ou
-*/
-
-
-    public void setCurrentUser(User user) {
-
-        this.currentUser= user;
+        return false;
     }
 
-    public boolean isLoggedIn() {
+    // Méthode pour vérifier si un utilisateur est connecté
+    public boolean isUserLoggedIn() {
         return currentUser != null;
     }
 }

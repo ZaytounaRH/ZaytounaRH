@@ -62,10 +62,7 @@ public class Main {
         serviceEmployeCertification.modifierCertificationEmploye(1, 3, 5);
 
  */
-        int idemploye = 3;
-        int idCertif = 3;
-        Date dateObtention = Date.valueOf("2025-02-27");
-        serviceEmployeCertification.ajouterCertificationAEmploye(idemploye, idCertif, dateObtention);
+
 serviceEmployeCertification.getCertificationsByEmployee(3);
 
 

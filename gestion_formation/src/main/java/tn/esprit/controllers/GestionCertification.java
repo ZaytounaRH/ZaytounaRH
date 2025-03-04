@@ -206,8 +206,12 @@ catch (Exception e) {
             Label titreCertifLabel = new Label(certif.getTitreCertif());
             titreCertifLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
+            Label organismeCertifLabel = new Label(certif.getOrganismeCertif());
+            organismeCertifLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+
+
             // Créer une VBox pour contenir les informations de la certification
-            VBox cardContent = new VBox(4, titreCertifLabel);
+            VBox cardContent = new VBox(4, titreCertifLabel, organismeCertifLabel);
             card.getChildren().add(cardContent);
             // Ajouter la carte au FlowPane
             certificationFlowPane.getChildren().add(card);
