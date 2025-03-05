@@ -12,6 +12,7 @@
    <Menu text="Menu">
     <MenuItem text="Formations" onAction="#showFormations" />
     <MenuItem text="Certifications" onAction="#showCertifications" />
+    <MenuItem text="Employe" onAction="#showEmployers"/>
    </Menu>
   </MenuBar>
  </top>

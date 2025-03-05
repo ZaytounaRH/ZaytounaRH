@@ -6,6 +6,7 @@ import tn.esprit.models.EmployeFormation;
 import tn.esprit.utils.MyDatabase;
 import tn.esprit.services.ServiceEmployee;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +16,71 @@ public class ServiceEmployeFormation implements IService<EmployeFormation> {
 
     public ServiceEmployeFormation() {
         cnx=MyDatabase.getInstance().getCnx();
+        if (cnx == null) {
+            System.out.println("Erreur : la connexion est fermée ou n'est pas initialisée.");
+        } else {
+            System.out.println("Connexion ouverte avec succès.");
+        }
+
+
+    }
+    private boolean isConnectionClosed() {
+        try {
+            return cnx.isClosed();
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la vérification de la connexion : " + e.getMessage());
+            return true;
+        }
     }
 
+
     public void affecterFormationAEmployes(int idFormation, List<Integer> employeIds) {
+        String checkQuery = "SELECT e.employee_id FROM employee e " +
+                "JOIN users u ON e.user_id = u.id " +
+                "WHERE e.employee_id = ?";
+
+        String insertQuery = "INSERT INTO employe_formation (employee_id, idFormation, dateParticipation) " +
+                "SELECT ?, ?, CURDATE() FROM DUAL " +
+                "WHERE EXISTS (" +
+                "    SELECT 1 FROM employee e " +
+                "    JOIN users u ON e.user_id = u.id " +
+                "    WHERE e.employee_id = ? " +
+                ")";
+
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDatabase.getInstance().getCnx();  // Rétablir la connexion si elle est fermée
+            }
+
+            try (PreparedStatement checkStmt = cnx.prepareStatement(checkQuery);
+                 PreparedStatement insertStmt = cnx.prepareStatement(insertQuery)) {
+
+                for (Integer employeId : employeIds) {
+                    // Vérifier si l'employé existe
+                    checkStmt.setInt(1, employeId);
+                    ResultSet rs = checkStmt.executeQuery();
+
+                    if (!rs.next()) {
+                        System.out.println("Employé avec ID " + employeId + " inexistant. Ignoré.");
+                        continue;
+                    }
+
+                    // Insérer l'employé dans la formation
+                    insertStmt.setInt(1, employeId);
+                    insertStmt.setInt(2, idFormation);
+                    insertStmt.setInt(3, employeId);
+                    insertStmt.executeUpdate();
+                }
+
+                System.out.println("Affectation terminée avec succès !");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de l'affectation des employés à la formation : " + e.getMessage());
+        }
+    }
+
+    //ya9ra fel idemploye 0
+   /* public void affecterFormationAEmployes(int idFormation, List<Integer> employeIds) {
 
 
         try{
@@ -30,6 +93,8 @@ public class ServiceEmployeFormation implements IService<EmployeFormation> {
             try (PreparedStatement pstm = cnx.prepareStatement(qry)){
             for (Integer empId : employeIds) {
                 if (!isEmployeInscrit(empId, idFormation)) {
+                    System.out.println("Erreur : L'employé avec ID " + empId + " n'existe pas.");
+
                     pstm.setInt(1, empId);
                     pstm.setInt(2, idFormation);
                     pstm.setDate(3, new java.sql.Date(System.currentTimeMillis()));
@@ -48,6 +113,8 @@ public class ServiceEmployeFormation implements IService<EmployeFormation> {
         }
     }
 
+
+    */
     private boolean isEmployeInscrit(int empId, int idFormation) {
         try{
             if (cnx == null || cnx.isClosed()) {
@@ -70,69 +137,45 @@ public class ServiceEmployeFormation implements IService<EmployeFormation> {
         }
         return false;
     }
+//connexion 3al base
+public List<Employee> afficherEmployesParFormation(int idFormation) {
+    List<Employee> employes = new ArrayList<>();
+    String qry = "SELECT e.employee_id, u.nom, u.prenom, u.email " +
+            "FROM employe_formation ef " +
+            "JOIN employee e ON ef.employee_id = e.employee_id " +
+            "JOIN users u ON e.user_id = u.id " +
+            "WHERE ef.idFormation = ?";
 
-    public List<Employee> afficherEmployesParFormation(int idFormation) {
-        List<Employee> employeesInFormation = new ArrayList<>();
-
-        try {
-            if (cnx == null || cnx.isClosed()) {
-                cnx = MyDatabase.getInstance().getCnx();
-                if (cnx == null || cnx.isClosed()) {
-                    System.out.println("La connexion à la base de données n'a pas pu être rétablie !");
-                    return employeesInFormation;
-                }
-            }
-
-            // 1. Récupérer le nom de la formation
-            String nomFormation = "Formation inconnue";
-
-            String queryFormation = "SELECT nomFormation FROM formation WHERE idFormation = ?";
-
-
-            try (PreparedStatement pstmFormation = cnx.prepareStatement(queryFormation)) {
-                pstmFormation.setInt(1, idFormation);
-                ResultSet rsFormation = pstmFormation.executeQuery();
-                if (rsFormation.next()) {
-                    nomFormation = rsFormation.getString("nomFormation");
-                } else {
-                    System.out.println("Formation non trouvée.");
-                    return employeesInFormation; // Si aucune formation n'est trouvée, on retourne une liste vide
-                }
-            } catch (SQLException e) {
-                System.out.println("Erreur lors de la récupération du nom de la formation : " + e.getMessage());
-                return employeesInFormation;
-            }
-
-            // 2. Récupérer tous les employés via getAll()
-            List<Employee> allEmployees = serviceEmploye.getAll();
-            // List<Employee> employeesInFormation = new ArrayList<>();
-
-            // 3. Filtrer ceux qui sont inscrits à la formation
-            String queryEmployes = "SELECT employee_id FROM employe_formation WHERE idFormation = ?";
-
-            try (PreparedStatement pstm = cnx.prepareStatement(queryEmployes)) {
-                pstm.setInt(1, idFormation);
-                ResultSet rs = pstm.executeQuery();
-
-                while (rs.next()) {
-                    int empId = rs.getInt("employee_id");
-
-                    // Chercher l'employé correspondant dans la liste récupérée via getAll()
-                    for (Employee emp : allEmployees) {
-                        if (emp.getId() == empId) {
-                            employeesInFormation.add(emp);
-                            break;
-                        }
-                    }
-                }
-            }
-        }catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération des employés inscrits à la formation : " + e.getMessage());
-
+    try {
+        if (cnx == null || cnx.isClosed()) {
+            cnx = MyDatabase.getInstance().getCnx();  // Rétablir la connexion si elle est fermée
         }
-        return employeesInFormation;
 
+        try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
+            pstm.setInt(1, idFormation);
+            ResultSet rs = pstm.executeQuery();
+
+            while (rs.next()) {
+                Employee employe = new Employee();
+                employe.setId(rs.getInt("employee_id"));
+                employe.setNom(rs.getString("nom"));
+                employe.setPrenom(rs.getString("prenom"));
+                employe.setEmail(rs.getString("email"));  // Exemple pour email, à adapter selon votre classe Employe
+                employes.add(employe);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de l'affichage des employés par formation : " + e.getMessage());
+        }
+    } catch (SQLException e) {
+        System.out.println("Erreur de connexion ou de requête : " + e.getMessage());
     }
+
+    return employes;
+}
+
+
+
+
 
     public void modifierListeEmployesFormation(int idFormation, List<Integer> newEmployeIds) {
         List<Integer> currentEmployeeIds = getEmployesInscrits(idFormation);
@@ -168,10 +211,34 @@ public class ServiceEmployeFormation implements IService<EmployeFormation> {
 
         return employeeIds;
     }
-
-
     public void supprimerEmployeDeFormation(int empId, int idFormation) {
+        String query = "DELETE FROM employe_formation WHERE employee_id = ? AND idFormation = ?";
 
+        try (Connection connection = MyDatabase.getInstance().getCnx();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, empId);
+            statement.setInt(2, idFormation);
+
+            int rowsAffected = statement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Employé " + empId + " supprimé de la formation " + idFormation);
+            } else {
+                System.out.println("Aucune correspondance trouvée pour suppression.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+/*
+    public void supprimerEmployeDeFormation(int empId, int idFormation) {
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDatabase.getInstance().getCnx();  // Rétablir la connexion si elle est fermée
+            }
         if (!isEmployeInscrit(empId, idFormation)) {
             System.out.println(" L'employé n'est pas inscrit à la formation ");
             return;
@@ -190,11 +257,15 @@ public class ServiceEmployeFormation implements IService<EmployeFormation> {
             } else {
                 System.out.println("Erreur lors de la suppression de l'employé.");
             }
-        } catch (SQLException e) {
+        }
+        }
+        catch (SQLException e) {
             System.out.println("Erreur lors de la suppression de l'employé de la formation : " + e.getMessage());
         }
     }
 
+
+ */
     @Override
     public void add(EmployeFormation employeFormation) {
         String qry = "INSERT INTO employe_formation (employee_id, idFormation, dateParticipation) VALUES (?, ?, ?)";

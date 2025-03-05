@@ -35,7 +35,10 @@ public class ServiceEmployee implements IService<Employee> {
     @Override
     public List<Employee> getAll() {
         List<Employee> employees = new ArrayList<>();
-        String query = "SELECT * FROM users WHERE user_type = 'EMPLOYEE'";
+        String query = "SELECT u.id AS user_id, u.*, e.employee_id " +
+                "FROM users u " +
+                "JOIN employee e ON u.id = e.user_id " +
+                "WHERE u.user_type = 'Employee'";
         try (Connection connection = MyDatabase.getInstance().getCnx();
              PreparedStatement statement = connection.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
@@ -46,7 +49,7 @@ public class ServiceEmployee implements IService<Employee> {
 
             while (resultSet.next()) {
                 Employee employee = new Employee();
-                employee.setIdEmployee(resultSet.getInt("id"));
+                //employee.setIdEmployee(resultSet.getInt("id"));
                 employee.setNumTel(resultSet.getString("numTel"));
                 employee.setJoursOuvrables(resultSet.getInt("joursOuvrables"));
                 employee.setNom(resultSet.getString("nom"));
@@ -56,6 +59,9 @@ public class ServiceEmployee implements IService<Employee> {
                 employee.setGender(resultSet.getString("gender"));
                 employee.setUserType(resultSet.getString("user_type"));
                 employee.setPassword(resultSet.getString("password"));
+                employee.setId(resultSet.getInt("user_id")); // Correction ici
+                employee.setIdEmployee(resultSet.getInt("employee_id"));
+
 
                 employees.add(employee);
             }

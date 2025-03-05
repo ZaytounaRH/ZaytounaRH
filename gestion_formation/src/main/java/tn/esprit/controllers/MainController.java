@@ -47,7 +47,16 @@ public class MainController {
             System.err.println("❌ mainApp est NULL dans showCertifications !");
         }
     }
+@FXML
+    public void showEmployers(ActionEvent event) {
+        if (mainApp != null) {
+            mainApp.showEmployers();
+        }
+        else {
+            System.err.println("❌ mainApp est NULL dans showEmployers !");
 
+        }
+}
 
 
 

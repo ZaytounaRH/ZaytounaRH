@@ -103,4 +103,13 @@ public class MainFX extends Application {
             e.printStackTrace();
         }
     }
+    public void showEmployers(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("employeFormationCertification.fxml"));
+            FlowPane certificationsView = loader.load();
+            rootLayout.setCenter(certificationsView);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

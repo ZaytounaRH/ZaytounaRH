@@ -14,7 +14,7 @@ import java.sql.Date;
 
 public class ServiceEmployeCertification implements IService<EmployeCertification> {
 
-    private final Connection cnx ;
+    private Connection cnx ;
     private final ServiceEmployee serviceEmploye = new ServiceEmployee();
     public ServiceEmployeCertification() {
         cnx=MyDatabase.getInstance().getCnx();
@@ -22,66 +22,101 @@ public class ServiceEmployeCertification implements IService<EmployeCertificatio
 
 
 
-
+//ya9ra id employe 0
     public List<Certification> getCertificationsByEmployee(int employee_id) {
         List<Certification> certifications = new ArrayList<>();
         String qry = "SELECT c.idCertif, c.titreCertif  FROM certification c JOIN employe_certification ec ON c.idCertif = ec.idCertif WHERE ec.employee_id = ?";
-
-        try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
-            pstm.setInt(1, employee_id);
-            ResultSet rs = pstm.executeQuery();
-
-            while (rs.next()) {
-                Certification certif = new Certification(
-                        rs.getInt("idCertif"),
-                        rs.getString("titreCertif")
-                );
-                certifications.add(certif);
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDatabase.getInstance().getCnx();  // Rétablir la connexion si elle est fermée
             }
+            try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
+                pstm.setInt(1, employee_id);
+                ResultSet rs = pstm.executeQuery();
 
-            Employee employee = null;
-            List<Employee> allEmployees = serviceEmploye.getAll(); // Utilise la méthode getAll() pour récupérer tous les employés
-
-            for (Employee emp : allEmployees) {
-                if (emp.getId() == employee_id) {
-                    employee = emp;
-                    break;
+                while (rs.next()) {
+                    Certification certif = new Certification(
+                            rs.getInt("idCertif"),
+                            rs.getString("titreCertif")
+                    );
+                    certifications.add(certif);
                 }
-            }
 
-            if (employee != null) {
-                System.out.println("Liste des certifications de l'employé : " + employee.getNom() + " " + employee.getPrenom());
-                if (certifications.isEmpty()) {
-                    System.out.println("Aucune certification trouvée pour cet employé.");
-                } else {
-                    for (Certification cert : certifications) {
-                        System.out.println("Certification : " + cert.getTitreCertif());
+                Employee employee = null;
+                List<Employee> allEmployees = serviceEmploye.getAll(); // Utilise la méthode getAll() pour récupérer tous les employés
+
+                for (Employee emp : allEmployees) {
+                    if (emp.getId() == employee_id) {
+                        employee = emp;
+                        break;
                     }
                 }
-            } else {
-                System.out.println("Employé  " + employee.getNom() + " non trouvé.");
-            }
-        } catch (SQLException e) {
+
+                if (employee != null) {
+                    System.out.println("Liste des certifications de l'employé : " + employee.getNom() + " " + employee.getPrenom());
+                    if (certifications.isEmpty()) {
+                        System.out.println("Aucune certification trouvée pour cet employé.");
+                    } else {
+                        for (Certification cert : certifications) {
+                            System.out.println("Certification : " + cert.getTitreCertif());
+                        }
+                    }
+                } else {
+                    System.out.println("Employé  " + employee.getNom() + " non trouvé.");
+                }
+            }} catch (SQLException e) {
             System.out.println("Erreur lors de la récupération des certifications : " + e.getMessage());
         }
 
         return certifications;
     }
 
+    public List<Certification> afficherCertificationsByCurrentUser(int employee_id) {
+        List<Certification> certifications = new ArrayList<>();
+        String query = "SELECT c.idCertif, c.titreCertif, c.organismeCertif, c.idFormation, ec.dateObtention " +
+                "FROM employe_certification ec " +
+                "JOIN certification c ON ec.idCertif = c.idCertif " +
+                "WHERE ec.employee_id = ?";
 
+        try (PreparedStatement statement = cnx.prepareStatement(query)) {
+            // Paramétrer la requête avec l'employee_id
+            statement.setInt(1, employee_id);
 
+            // Exécuter la requête et récupérer les résultats
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Certification certification = new Certification();
+                certification.setIdCertif(resultSet.getInt("idCertif"));
+                certification.setTitreCertif(resultSet.getString("titreCertif"));
+                certification.setOrganismeCertif(resultSet.getString("organismeCertif"));
+                //certification.setFormation(resultSet.getInt("idFormation"));
+
+                // Ajouter la certification à la liste
+                certifications.add(certification);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération des certifications : " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return certifications;
+    }
 
     public void ajouterCertificationAEmploye(int idEmploye, int idCertif, Date dateObtention) {
         if (!controleSaisieCertification(idEmploye, idCertif, dateObtention)) {
             System.out.println("Erreur : données invalides, insertion annulée !");
             return;
         }
-
+        try{
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDatabase.getInstance().getCnx();
+            }
 
         String qry = "INSERT INTO employe_certification (employee_id, idCertif, dateObtention) VALUES (?, ?, ?)";
 
-        try {
-            PreparedStatement pstm = cnx.prepareStatement(qry);
+        try (PreparedStatement pstm = cnx.prepareStatement(qry);){
+
             pstm.setInt(1, idEmploye);
             pstm.setInt(2, idCertif);
             pstm.setDate(3, dateObtention);
@@ -92,6 +127,7 @@ public class ServiceEmployeCertification implements IService<EmployeCertificatio
             } else {
                 System.out.println("Erreur lors de l'ajout de la certification.");
             }
+        }
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'ajout de la certification : " + e.getMessage());
         }

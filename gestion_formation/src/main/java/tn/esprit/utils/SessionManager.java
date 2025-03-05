@@ -62,6 +62,12 @@ private Connection connection;
         }
         return false;
     }
+    public boolean isEmployee() {
+        if (currentUser != null && currentUser.getUserType().equals("Employee")) {
+            return true;
+        }
+        return false;
+    }
 
     // Méthode pour vérifier si un utilisateur est connecté
     public boolean isUserLoggedIn() {

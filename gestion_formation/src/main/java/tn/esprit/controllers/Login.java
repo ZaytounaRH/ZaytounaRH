@@ -8,6 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import tn.esprit.models.User;
 import tn.esprit.services.ServiceUser;
@@ -54,13 +55,35 @@ public class Login {
             SessionManager.getInstance().login(user);
             System.out.println("Bienvenue " + user.getUserType() + "!");
             //loadMainView();  // Charger l'interface principale après une connexion réussie
-
+/*
             if (onLoginSuccess != null) {
                 onLoginSuccess.run();  // Cette ligne va appeler initRootLayout() dans MainFX
             }
 
+ */
+            if (SessionManager.getInstance().isEmployee()){
+                openEmployerFormationCertification();
+            } else if (SessionManager.getInstance().isRH()) {
+                onLoginSuccess.run();
+            }
+
         } else {
             showError("Email ou mot de passe incorrect.");
+        }
+    }
+    private void openEmployerFormationCertification() {
+        try{
+
+            Stage stage = (Stage) emailField.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("employeFormationCertification.fxml"));
+            Scene scene= new Scene(loader.load());
+            stage.setScene(scene);
+            stage.setTitle("Employer Formation Certification");
+
+        }
+        catch (IOException e){
+            e.printStackTrace();
+            showError("Impossible d'ouvrir la page des employers formations certification.");
         }
     }
 /*
