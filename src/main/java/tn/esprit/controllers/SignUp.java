@@ -53,7 +53,7 @@ public class SignUp {
             RH newRH = new RH(numTel, 0, nom, prenom, "", email, "", new Date(System.currentTimeMillis()), "RH", password, "", 0);
             serviceRH.add(newRH);
 
-            showSuccess("Inscription réussie !");
+            showSuccessAndRedirect("Inscription réussie !");
         } catch (Exception e) {
             showError("Erreur lors de l'inscription.");
         }
@@ -61,18 +61,7 @@ public class SignUp {
 
     @FXML
     private void handleReturn() {
-        try {
-            // Load the Login page
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
-            Parent root = loader.load();
-
-            // Get current stage and switch the scene
-            Stage stage = (Stage) returnButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Login Page");
-        } catch (IOException e) {
-            showError("Erreur lors du chargement de la page de connexion.");
-        }
+        navigateToLogin();
     }
 
     private void showError(String message) {
@@ -80,11 +69,27 @@ public class SignUp {
         errorLabel.setVisible(true);
     }
 
-    private void showSuccess(String message) {
+    private void showSuccessAndRedirect(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Succès");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+
+        // Redirect to Login Page
+        navigateToLogin();
+    }
+
+    private void navigateToLogin() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) signUpButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Login Page");
+        } catch (IOException e) {
+            showError("Erreur lors du chargement de la page de connexion.");
+        }
     }
 }
