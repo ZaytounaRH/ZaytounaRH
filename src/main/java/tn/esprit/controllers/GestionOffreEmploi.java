@@ -120,6 +120,31 @@ public class GestionOffreEmploi {
         searchField.setPromptText("Rechercher une offre...");
         searchField.setPrefWidth(300);
 
+        // ComboBox pour filtrer par statut
+        ComboBox<StatutOffre> statutFilterComboBox = new ComboBox<>();
+        statutFilterComboBox.setPromptText("Filtrer par statut");
+        statutFilterComboBox.getItems().setAll(StatutOffre.values());
+
+        // Bouton pour réinitialiser les filtres
+        Button resetButton = new Button("Réinitialiser les filtres");
+        resetButton.setOnAction(e -> {
+            searchField.clear(); // Effacer le texte de recherche
+            statutFilterComboBox.setValue(null); // Réinitialiser le statut sélectionné
+            // Recharger toutes les offres sans filtre
+            filterOffresByStatutAndTitle("", null);
+        });
+
+        // EventListener pour filtrer les offres par statut
+        statutFilterComboBox.setOnAction(e -> {
+            StatutOffre selectedStatut = statutFilterComboBox.getValue();
+            filterOffresByStatutAndTitle(searchField.getText(), selectedStatut);
+        });
+
+        // EventListener pour la recherche par titre
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filterOffresByStatutAndTitle(newValue, statutFilterComboBox.getValue());
+        });
+
         // Initialisation du FlowPane
         offreFlowPane = new FlowPane();
         offreFlowPane.setVgap(20);
@@ -130,7 +155,7 @@ public class GestionOffreEmploi {
         offreScrollPane.setFitToWidth(true);
 
         // Conteneur principal (VBox)
-        VBox root = new VBox(10, searchField, offreScrollPane);
+        VBox root = new VBox(10, searchField, statutFilterComboBox, resetButton, offreScrollPane);
         root.setPadding(new Insets(10));
 
         // Chargement initial des offres
@@ -149,6 +174,8 @@ public class GestionOffreEmploi {
         nouveauStage.setTitle("Offres d'Emploi");
         nouveauStage.show();
     }
+
+
 
     private void updateOffreList(FlowPane offreFlowPane, List<OffreEmploi> offres) {
         offreFlowPane.getChildren().clear(); // Vider le FlowPane avant d'ajouter les nouvelles cartes
@@ -443,6 +470,69 @@ public class GestionOffreEmploi {
         }
     }*/
 
+    /*private void filterOffresByStatut(StatutOffre selectedStatut) {
+        try {
+            List<OffreEmploi> offres = serviceOffre.getAll();
+
+            // Filtrage des offres en fonction du statut sélectionné
+            if (selectedStatut != null) {
+                offres = offres.stream()
+                        .filter(offre -> offre.getStatut().equals(selectedStatut))
+                        .toList();
+            }
+
+            // Mise à jour de l'affichage avec les offres filtrées
+            updateOffreList(offreFlowPane, offres);
+        } catch (Exception e) {
+            System.out.println("🔥 Erreur critique lors du filtrage des offres !");
+            e.printStackTrace();
+        }
+    }
+    private void filterOffresByTitle(String searchText) {
+        try {
+            List<OffreEmploi> offres = serviceOffre.getAll();
+
+            // Filtrage des offres par titre (case-insensitive)
+            if (searchText != null && !searchText.trim().isEmpty()) {
+                offres = offres.stream()
+                        .filter(offre -> offre.getTitreOffre().toLowerCase().contains(searchText.toLowerCase()))
+                        .toList();
+            }
+
+            // Mise à jour de l'affichage avec les offres filtrées par titre
+            updateOffreList(offreFlowPane, offres);
+        } catch (Exception e) {
+            System.out.println("🔥 Erreur critique lors du filtrage des offres par titre !");
+            e.printStackTrace();
+        }
+    }*/
+
+
+    private void filterOffresByStatutAndTitle(String searchText, StatutOffre statut) {
+        try {
+            List<OffreEmploi> offres = serviceOffre.getAll();
+
+            // Filtrage des offres par titre (case-insensitive)
+            if (searchText != null && !searchText.trim().isEmpty()) {
+                offres = offres.stream()
+                        .filter(offre -> offre.getTitreOffre().toLowerCase().contains(searchText.toLowerCase()))
+                        .toList();
+            }
+
+            // Filtrage des offres par statut
+            if (statut != null) {
+                offres = offres.stream()
+                        .filter(offre -> offre.getStatut() == statut)
+                        .toList();
+            }
+
+            // Mise à jour de l'affichage avec les offres filtrées
+            updateOffreList(offreFlowPane, offres);
+        } catch (Exception e) {
+            System.out.println("🔥 Erreur lors du filtrage des offres !");
+            e.printStackTrace();
+        }
+    }
 
     private void clearFields() {
         tfTitre.clear();
