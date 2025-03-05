@@ -71,8 +71,8 @@ public class ServiceEmployeCertification implements IService<EmployeCertificatio
         return certifications;
     }
 
-    public List<Certification> afficherCertificationsByCurrentUser(int employee_id) {
-        List<Certification> certifications = new ArrayList<>();
+    public List<Object[]> afficherCertificationsByCurrentUser(int employee_id) {
+        List<Object[]> certifications = new ArrayList<>();
         String query = "SELECT c.idCertif, c.titreCertif, c.organismeCertif, c.idFormation, ec.dateObtention " +
                 "FROM employe_certification ec " +
                 "JOIN certification c ON ec.idCertif = c.idCertif " +
@@ -91,9 +91,10 @@ public class ServiceEmployeCertification implements IService<EmployeCertificatio
                 certification.setTitreCertif(resultSet.getString("titreCertif"));
                 certification.setOrganismeCertif(resultSet.getString("organismeCertif"));
                 //certification.setFormation(resultSet.getInt("idFormation"));
-
-                // Ajouter la certification à la liste
-                certifications.add(certification);
+                Date dateObtention = resultSet.getDate("dateObtention");
+                System.out.println("Date d'obtention récupérée: " + dateObtention);
+                certifications.add(new Object[]{certification, dateObtention});
+                //certifications.add(certification);
             }
         } catch (SQLException e) {
             System.err.println("Erreur lors de la récupération des certifications : " + e.getMessage());

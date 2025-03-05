@@ -305,4 +305,38 @@ public List<Employee> afficherEmployesParFormation(int idFormation) {
     public void delete(EmployeFormation employeFormation) {
 
     }
+    public List<Object[]> afficherFormationsByEmployee(int employeeId) {
+        List<Object[]> formations = new ArrayList<>();
+        String query = "SELECT f.idFormation, f.nomFormation, f.descriptionFormation, f.dateDebutFormation, f.dateFinFormation, ef.dateParticipation " +
+                "FROM employe_formation ef " +
+                "JOIN formation f ON ef.idFormation = f.idFormation " +
+                "WHERE ef.employee_id = ?";
+
+        try (PreparedStatement statement = cnx.prepareStatement(query)) {
+            // Paramétrer la requête avec l'ID de l'employé
+            statement.setInt(1, employeeId);
+
+            // Exécuter la requête et récupérer les résultats
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+
+                Formation formation = new Formation();
+                formation.setIdFormation(resultSet.getInt("idFormation"));
+                formation.setNomFormation(resultSet.getString("nomFormation"));
+                formation.setDescriptionFormation(resultSet.getString("descriptionFormation"));
+                formation.setDateDebutFormation(resultSet.getDate("dateDebutFormation"));
+                formation.setDateFinFormation(resultSet.getDate("dateFinFormation"));
+                Date dateParticipation = resultSet.getDate("dateParticipation");
+                formations.add(new Object[]{formation, dateParticipation});
+                //formations.add(formation);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération des formations : " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return formations;
+    }
+
 }
