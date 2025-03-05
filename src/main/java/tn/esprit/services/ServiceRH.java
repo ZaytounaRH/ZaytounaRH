@@ -25,7 +25,7 @@ public class ServiceRH implements IService<RH> {
         }
 
         // Insert into the 'users' table first
-        String userQuery = "INSERT INTO users (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String userQuery = "INSERT INTO users (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pst = cnx.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS)) {
             pst.setString(1, rh.getNumTel());
@@ -38,6 +38,7 @@ public class ServiceRH implements IService<RH> {
             pst.setDate(8, rh.getDateDeNaissance());
             pst.setString(9, userType);
             pst.setString(10, rh.getPassword());
+            pst.setString(11, rh.getImage());
 
             pst.executeUpdate();
 
@@ -49,7 +50,7 @@ public class ServiceRH implements IService<RH> {
                 }
             }
 
-            // Now insert the RH specific information into the 'rh' table
+            // Now insert the RH-specific information into the 'rh' table
             String rhQuery = "INSERT INTO rh (user_id) VALUES (?)";  // Reference the 'user_id' from the 'users' table
             try (PreparedStatement pstRh = cnx.prepareStatement(rhQuery)) {
                 pstRh.setInt(1, rh.getIdRH());
@@ -72,7 +73,7 @@ public class ServiceRH implements IService<RH> {
 
             while (rs.next()) {
                 RH rh = new RH(
-                        rs.getInt("idRH"),
+                        rs.getInt("id"),
                         rs.getString("numTel"),
                         rs.getInt("joursOuvrables"),
                         rs.getString("nom"),
@@ -82,7 +83,8 @@ public class ServiceRH implements IService<RH> {
                         rs.getString("gender"),
                         rs.getDate("dateDeNaissance"),
                         rs.getString("user_type"),
-                        rs.getString("password")
+                        rs.getString("password"),
+                        rs.getString("image")
                 );
                 rhs.add(rh);
             }
@@ -95,7 +97,7 @@ public class ServiceRH implements IService<RH> {
 
     @Override
     public void update(RH rh) {
-        String query = "UPDATE user SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, user_type=?, password=? WHERE id=?";
+        String query = "UPDATE users SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, user_type=?, password=?, image=? WHERE id=?";
 
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setString(1, rh.getNumTel());
@@ -108,7 +110,8 @@ public class ServiceRH implements IService<RH> {
             pst.setDate(8, rh.getDateDeNaissance());
             pst.setString(9, rh.getUserType());
             pst.setString(10, rh.getPassword());
-            pst.setInt(11, rh.getIdRH());
+            pst.setString(11, rh.getImage());
+            pst.setInt(12, rh.getIdRH());
 
             pst.executeUpdate();
             System.out.println("RH mis à jour avec succès !");
@@ -119,17 +122,24 @@ public class ServiceRH implements IService<RH> {
 
     @Override
     public void delete(RH rh) {
-        String query = "DELETE FROM rh WHERE idRH=?";
+        String query = "DELETE FROM rh WHERE user_id=?";
+        String userQuery = "DELETE FROM users WHERE id=?";
 
-        try (PreparedStatement pst = cnx.prepareStatement(query)) {
-            pst.setInt(1, rh.getIdRH());
+        try (PreparedStatement pstRh = cnx.prepareStatement(query);
+             PreparedStatement pstUser = cnx.prepareStatement(userQuery)) {
 
-            pst.executeUpdate();
+            pstRh.setInt(1, rh.getIdRH());
+            pstRh.executeUpdate();
+
+            pstUser.setInt(1, rh.getIdRH());
+            pstUser.executeUpdate();
+
             System.out.println("RH supprimé avec succès !");
         } catch (SQLException e) {
             System.out.println("Erreur lors de la suppression du RH : " + e.getMessage());
         }
     }
+
     public RH authenticate(String email, String password) {
         String query = "SELECT * FROM users WHERE email = ? AND password = ? AND user_type = 'RH'";
 
@@ -150,7 +160,8 @@ public class ServiceRH implements IService<RH> {
                             rs.getString("gender"),
                             rs.getDate("dateDeNaissance"),
                             rs.getString("user_type"),
-                            rs.getString("password")
+                            rs.getString("password"),
+                            rs.getString("image")
                     );
                 }
             }
@@ -159,5 +170,4 @@ public class ServiceRH implements IService<RH> {
         }
         return null;
     }
-
 }
