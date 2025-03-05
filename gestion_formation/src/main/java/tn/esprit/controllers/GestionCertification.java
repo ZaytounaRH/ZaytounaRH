@@ -102,6 +102,85 @@ public class GestionCertification {
     }
     @FXML
     public void modifierCertification(Certification certification) {
+        // Boîte de dialogue pour modifier le titre
+        TextInputDialog titreDialog = new TextInputDialog(certification.getTitreCertif());
+        titreDialog.setTitle("Modification");
+        titreDialog.setHeaderText("Modifier la certification");
+        titreDialog.setContentText("Nouveau titre :");
+        Optional<String> titreResult = titreDialog.showAndWait();
+
+        // Boîte de dialogue pour modifier l'organisme
+        TextInputDialog organismeDialog = new TextInputDialog(certification.getOrganismeCertif());
+        organismeDialog.setTitle("Modification");
+        organismeDialog.setHeaderText("Modifier l'organisme");
+        organismeDialog.setContentText("Nouvel organisme :");
+        Optional<String> organismeResult = organismeDialog.showAndWait();
+
+        // Charger la liste des formations
+        List<Formation> formations = serviceFormation.getAll();
+
+        // Créer le ComboBox pour sélectionner une formation
+        ComboBox<Formation> formationComboBox = new ComboBox<>();
+        formationComboBox.setItems(FXCollections.observableArrayList(formations));
+
+        // Utiliser un StringConverter pour afficher uniquement le nom de la formation
+        formationComboBox.setCellFactory(param -> new ListCell<Formation>() {
+            @Override
+            protected void updateItem(Formation formation, boolean empty) {
+                super.updateItem(formation, empty);
+                if (empty || formation == null) {
+                    setText(null);
+                } else {
+                    setText(formation.getNomFormation());  // Afficher uniquement le nom
+                }
+            }
+        });
+
+        formationComboBox.setConverter(new StringConverter<Formation>() {
+            @Override
+            public String toString(Formation formation) {
+                return formation == null ? "" : formation.getNomFormation();  // Affiche le nom de la formation
+            }
+
+            @Override
+            public Formation fromString(String string) {
+                return null;  // Conversion inverse non nécessaire ici
+            }
+        });
+
+        // Créer une boîte de dialogue contenant le ComboBox
+        Dialog<ButtonType> formationDialog = new Dialog<>();
+        formationDialog.setTitle("Modification");
+        formationDialog.setHeaderText("Modifier la formation");
+        formationDialog.getDialogPane().setContent(formationComboBox);
+        formationDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        // Afficher la boîte de dialogue et récupérer la sélection de l'utilisateur
+        Optional<ButtonType> result = formationDialog.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            Formation selectedFormation = formationComboBox.getValue();
+
+            // Vérifier si l'utilisateur a entré des nouvelles valeurs
+            if (titreResult.isPresent() && organismeResult.isPresent() && selectedFormation != null) {
+                // Appliquer les modifications
+                certification.setTitreCertif(titreResult.get());
+                certification.setOrganismeCertif(organismeResult.get());
+                certification.setFormation(selectedFormation);
+
+                // Mettre à jour dans la base de données
+                serviceCertification.update(certification);
+
+                // Rafraîchir l'affichage
+                afficherCertification(new ActionEvent());
+            }
+        }
+    }
+
+
+    /*
+    @FXML
+    public void modifierCertification(Certification certification) {
         TextInputDialog titreDialog = new TextInputDialog(certification.getTitreCertif());
         titreDialog.setTitle("Modification");
         titreDialog.setHeaderText("Modifier la certification");
@@ -136,6 +215,8 @@ public class GestionCertification {
             afficherCertification(new ActionEvent());
         }
     }
+
+     */
 @FXML
 public void deleteCertification(Certification certification) {
     Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -275,14 +356,15 @@ catch (Exception e) {
         setText(null);
     }
     else {
-        setText(employe.getNom());
+        setText(employe.getNom() + " " + employe.getPrenom());
+
     }
 }
        });
        comboBoxEmploye.setConverter(new StringConverter<Employee>() {
            @Override
            public String toString(Employee employee) {
-               return employee == null ? "" : employee.getNom();
+               return employee == null ? "" : employee.getNom() + " " + employee.getPrenom();
            }
            @Override
            public Employee fromString(String string) {

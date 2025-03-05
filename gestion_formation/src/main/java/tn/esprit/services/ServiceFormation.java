@@ -5,10 +5,7 @@ import tn.esprit.utils.MyDatabase;
 import tn.esprit.utils.SessionManager;
 import tn.esprit.models.Employee;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ServiceFormation implements IService<Formation> {
     private Connection cnx ;
@@ -260,6 +257,17 @@ private ServiceUser userService;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return formations;
+    }
+    // Méthode pour trier les formations par date de début (ascendant)
+    public List<Formation> sortByDateDebut(List<Formation> formations) {
+        Collections.sort(formations, new Comparator<Formation>() {
+            @Override
+            public int compare(Formation f1, Formation f2) {
+                // Comparer les dates de début (tri ascendant)
+                return f1.getDateDebutFormation().compareTo(f2.getDateDebutFormation());
+            }
+        });
         return formations;
     }
 

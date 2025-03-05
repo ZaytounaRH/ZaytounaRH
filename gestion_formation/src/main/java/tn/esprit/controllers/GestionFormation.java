@@ -57,6 +57,8 @@ private ComboBox<Employee> employeesComboBox;
     private Button affecterButton;
     @FXML
     private VBox cardsContainer;
+    @FXML
+    private ObservableList<Formation> formationsObservableList;
 
     ServiceFormation serviceFormation = new ServiceFormation();
     private ServiceEmployeFormation serviceEmployeFormation = new ServiceEmployeFormation();
@@ -93,17 +95,18 @@ private ComboBox<Employee> employeesComboBox;
             formation.setDateFinFormation(dateFin);
 
             serviceFormation.add(formation);
-            afficherFormations(actionEvent);
+            formationsObservableList.setAll(serviceFormation.getAll());
+            afficherFormations(new ActionEvent());
         }
     }
+    /*
+    public void afficherFormations() {
+        System.out.println("📢 Mise à jour des formations affichées !");
 
-
-    public void afficherFormations(ActionEvent actionEvent) {
-
-        System.out.println(" afficherFormations() appelé !");
-
-
-        Stage nouveauStage = new Stage();
+        if (formationFlowPane == null) {
+            System.out.println("❌ Erreur : formationFlowPane n'est pas initialisé !");
+            return;
+        }
 
         // Barre de recherche
         TextField searchField = new TextField();
@@ -121,12 +124,53 @@ private ComboBox<Employee> employeesComboBox;
             updateFormationList(filteredFormations);
         });
 
+        // Récupérer la liste mise à jour des formations
+        List<Formation> formations = serviceFormation.getAll();
+
+        // Mettre à jour dynamiquement l'affichage des formations
+        updateFormationList(formations);
+    }
+
+
+
+     */
+
+    public void afficherFormations(ActionEvent actionEvent) {
+
+        System.out.println(" afficherFormations() appelé !");
+
+
+        Stage nouveauStage = new Stage();
+
+        // Barre de recherche
+        TextField searchField = new TextField();
+        searchField.setPromptText("Rechercher une formation...");
+        searchField.setPrefWidth(300);
+
+        // FlowPane pour afficher les formations
+        formationFlowPane = new FlowPane();
+        formationFlowPane.setVgap(20);
+        formationFlowPane.setHgap(20);
+        // Bouton pour trier par date de début
+        Button sortByDateButton = new Button("Trier par date");
+        sortByDateButton.setOnAction(e -> {
+            List<Formation> formations = serviceFormation.getAll();
+            List<Formation> sortedFormations = serviceFormation.sortByDateDebut(formations);
+            updateFormationList(sortedFormations);  // Mise à jour de la liste des formations triées
+        });
+
+        // Ajout de l'écouteur pour filtrer la liste
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            List<Formation> filteredFormations = serviceFormation.searchByName(newValue);
+            updateFormationList(filteredFormations);
+        });
+
         // Création du ScrollPane pour afficher les formations de manière scrollable
         ScrollPane formationScrollPane = new ScrollPane(formationFlowPane);
         formationScrollPane.setFitToWidth(true);
 
         // Conteneur principal (VBox)
-        VBox root = new VBox(10, searchField, formationScrollPane);
+        VBox root = new VBox(10, searchField, formationScrollPane, sortByDateButton);
         root.setPadding(new Insets(10));
 
         // Chargement initial des formations
@@ -147,6 +191,8 @@ private ComboBox<Employee> employeesComboBox;
         nouveauStage.setTitle("Formations");
         nouveauStage.show();
     }
+
+
 
     @FXML
     public void updateFormation(Formation formation) {
@@ -196,6 +242,7 @@ private ComboBox<Employee> employeesComboBox;
 
                     // Rafraîchir l'affichage
                     afficherFormations(new ActionEvent());
+                    //afficherFormations();
                 }
             }
 
@@ -219,6 +266,7 @@ private ComboBox<Employee> employeesComboBox;
         dateDialogStage.setTitle("Sélectionner les dates");
         dateDialogStage.setScene(dateScene);
         dateDialogStage.showAndWait();
+
     }
 
 
@@ -236,6 +284,7 @@ private ComboBox<Employee> employeesComboBox;
 
             // Rafraîchir l'affichage après suppression
             afficherFormations(new ActionEvent());
+                //afficherFormations();
         } else {
             System.out.println("Suppression annulée.");
         }
@@ -283,7 +332,10 @@ private ComboBox<Employee> employeesComboBox;
         });
 
         // Remplir le ComboBox avec la liste des formations
-        formationsComboBox.setItems(FXCollections.observableArrayList(formations));
+        //formationsComboBox.setItems(FXCollections.observableArrayList(formations));
+
+        formationsObservableList = FXCollections.observableArrayList(serviceFormation.getAll());
+        formationsComboBox.setItems(formationsObservableList);
 
 
         List<Employee> employes = serviceEmployee.getAll();
@@ -494,6 +546,54 @@ private ComboBox<Employee> employeesComboBox;
             formationFlowPane.getChildren().add(card);
         }
     }
+
+
+    /*
+private void updateFormationList(List<Formation> formations) {
+    if (formationFlowPane == null) {
+        System.out.println("❌ Erreur : `formationFlowPane` n'est pas initialisé !");
+        return;
+    }
+
+    formationFlowPane.getChildren().clear(); // Nettoyer avant d'ajouter
+
+    for (Formation formation : formations) {
+        VBox card = new VBox(10);
+        card.setStyle("-fx-padding: 15px; -fx-border-color: #cccccc; -fx-background-color: white; -fx-border-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 4);");
+        card.setAlignment(Pos.CENTER);
+        card.setPrefWidth(350);  // Largeur uniforme pour toutes les cartes
+        card.setPrefHeight(200); // Hauteur uniforme
+
+        Label nomLabel = new Label(formation.getNomFormation());
+        nomLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+
+        Label descriptionLabel = new Label(formation.getDescriptionFormation());
+        descriptionLabel.setWrapText(true);
+        descriptionLabel.setMaxWidth(320);
+
+        Label dateDebutLabel = new Label("Début : " + formation.getDateDebutFormation());
+        dateDebutLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #7f8c8d;");
+
+        Label dateFinLabel = new Label("Fin : " + formation.getDateFinFormation());
+        dateFinLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #7f8c8d;");
+
+        Button btnModifier = new Button("Modifier");
+        btnModifier.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
+        btnModifier.setOnAction(e -> updateFormation(formation));
+
+        Button deleteButton = new Button("Supprimer");
+        deleteButton.setStyle("-fx-background-color: red; -fx-text-fill: white;");
+        deleteButton.setOnAction(e -> deleteFormation(formation));
+
+        HBox buttonBox = new HBox(10, btnModifier, deleteButton);
+        buttonBox.setAlignment(Pos.CENTER);
+
+        card.getChildren().addAll(nomLabel, descriptionLabel, dateDebutLabel, dateFinLabel, buttonBox);
+        formationFlowPane.getChildren().add(card);
+    }
+}
+
+     */
 
 }
 
