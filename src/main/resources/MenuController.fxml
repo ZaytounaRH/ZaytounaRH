@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.MenuController" alignment="CENTER" spacing="20" prefWidth="1080" prefHeight="720">
+    <Button text="Entretien" onAction="#handleEntretienClick"/>
+    <Button text="Offre" onAction="#handleOffreClick"/>
+</VBox>
