@@ -20,6 +20,9 @@ public class Employee extends User {
     public Employee(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, String image) {
         super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password, image);
     }
+    public Employee(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password) {
+        super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password);
+    }
 
     public int getIdEmployee() {
         return idEmployee;

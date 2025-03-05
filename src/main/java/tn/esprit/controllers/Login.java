@@ -1,11 +1,12 @@
 package tn.esprit.controllers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import tn.esprit.models.RH;
-import tn.esprit.models.User;
 import tn.esprit.services.ServiceRH;
 import tn.esprit.utils.SessionManager;
 
@@ -21,24 +22,21 @@ public class Login {
     private Button loginButton;
 
     @FXML
-    private Label emailError;
+    private Label emailError, passwordError;
 
     @FXML
-    private Label passwordError;
+    private Hyperlink signUpLink;
 
-    private final ServiceRH serviceRH = new ServiceRH(); // Service to get RH details
+    private final ServiceRH serviceRH = new ServiceRH();
 
     @FXML
     private void handleLogin() {
-        // Get user input
         String email = emailField.getText().trim();
         String password = passwordField.getText().trim();
 
-        // Reset error labels
         emailError.setVisible(false);
         passwordError.setVisible(false);
 
-        // Validate input fields
         if (email.isEmpty()) {
             emailError.setText("L'email est requis !");
             emailError.setVisible(true);
@@ -51,35 +49,46 @@ public class Login {
             return;
         }
 
-        // Authenticate user
         RH authenticatedRH = serviceRH.authenticate(email, password);
 
         if (authenticatedRH != null) {
-            // Save user session
             SessionManager.getInstance().login(authenticatedRH);
 
-            // Check user role
             if (authenticatedRH instanceof RH) {
                 showSuccess("Connexion réussie !", "Bienvenue, " + authenticatedRH.getNom());
                 navigateToDashboard();
             } else {
                 showError("Accès refusé", "Vous n'avez pas les droits pour accéder à cette section.");
-                SessionManager.getInstance().logout(); // Clear session if unauthorized
+                SessionManager.getInstance().logout();
             }
         } else {
             showError("Échec de connexion", "Email ou mot de passe incorrect.");
         }
     }
 
+    @FXML
+    private void goToSignUp() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/SignUp.fxml"));
+            AnchorPane signUpPage = loader.load();
+
+            Stage stage = (Stage) signUpLink.getScene().getWindow();
+            Scene scene = new Scene(signUpPage);
+            stage.setScene(scene);
+            stage.setTitle("Inscription RH");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Erreur", "Impossible d'ouvrir la page d'inscription.");
+        }
+    }
+
     private void navigateToDashboard() {
         try {
-            // Load the RH Dashboard interface
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/AfficherEmployee.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherEmployee.fxml"));
             AnchorPane dashboardPage = loader.load();
 
-            // Get the current stage and set the new scene
             Stage stage = (Stage) loginButton.getScene().getWindow();
-            javafx.scene.Scene scene = new javafx.scene.Scene(dashboardPage);
+            Scene scene = new Scene(dashboardPage);
             stage.setScene(scene);
             stage.setTitle("Dashboard RH");
         } catch (Exception e) {

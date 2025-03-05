@@ -46,6 +46,19 @@ public class User {
         this.password = password;
         this.image = image;
     }
+    public User(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password) {
+        this.id = id;
+        this.numTel = numTel;
+        this.joursOuvrables = joursOuvrables;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.address = address;
+        this.email = email;
+        this.gender = gender;
+        this.dateDeNaissance = dateDeNaissance;
+        this.userType = userType;
+        this.password = password;
+    }
 
     public int getId() {
         return id;
