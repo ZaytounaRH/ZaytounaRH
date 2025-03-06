@@ -14,11 +14,10 @@ public class User {
     protected Date dateDeNaissance;
     protected String userType;
     protected String password;
-    protected String image;
 
     public User() {}
 
-    public User(String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, String image) {
+    public User(String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password) {
         this.numTel = numTel;
         this.joursOuvrables = joursOuvrables;
         this.nom = nom;
@@ -29,23 +28,8 @@ public class User {
         this.dateDeNaissance = dateDeNaissance;
         this.userType = userType;
         this.password = password;
-        this.image = image;
     }
 
-    public User(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, String image) {
-        this.id = id;
-        this.numTel = numTel;
-        this.joursOuvrables = joursOuvrables;
-        this.nom = nom;
-        this.prenom = prenom;
-        this.address = address;
-        this.email = email;
-        this.gender = gender;
-        this.dateDeNaissance = dateDeNaissance;
-        this.userType = userType;
-        this.password = password;
-        this.image = image;
-    }
     public User(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password) {
         this.id = id;
         this.numTel = numTel;
@@ -59,6 +43,8 @@ public class User {
         this.userType = userType;
         this.password = password;
     }
+
+
 
     public int getId() {
         return id;
@@ -147,15 +133,6 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
     @Override
     public String toString() {
         return "User{" +
@@ -170,7 +147,6 @@ public class User {
                 ", dateDeNaissance=" + dateDeNaissance +
                 ", userType='" + userType + '\'' +
                 ", password='" + password + '\'' +
-                ", image='" + image + '\'' +
                 '}';
     }
 }

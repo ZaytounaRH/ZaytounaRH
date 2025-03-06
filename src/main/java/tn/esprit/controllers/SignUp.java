@@ -50,7 +50,7 @@ public class SignUp {
         }
 
         try {
-            RH newRH = new RH(numTel, 0, nom, prenom, "", email, "", new Date(System.currentTimeMillis()), "RH", password, "", 0);
+            RH newRH = new RH(numTel, 0, nom, prenom, "", email, "", new Date(System.currentTimeMillis()), "RH", password);
             serviceRH.add(newRH);
 
             showSuccessAndRedirect("Inscription réussie !");

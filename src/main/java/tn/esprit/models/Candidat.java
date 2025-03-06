@@ -2,36 +2,29 @@ package tn.esprit.models;
 
 import java.sql.Date;
 
-public class Candidat extends User {
-    protected int idCandidat;
-    protected String status;
-
+public class Candidat  extends User{
+    private int candidat_id;
+    private String status;
     public Candidat() {}
 
-    public Candidat(String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, String image, int idCandidat, String status) {
-        super(numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password, image);
-        this.idCandidat = idCandidat;
+    public Candidat(String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, int candidat_id, String status) {
+        super(numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password);
+        this.candidat_id = candidat_id;
         this.status = status;
     }
 
-    public Candidat(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, String image, int idCandidat, String status) {
-        super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password, image);
-        this.idCandidat = idCandidat;
+    public Candidat(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, int candidat_id, String status) {
+        super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password);
+        this.candidat_id = candidat_id;
         this.status = status;
     }
 
-    public Candidat(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, String image, String status) {
-        super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password, image);
+    public Candidat(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, String status) {
+        super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password);
         this.status = status;
     }
 
-    public int getIdCandidat() {
-        return idCandidat;
-    }
-
-    public void setIdCandidat(int idCandidat) {
-        this.idCandidat = idCandidat;
-    }
+    // Getters and Setters
 
     public String getStatus() {
         return status;
@@ -41,11 +34,17 @@ public class Candidat extends User {
         this.status = status;
     }
 
+    public int getCandidat_id() {
+        return candidat_id;
+    }
+
+    public void setCandidat_id(int candidat_id) {
+        this.candidat_id = candidat_id;
+    }
     @Override
     public String toString() {
         return "Candidat{" +
-                "idCandidat=" + idCandidat +
-                ", status='" + status + '\'' +
+                "status='" + status + '\'' +
                 ", id=" + id +
                 ", numTel='" + numTel + '\'' +
                 ", joursOuvrables=" + joursOuvrables +
@@ -57,7 +56,6 @@ public class Candidat extends User {
                 ", dateDeNaissance=" + dateDeNaissance +
                 ", userType='" + userType + '\'' +
                 ", password='" + password + '\'' +
-                ", image='" + image + '\'' +
                 '}';
     }
 }

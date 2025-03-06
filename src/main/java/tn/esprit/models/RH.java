@@ -3,24 +3,27 @@ package tn.esprit.models;
 import java.sql.Date;
 
 public class RH extends User {
-    protected int idRH;
-
-    public RH() {}
-
-    public RH(String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, String image, int idRH) {
-        super(numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password, image);
+    private int idRH;
+    public RH(){}
+    @Override
+    public String getUserType() {
+        return "RH";  // Renvoie "RH" pour un utilisateur de type RH
+    }
+    public RH(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, int idRH) {
+        super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password);
         this.idRH = idRH;
     }
 
-    public RH(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, String image, int idRH) {
-        super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password, image);
+    public RH(String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, int idRH) {
+        super(numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password);
         this.idRH = idRH;
     }
 
-    public RH(int id, String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password, String image) {
-        super(id, numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password, image);
+    public RH(String numTel, int joursOuvrables, String nom, String prenom, String address, String email, String gender, Date dateDeNaissance, String userType, String password) {
+        super(numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, userType, password);
     }
 
+    // Getters and Setters
     public int getIdRH() {
         return idRH;
     }
@@ -44,7 +47,6 @@ public class RH extends User {
                 ", dateDeNaissance=" + dateDeNaissance +
                 ", userType='" + userType + '\'' +
                 ", password='" + password + '\'' +
-                ", image='" + image + '\'' +
                 '}';
     }
 }

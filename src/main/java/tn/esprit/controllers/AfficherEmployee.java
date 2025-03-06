@@ -62,7 +62,8 @@ public class AfficherEmployee {
             Label nameLabel = new Label("Name: " + employee.getNom() + " " + employee.getPrenom());
             Label emailLabel = new Label("Email: " + employee.getEmail());
             Label phoneLabel = new Label("Phone: " + employee.getNumTel());
-            Label dobLabel = new Label("Date of Birth: " + employee.getDateDeNaissance().toString());
+            Label dobLabel = new Label("Date of Birth: " +
+                    (employee.getDateDeNaissance() != null ? employee.getDateDeNaissance().toString() : "N/A"));
             Label addressLabel = new Label("Address: " + employee.getAddress());
             Label workingDaysLabel = new Label("Working Days: " + employee.getJoursOuvrables());
             Label genderLabel = new Label("Gender: " + employee.getGender());

@@ -38,19 +38,26 @@ public class UpdateEmployee {
     private ChoiceBox<String> choiceBoxUserType;
 
     private Employee selectedEmployee;
-    private final ServiceEmployee serviceEmployee = new ServiceEmployee();
+    private final ServiceEmployee serviceEmployee = new ServiceEmployee();  // Existing service with connection
 
     // Method to set the selected employee data in the form
     public void setEmployeeData(Employee employee) {
         this.selectedEmployee = employee;
-        System.out.println("Setting Employee ID: " + employee.getId());  // Logging for debug purposes
+        System.out.println("Setting Employee ID: " + employee.getId());  // Logging for debugging
 
         // Fill the form with employee's data, excluding the ID field
         tfNom.setText(employee.getNom());
         tfPrenom.setText(employee.getPrenom());
         tfTelephone.setText(employee.getNumTel());
         tfEmail.setText(employee.getEmail());
-        dpDateNaissance.setValue(employee.getDateDeNaissance().toLocalDate());
+
+        // Handle potential null dateDeNaissance
+        if (employee.getDateDeNaissance() != null) {
+            dpDateNaissance.setValue(employee.getDateDeNaissance().toLocalDate());
+        } else {
+            dpDateNaissance.setValue(null);
+        }
+
         tfGenre.setText(employee.getGender());
         tfAdresse.setText(employee.getAddress());
         tfJoursOuvrables.setText(String.valueOf(employee.getJoursOuvrables()));
@@ -64,7 +71,7 @@ public class UpdateEmployee {
 
     @FXML
     public void updateEmployee() {
-        System.out.println("Selected Employee ID: " + selectedEmployee.getId());  // Logging for debug purposes
+        System.out.println("Selected Employee ID: " + selectedEmployee.getId());  // Logging for debugging
 
         // Validation to ensure no fields are empty
         if (tfNom.getText().isEmpty() || tfPrenom.getText().isEmpty() || tfTelephone.getText().isEmpty() ||
@@ -77,7 +84,7 @@ public class UpdateEmployee {
         }
 
         // Parsing the joursOuvrables value
-        int joursOuvrables = 0;
+        int joursOuvrables;
         try {
             joursOuvrables = Integer.parseInt(tfJoursOuvrables.getText());
         } catch (NumberFormatException e) {
@@ -102,14 +109,14 @@ public class UpdateEmployee {
         );
 
         // Log before update for debugging
-        System.out.println("before update employee with ID: " + selectedEmployee.getId());
+        System.out.println("Before update employee with ID: " + selectedEmployee.getId());
         System.out.println("Employee before update details: " + updatedEmployee.getNom() + ", " + updatedEmployee.getPrenom() + ", " + updatedEmployee.getEmail());
 
         // Call service to update the employee in the database
         serviceEmployee.update(updatedEmployee);
 
         // Log after update for debugging
-        System.out.println("after update employee with ID: " + selectedEmployee.getId());
+        System.out.println("After update employee with ID: " + selectedEmployee.getId());
         System.out.println("Employee after update details: " + updatedEmployee.getNom() + ", " + updatedEmployee.getPrenom() + ", " + updatedEmployee.getEmail());
 
         // Show success message
@@ -117,14 +124,17 @@ public class UpdateEmployee {
         successAlert.showAndWait();
     }
 
-
     @FXML
     public void goBackToAfficherEmployee(ActionEvent event) {
         try {
+            // Navigate back to the AfficherEmployee screen
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherEmployee.fxml"));
             Stage stage = (Stage) btnRetour.getScene().getWindow();
             stage.setScene(new Scene(loader.load()));
         } catch (IOException e) {
+            e.printStackTrace();
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Error while loading AfficherEmployee screen!");
+            errorAlert.showAndWait();
         }
     }
 }

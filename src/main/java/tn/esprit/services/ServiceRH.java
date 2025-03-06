@@ -11,163 +11,81 @@ import java.util.List;
 public class ServiceRH implements IService<RH> {
     protected Connection cnx;
 
+    // Constructor to initialize the connection
     public ServiceRH() {
         cnx = MyDatabase.getInstance().getCnx();
     }
 
     @Override
     public void add(RH rh) {
-        // Validate user_type
-        String userType = rh.getUserType();
-        if (!userType.equals("RH")) {
-            System.out.println("Erreur : Le type d'utilisateur doit être 'RH' !");
-            return;
-        }
+        String query =  "INSERT INTO users (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement statement = cnx.prepareStatement(query)) {
+            statement.setString(1, rh.getNumTel());
+            statement.setInt(2, rh.getJoursOuvrables());
+            statement.setString(3, rh.getNom());
+            statement.setString(4, rh.getPrenom());
+            statement.setString(5, rh.getAddress());
+            statement.setString(6, rh.getEmail());
+            statement.setString(7, rh.getGender());
+            statement.setString(8, rh.getDateDeNaissance().toString());
+            statement.setString(9, rh.getUserType());
+            statement.setString(10, rh.getPassword());
 
-        // Insert into the 'users' table first
-        String userQuery = "INSERT INTO users (numTel, joursOuvrables, nom, prenom, address, email, gender, dateDeNaissance, user_type, password, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        try (PreparedStatement pst = cnx.prepareStatement(userQuery, Statement.RETURN_GENERATED_KEYS)) {
-            pst.setString(1, rh.getNumTel());
-            pst.setInt(2, rh.getJoursOuvrables());
-            pst.setString(3, rh.getNom());
-            pst.setString(4, rh.getPrenom());
-            pst.setString(5, rh.getAddress());
-            pst.setString(6, rh.getEmail());
-            pst.setString(7, rh.getGender());
-            pst.setDate(8, rh.getDateDeNaissance());
-            pst.setString(9, userType);
-            pst.setString(10, rh.getPassword());
-            pst.setString(11, rh.getImage());
-
-            pst.executeUpdate();
-
-            try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    int userId = generatedKeys.getInt(1);
-                    rh.setIdRH(userId);  // Store the generated user ID as RH ID
-                    System.out.println("Utilisateur RH ajouté avec succès !");
-                }
-            }
-
-            // Now insert the RH-specific information into the 'rh' table
-            String rhQuery = "INSERT INTO rh (user_id) VALUES (?)";  // Reference the 'user_id' from the 'users' table
-            try (PreparedStatement pstRh = cnx.prepareStatement(rhQuery)) {
-                pstRh.setInt(1, rh.getIdRH());
-                pstRh.executeUpdate();
-                System.out.println("RH spécifique ajouté avec succès !");
-            }
-
+            statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Erreur lors de l'ajout du RH : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @Override
     public List<RH> getAll() {
-        List<RH> rhs = new ArrayList<>();
-        String query = "SELECT * FROM users WHERE user_type = 'RH'";
+        List<RH> rhList = new ArrayList<>();
+        String query = "SELECT * FROM rh";
+        try (PreparedStatement statement = cnx.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
 
-        try (Statement st = cnx.createStatement();
-             ResultSet rs = st.executeQuery(query)) {
+            while (resultSet.next()) {
+                RH rh = new RH();
+                rh.setIdRH(resultSet.getInt("rh_id"));
 
-            while (rs.next()) {
-                RH rh = new RH(
-                        rs.getInt("id"),
-                        rs.getString("numTel"),
-                        rs.getInt("joursOuvrables"),
-                        rs.getString("nom"),
-                        rs.getString("prenom"),
-                        rs.getString("address"),
-                        rs.getString("email"),
-                        rs.getString("gender"),
-                        rs.getDate("dateDeNaissance"),
-                        rs.getString("user_type"),
-                        rs.getString("password"),
-                        rs.getString("image")
-                );
-                rhs.add(rh);
+                rhList.add(rh);
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération des RHs : " + e.getMessage());
+            e.printStackTrace();
         }
-
-        return rhs;
+        return rhList;
     }
 
     @Override
     public void update(RH rh) {
-        String query = "UPDATE users SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, user_type=?, password=?, image=? WHERE id=?";
+        String query = "UPDATE users SET numTel=?, joursOuvrables=?, nom=?, prenom=?, address=?, email=?, gender=?, dateDeNaissance=?, user_type=?, password=? WHERE id=?";
+        try (PreparedStatement statement = cnx.prepareStatement(query)) {
+            statement.setString(1, rh.getNumTel());
+            statement.setInt(2, rh.getJoursOuvrables());
+            statement.setString(3, rh.getNom());
+            statement.setString(4, rh.getPrenom());
+            statement.setString(5, rh.getAddress());
+            statement.setString(6, rh.getEmail());
+            statement.setString(7, rh.getGender());
+            statement.setString(8, rh.getDateDeNaissance().toString());
+            statement.setString(9, rh.getUserType());
+            statement.setString(10, rh.getPassword());
+            statement.setInt(11, rh.getIdRH());
 
-        try (PreparedStatement pst = cnx.prepareStatement(query)) {
-            pst.setString(1, rh.getNumTel());
-            pst.setInt(2, rh.getJoursOuvrables());
-            pst.setString(3, rh.getNom());
-            pst.setString(4, rh.getPrenom());
-            pst.setString(5, rh.getAddress());
-            pst.setString(6, rh.getEmail());
-            pst.setString(7, rh.getGender());
-            pst.setDate(8, rh.getDateDeNaissance());
-            pst.setString(9, rh.getUserType());
-            pst.setString(10, rh.getPassword());
-            pst.setString(11, rh.getImage());
-            pst.setInt(12, rh.getIdRH());
-
-            pst.executeUpdate();
-            System.out.println("RH mis à jour avec succès !");
+            statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la mise à jour du RH : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @Override
     public void delete(RH rh) {
-        String query = "DELETE FROM rh WHERE user_id=?";
-        String userQuery = "DELETE FROM users WHERE id=?";
-
-        try (PreparedStatement pstRh = cnx.prepareStatement(query);
-             PreparedStatement pstUser = cnx.prepareStatement(userQuery)) {
-
-            pstRh.setInt(1, rh.getIdRH());
-            pstRh.executeUpdate();
-
-            pstUser.setInt(1, rh.getIdRH());
-            pstUser.executeUpdate();
-
-            System.out.println("RH supprimé avec succès !");
+        String query = "DELETE FROM rh WHERE rh_id = ?";
+        try (PreparedStatement statement = cnx.prepareStatement(query)) {
+            statement.setInt(1, rh.getIdRH());
+            statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la suppression du RH : " + e.getMessage());
+            e.printStackTrace();
         }
-    }
-
-    public RH authenticate(String email, String password) {
-        String query = "SELECT * FROM users WHERE email = ? AND password = ? AND user_type = 'RH'";
-
-        try (PreparedStatement pst = cnx.prepareStatement(query)) {
-            pst.setString(1, email);
-            pst.setString(2, password);
-
-            try (ResultSet rs = pst.executeQuery()) {
-                if (rs.next()) {
-                    return new RH(
-                            rs.getInt("id"),
-                            rs.getString("numTel"),
-                            rs.getInt("joursOuvrables"),
-                            rs.getString("nom"),
-                            rs.getString("prenom"),
-                            rs.getString("address"),
-                            rs.getString("email"),
-                            rs.getString("gender"),
-                            rs.getDate("dateDeNaissance"),
-                            rs.getString("user_type"),
-                            rs.getString("password"),
-                            rs.getString("image")
-                    );
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de l'authentification : " + e.getMessage());
-        }
-        return null;
     }
 }
