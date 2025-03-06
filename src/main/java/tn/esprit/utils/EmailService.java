@@ -7,7 +7,7 @@ import java.util.Properties;
 public class EmailService {
 
     private final String fromEmail = "dammak.fares28@gmail.com"; // replace with your email
-    private final String password = "ojdg yexn buzl anti"; // replace with your email password
+    private final String password = "ojdg yexn buzl anti"  ; // replace with your email password
 
     public void sendEmail(String toEmail, String subject, String body) {
         Properties properties = new Properties();
