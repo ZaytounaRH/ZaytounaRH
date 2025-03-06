@@ -13,32 +13,32 @@
 
 <AnchorPane prefHeight="449.0" prefWidth="720.0" stylesheets="@css/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.Login">
 
-    <TextField fx:id="emailField" layoutX="70.0" layoutY="140.0" promptText="Email" />
-    <PasswordField fx:id="passwordField" layoutX="70.0" layoutY="186.0" prefHeight="34.0" prefWidth="184.0" promptText="Mot de passe" />
-    <TextField fx:id="passwordTextField" layoutX="70.0" layoutY="186.0" prefHeight="34.0" prefWidth="184.0" promptText="Mot de passe" />
+    <TextField fx:id="emailField" layoutX="103.0" layoutY="140.0" promptText="Email" />
+    <PasswordField fx:id="passwordField" layoutX="103.0" layoutY="186.0" prefHeight="34.0" prefWidth="184.0" promptText="Mot de passe" />
+    <TextField fx:id="passwordTextField" layoutX="103.0" layoutY="186.0" prefHeight="34.0" prefWidth="184.0" promptText="Mot de passe" />
 
     <!-- Show Password Checkbox -->
-    <CheckBox fx:id="showPasswordCheckbox" layoutX="70.0" layoutY="226.0" text="Afficher le mot de passe" />
+    <CheckBox fx:id="showPasswordCheckbox" layoutX="103.0" layoutY="226.0" text="Afficher le mot de passe" />
 
     <!-- Forgot Password Link -->
-    <Hyperlink fx:id="forgotPasswordLink" layoutX="104.0" layoutY="341.0" onAction="#handleForgotPassword" text="Mot de passe oublié ?" />
+    <Hyperlink fx:id="forgotPasswordLink" layoutX="137.0" layoutY="341.0" onAction="#handleForgotPassword" text="Mot de passe oublié ?" />
 
-    <Button fx:id="loginButton" layoutX="108.0" layoutY="267.0" text="Se connecter" />
+    <Button fx:id="loginButton" layoutX="141.0" layoutY="267.0" text="Se connecter" />
 
-    <ImageView fx:id="logoImage" fitHeight="205.0" fitWidth="200.0" layoutX="418.0" layoutY="101.0">
+    <ImageView fx:id="logoImage" fitHeight="205.0" fitWidth="200.0" layoutX="431.0" layoutY="96.0">
         <image>
             <Image url="@images/Logo.png" />
         </image>
     </ImageView>
 
-    <Text layoutX="144.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bienvenue à ZitounaRH">
+    <Text layoutX="191.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bienvenue à ZitounaRH">
         <font>
             <Font name="Lato Black" size="29.0" />
         </font>
     </Text>
 
-    <Hyperlink fx:id="signUpLink" layoutX="60.0" layoutY="320.0" onAction="#goToSignUp" text="Vous n'avez pas un compte ? S'inscrire" />
-    <ImageView fx:id="captchaImageView" fitHeight="50" fitWidth="150" />
+    <Hyperlink fx:id="signUpLink" layoutX="93.0" layoutY="320.0" onAction="#goToSignUp" text="Vous n'avez pas un compte ? S'inscrire" />
+    <ImageView fx:id="captchaImageView" fitHeight="50" fitWidth="150" layoutX="364.0" layoutY="295.0" />
     <TextField fx:id="captchaField" layoutX="347.0" layoutY="347.0" promptText="Enter CAPTCHA" />
     <Button fx:id="refreshCaptchaButton" layoutX="365.0" layoutY="386.0" onAction="#refreshCaptcha" text="Refresh CAPTCHA" />
 

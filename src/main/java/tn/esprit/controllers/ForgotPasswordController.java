@@ -18,6 +18,10 @@ public class ForgotPasswordController {
     @FXML
     private TextField emailField;
     @FXML
+    private TextField verificationCodeField; // New field for verification code
+    @FXML
+    private TextField newPasswordField; // New field for new password
+    @FXML
     public Label errorMessage;
     @FXML
     private Hyperlink backToLogin;
@@ -25,6 +29,7 @@ public class ForgotPasswordController {
     private ServiceUser userService = new ServiceUser();
     private EmailService emailService = new EmailService();
 
+    private String generatedCode; // Store the generated verification code for comparison
 
     @FXML
     private void handleSendCode() {
@@ -38,11 +43,11 @@ public class ForgotPasswordController {
         // Check if the email exists in the system
         if (userService.isEmailRegistered(email)) {
             // Generate a verification code
-            String verificationCode = emailService.generateVerificationCode();
+            generatedCode = emailService.generateVerificationCode();
 
             // Send email with verification code
             String subject = "Code de vérification pour la réinitialisation du mot de passe";
-            String body = "Votre code de vérification est : " + verificationCode;
+            String body = "Votre code de vérification est : " + generatedCode;
             emailService.sendEmail(email, subject, body);
 
             showError("Un code de vérification a été envoyé à votre email.");
@@ -50,6 +55,29 @@ public class ForgotPasswordController {
             showError("Cet email n'est pas enregistré.");
         }
     }
+
+    @FXML
+    private void handleVerifyCodeAndChangePassword() {
+        String enteredCode = verificationCodeField.getText();
+        String newPassword = newPasswordField.getText();
+
+        // Validate inputs
+        if (enteredCode.isEmpty() || newPassword.isEmpty()) {
+            showError("Le code de vérification et le mot de passe sont requis.");
+            return;
+        }
+
+        if (!enteredCode.equals(generatedCode)) {
+            showError("Code de vérification incorrect.");
+            return;
+        }
+
+        // Code is correct, update the password in the system
+        userService.updatePassword(emailField.getText(), newPassword);
+
+        showError("Votre mot de passe a été réinitialisé avec succès.");
+    }
+
     @FXML
     private void handleBackToLogin() {
         if (backToLogin != null) {
@@ -71,7 +99,6 @@ public class ForgotPasswordController {
             System.out.println("Hyperlink 'backToLogin' is null.");
         }
     }
-
 
     private void showError(String message) {
         errorMessage.setText(message);
