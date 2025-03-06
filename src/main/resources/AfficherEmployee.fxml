@@ -27,5 +27,6 @@
         <Button fx:id="buttonAjouterEmploye" layoutX="979.0" layoutY="515.0" onAction="#ajouterEmploye" text="Ajouter Un Employee" />
         <Button fx:id="buttonUpdateEmploye" layoutX="271.0" layoutY="515.0" onAction="#updateEmploye" text="Update Employee" />
         <Button fx:id="buttonDeleteEmploye" layoutX="437.0" layoutY="515.0" onAction="#supprimerEmploye" text="Supprimer Employee" />
+        <Button fx:id="buttonLogout" layoutX="1005.0" layoutY="31.0" onAction="#logout" text="Déconnecter" />
     </children>
 </AnchorPane>

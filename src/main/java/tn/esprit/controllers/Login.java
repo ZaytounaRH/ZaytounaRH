@@ -137,21 +137,26 @@ public class Login {
         if (user != null) {
             SessionManager.getInstance().login(user);
 
+            // Check user type and navigate to respective dashboard
             switch (user.getUserType()) {
                 case "RH":
                     loadScene("/AfficherEmployee.fxml", "Bienvenue RH !");
                     break;
                 case "Employee":
-                    System.out.println("Bienvenue Employee !");
+                    loadScene("/EmployeeDashboard.fxml", "Bienvenue Employee !");
                     break;
                 case "Candidat":
-                    System.out.println("Bienvenue Candidat !");
+                    loadScene("/CandidatDashboard.fxml", "Bienvenue Candidat !");
+                    break;
+                default:
+                    showError("Type d'utilisateur inconnu.");
                     break;
             }
         } else {
             showError("Email ou mot de passe incorrect.");
         }
     }
+
 
     private void loadScene(String fxmlPath, String title) {
         try {

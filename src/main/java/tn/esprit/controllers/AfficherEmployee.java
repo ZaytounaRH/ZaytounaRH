@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AfficherEmployee {
-
+    @FXML
+    private Button buttonLogout;
     @FXML
     private VBox vboxEmployes;
 
@@ -203,6 +204,27 @@ public class AfficherEmployee {
                 .filter(emp -> (emp.getNom() + " " + emp.getPrenom()).toLowerCase().contains(searchText))
                 .collect(Collectors.toList()); // Filter by full name
         displayEmployees(filteredEmployees); // Display filtered employees
+    }
+
+    @FXML
+    private void logout() {
+        // Here you can add the logic to clear the user session or any other cleanup if necessary
+        // For now, we just navigate to SignUp.fxml
+
+        try {
+            // Load SignUp.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
+            AnchorPane signUpPage = loader.load();
+
+            // Get the current stage and set the new scene
+            Stage stage = (Stage) buttonLogout.getScene().getWindow();
+            Scene scene = new Scene(signUpPage);
+            stage.setScene(scene);
+            stage.setTitle("Inscription");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Erreur lors du chargement de la page de connexion.");
+        }
     }
 
     // Method to show an error alert
