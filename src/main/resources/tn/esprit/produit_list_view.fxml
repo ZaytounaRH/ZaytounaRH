@@ -25,5 +25,3 @@
         <Button layoutX="460.0" layoutY="650.0" onAction="#goBack" text="Retour" />
     </children>
 </AnchorPane>
-
-

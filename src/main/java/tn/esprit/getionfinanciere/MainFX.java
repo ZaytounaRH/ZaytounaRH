@@ -17,7 +17,6 @@ public class MainFX extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-
         FXMLLoader loader = new FXMLLoader(MainFX.class.getResource("home_view.fxml"));
         try {
             Parent root = loader.load();
@@ -30,4 +29,6 @@ public class MainFX extends Application {
             System.out.println(e.getMessage());
         }
     }
+
+
 }

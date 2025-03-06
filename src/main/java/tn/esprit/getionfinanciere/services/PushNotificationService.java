@@ -1,5 +1,4 @@
 package tn.esprit.getionfinanciere.services;
 
-
-public class ServiceDepense {
+public class PushNotificationService {
 }

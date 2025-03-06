@@ -8,6 +8,24 @@
     -fx-focus-color: #81C784; /* Couleur de focus */
 }
 
+/* Style des cartes */
+.card {
+    -fx-background-color: white;
+    -fx-border-color: #81C784;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 15px;
+    -fx-spacing: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 8, 0, 0, 3);
+    -fx-min-width: 200px;
+}
+
+.card:hover {
+    -fx-background-color: #F1F8E9;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.25), 10, 0, 0, 3);
+    -fx-cursor: hand;
+}
+
 /* Style des boutons */
 .button {
     -fx-background-color: -fx-default-button;
@@ -15,8 +33,8 @@
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-padding: 10px 20px;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 1);
 }
 
@@ -35,7 +53,7 @@
     -fx-border-color: #81C784;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
-    -fx-padding: 5px;
+    -fx-padding: 7px;
     -fx-font-size: 14px;
 }
 
@@ -46,7 +64,7 @@
 
 /* Style des labels */
 .label {
-    -fx-text-fill: -fx-text-fill;
+    -fx-text-fill: #2E7D32;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
 }
@@ -54,7 +72,7 @@
 /* Style des titres */
 .title {
     -fx-text-fill: #1B5E20; /* Vert très foncé */
-    -fx-font-size: 24px;
+    -fx-font-size: 22px;
     -fx-font-weight: bold;
 }
 
@@ -62,35 +80,6 @@
 .anchor-pane, .vbox, .hbox {
     -fx-background-color: -fx-background;
     -fx-padding: 20px;
-}
-
-/* Style des tables */
-.table-view {
-    -fx-background-color: white;
-    -fx-border-color: #81C784;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
-}
-
-.table-view .column-header {
-    -fx-background-color: -fx-default-button;
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-}
-
-.table-view .table-row-cell {
-    -fx-background-color: white;
-    -fx-text-fill: -fx-text-fill;
-}
-
-.table-view .table-row-cell:odd {
-    -fx-background-color: #F1F8E9; /* Fond alternatif */
-}
-
-.table-view .table-row-cell:selected {
-    -fx-background-color: -fx-focus-color;
-    -fx-text-fill: white;
 }
 
 /* Style des alertes */
@@ -128,3 +117,20 @@
 .menu-bar .menu-item:hover {
     -fx-background-color: #E8F5E9;
 }
+.card {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 15px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-color: #81C784;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 1);
+    -fx-spacing: 10px;
+    -fx-alignment: center;
+}
+
+.card Label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #2E7D32;
+}
+

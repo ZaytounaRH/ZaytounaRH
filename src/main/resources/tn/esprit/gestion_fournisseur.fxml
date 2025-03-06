@@ -7,33 +7,33 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.getionfinanciere.controllers.GestionFournisseur">
+<AnchorPane prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/22.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.getionfinanciere.controllers.GestionFournisseur">
 
     <stylesheets>
         <URL value="@Style.css" />
     </stylesheets>
     <children>
-          <Label layoutX="131.0" layoutY="104.0" text="Nom du fournisseur" />
-          <TextField fx:id="tfNomFournisseur" layoutX="112.0" layoutY="131.0" promptText="Nom du fournisseur" />
+          <Label layoutX="417.0" layoutY="111.0" text="Nom du fournisseur :" />
+          <TextField fx:id="tfNomFournisseur" layoutX="410.0" layoutY="150.0" promptText="Nom du fournisseur" />
 
 
-          <Label layoutX="171.0" layoutY="193.0" text="Adresse" />
-          <TextField fx:id="tfAdresse" layoutX="112.0" layoutY="220.0" promptText="Adresse" />
+          <Label layoutX="417.0" layoutY="216.0" text="Adresse :" />
+          <TextField fx:id="tfAdresse" layoutX="410.0" layoutY="245.0" promptText="Adresse" />
 
 
-          <Label layoutX="171.0" layoutY="281.0" text="Contact" />
-          <TextField fx:id="tfContact" layoutX="112.0" layoutY="314.0" promptText="Contact" />
+          <Label layoutX="417.0" layoutY="304.0" text="Contact :" />
+          <TextField fx:id="tfContact" layoutX="410.0" layoutY="342.0" promptText="Contact" />
 
 
-          <Label layoutX="146.0" layoutY="371.0" text="Type de service" />
+          <Label layoutX="418.0" layoutY="398.0" text="Type de service :" />
           <!-- ComboBox to select the type of service -->
-          <ComboBox fx:id="cbTypeService" layoutX="69.0" layoutY="408.0" promptText="Sélectionnez un type de service" />
+          <ComboBox fx:id="cbTypeService" layoutX="410.0" layoutY="444.0" promptText="Sélectionnez un type de service" />
 
 
         <!-- Buttons with improved layout -->
-        <Button layoutX="124.0" layoutY="490.0" mnemonicParsing="false" onAction="#ajouterFournisseur" prefHeight="41.0" prefWidth="146.0" text="Ajouter" />
+        <Button layoutX="453.0" layoutY="526.0" mnemonicParsing="false" onAction="#ajouterFournisseur" prefHeight="41.0" prefWidth="146.0" text="Ajouter" />
 
-        <Button fx:id="homepageButton" layoutX="14.0" layoutY="666.0" mnemonicParsing="false" onAction="#backhome" text="Retour " />
-        <Button fx:id="afficherButton" layoutX="894.0" layoutY="666.0" mnemonicParsing="false" onAction="#afficherFournisseurs" text="Afficher fournisseur" />
+        <Button fx:id="homepageButton" layoutX="37.0" layoutY="216.0" mnemonicParsing="false" onAction="#backHome" prefHeight="41.0" prefWidth="171.0" text="Retour " />
+        <Button fx:id="afficherButton" layoutX="37.0" layoutY="148.0" mnemonicParsing="false" onAction="#afficherFournisseurs" text="Afficher fournisseur" />
     </children>
 </AnchorPane>

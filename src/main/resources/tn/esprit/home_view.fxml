@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.getionfinanciere.controllers.HomeController">
+<AnchorPane prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/22.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.getionfinanciere.controllers.HomeController">
    <stylesheets>
       <URL value="@Style.css" />
    </stylesheets>
@@ -20,13 +20,13 @@
             <Image url="@logo.png" />
          </image>
       </ImageView>
-
-
-      <Button fx:id="hoFournisseur" layoutX="244.0" layoutY="245.0" mnemonicParsing="false" onAction="#openGF" prefHeight="40.0" prefWidth="202.0" text="Genstion Fournissuer" />
+      
+      <Button fx:id="hoFournisseur" layoutX="244.0" layoutY="245.0" mnemonicParsing="false" onAction="#openGF" prefHeight="40.0" prefWidth="202.0" text="Gestion Fournissuer" />
       <Button fx:id="hoCommande" layoutX="647.0" layoutY="244.0" mnemonicParsing="false" onAction="#openGC" prefHeight="41.0" prefWidth="202.0" text="Gestion de commande" />
       <Button fx:id="hoBudget" layoutX="244.0" layoutY="441.0" mnemonicParsing="false" onAction="#openGB" prefHeight="41.0" prefWidth="202.0" text="Gestion de Budget" />
-      <Button fx:id="hoDepence" layoutX="647.0" layoutY="441.0" mnemonicParsing="false" onAction="#openGD" prefHeight="42.0" prefWidth="202.0" text="Gestion de Dépense" />
-      <Label layoutX="471.0" layoutY="119.0" text="Zaytouna RH">
+      <Button fx:id="hoDepence" layoutX="647.0" layoutY="441.0" mnemonicParsing="false" onAction="#ouvrirDashboard" prefHeight="42.0" prefWidth="202.0" text="Gestion de Dépense" />
+      <Button fx:id="hoProduit" layoutX="439.0" layoutY="347.0" mnemonicParsing="false" onAction="#openGP" prefHeight="42.0" prefWidth="202.0" text="Gestion de Produit" />
+      <Label layoutX="497.0" layoutY="110.0" text="Zaytouna RH">
          <font>
             <Font size="55.0" />
          </font></Label>
