@@ -202,4 +202,38 @@ public class ServiceUser implements IService<User> {
         return user; // Retourner l'utilisateur trouvé ou null si non trouvé
     }
 
+    public boolean isEmailRegistered(String email) {
+        String query = "SELECT * FROM users WHERE email = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+
+            // If a user with the given email is found, return true
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;  // Return false if there was an issue with the query
+        }
+    }
+
+    public void updatePassword(String email, String newPassword) {
+        String query = "UPDATE users SET password = ? WHERE email = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, newPassword);  // Set the new password
+            statement.setString(2, email);  // Set the user's email
+
+            int rowsAffected = statement.executeUpdate();
+
+            // If at least one row is updated, the password was successfully changed
+            if (rowsAffected > 0) {
+                System.out.println("Password updated successfully for email: " + email);
+            } else {
+                System.out.println("No user found with the given email.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

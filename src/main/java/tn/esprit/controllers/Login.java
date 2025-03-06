@@ -15,41 +15,65 @@ import java.io.IOException;
 public class Login {
 
     @FXML
-    private TextField emailField;  // Champ pour l'email
+    private TextField emailField;
     @FXML
-    private PasswordField passwordField;  // Champ pour le mot de passe
+    private PasswordField passwordField;
     @FXML
-    private Button loginButton;  // Bouton de connexion
+    private TextField passwordTextField; // New TextField to display the password as plain text
+    @FXML
+    private Button loginButton;
     @FXML
     private Hyperlink signUpLink;
+    @FXML
+    private CheckBox showPasswordCheckbox;
+    @FXML
+    public Hyperlink forgotPasswordLink;
 
-    private ServiceUser userService = new ServiceUser();  // Service d'authentification des utilisateurs
+    private ServiceUser userService = new ServiceUser();
 
     @FXML
     private void initialize() {
         loginButton.setOnAction(event -> login());
+
+        // Initialize passwordTextField to be invisible
+        passwordTextField.setManaged(false);
+        passwordTextField.setVisible(false);
+
+        showPasswordCheckbox.setOnAction(event -> togglePasswordVisibility());
     }
 
-    // Méthode pour tenter la connexion de l'utilisateur
+    private void togglePasswordVisibility() {
+        if (showPasswordCheckbox.isSelected()) {
+            passwordTextField.setText(passwordField.getText());
+            passwordTextField.setManaged(true);
+            passwordTextField.setVisible(true);
+            passwordField.setManaged(false);
+            passwordField.setVisible(false);
+        } else {
+            passwordField.setText(passwordTextField.getText());
+            passwordField.setManaged(true);
+            passwordField.setVisible(true);
+            passwordTextField.setManaged(false);
+            passwordTextField.setVisible(false);
+        }
+    }
+
     private void login() {
-        String email = emailField.getText();  // Récupère l'email
-        String password = passwordField.getText();  // Récupère le mot de passe
+        String email = emailField.getText();
+        String password = showPasswordCheckbox.isSelected() ? passwordTextField.getText() : passwordField.getText();
 
         if (email.isEmpty() || password.isEmpty()) {
             showError("Tous les champs sont obligatoires.");
             return;
         }
 
-        User user = userService.authenticateUser(email, password);  // Tente de s'authentifier
+        User user = userService.authenticateUser(email, password);
 
         if (user != null) {
-            // Si l'authentification réussie, rediriger l'utilisateur en fonction de son type
-            SessionManager.getInstance().login(user);  // Enregistre l'utilisateur dans la session
+            SessionManager.getInstance().login(user);
 
-            // Exemple : si l'utilisateur est un RH, rediriger vers le tableau de bord RH
             switch (user.getUserType()) {
                 case "RH":
-                    // Redirige vers la page RH
                     System.out.println("Bienvenue RH !");
                     try {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherEmployee.fxml"));
@@ -60,11 +84,9 @@ public class Login {
                     }
                     break;
                 case "Employee":
-                    // Redirige vers la page Employee
                     System.out.println("Bienvenue Employee !");
                     break;
                 case "Candidat":
-                    // Redirige vers la page Candidat
                     System.out.println("Bienvenue Candidat !");
                     break;
                 default:
@@ -75,8 +97,6 @@ public class Login {
         }
     }
 
-
-    // Méthode pour afficher une alerte d'erreur
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Erreur");
@@ -84,6 +104,7 @@ public class Login {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
     @FXML
     private void goToSignUp() {
         try {
@@ -96,7 +117,25 @@ public class Login {
             stage.setTitle("Inscription RH");
         } catch (Exception e) {
             e.printStackTrace();
-            showError( "Impossible d'ouvrir la page d'inscription.");
+            showError("Impossible d'ouvrir la page d'inscription.");
         }
     }
+
+    @FXML
+    private void handleForgotPassword() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ForgotPassword.fxml"));
+            AnchorPane forgotPasswordPage = loader.load();
+
+            // Use emailField to get the stage in case forgotPasswordLink has issues
+            Stage stage = (Stage) emailField.getScene().getWindow();
+            Scene scene = new Scene(forgotPasswordPage);
+            stage.setScene(scene);
+            stage.setTitle("Réinitialisation du mot de passe");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Impossible d'ouvrir la page de réinitialisation du mot de passe.");
+        }
+    }
+
 }
