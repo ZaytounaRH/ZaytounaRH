@@ -1,5 +1,7 @@
 package tn.esprit.getionfinanciere.controllers;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,10 +13,14 @@ import javafx.stage.Stage;
 import tn.esprit.MainFX;
 import tn.esprit.getionfinanciere.models.Commande;
 import tn.esprit.getionfinanciere.models.Fournisseur;
+import tn.esprit.getionfinanciere.models.Produit;
 import tn.esprit.getionfinanciere.repository.CommandeRepository;
 import tn.esprit.getionfinanciere.repository.FournisseurRepository;
+import tn.esprit.getionfinanciere.repository.ProduitRepository;
+import tn.esprit.getionfinanciere.services.ServiceCommande;
 
 import java.io.IOException;
+import java.util.List;
 
 import static tn.esprit.getionfinanciere.utils.Constants.SAISIE_INVALIDE;
 
@@ -36,13 +42,19 @@ public class GestionCommande {
     private Button retourButton;
     @FXML
     private ComboBox<Fournisseur> nomFournissuer;
+    @FXML
+    private Label produitLabel;
+    @FXML
+    private ComboBox<Produit> nomProduit;
 
-    private final CommandeRepository serviceCommande = new CommandeRepository();
+    private final ProduitRepository produitRepository = new ProduitRepository();
     private final FournisseurRepository serviceFournisseur = new FournisseurRepository();
-
+    private final ServiceCommande serviceCommande = new ServiceCommande();
     @FXML
     public void initialize() {
         nomFournissuer.getItems().setAll(serviceFournisseur.getAll());
+        nomProduit.getItems().setAll(produitRepository.getAll());
+
         nomFournissuer.setCellFactory(param -> new ListCell<Fournisseur>() {
             @Override
             protected void updateItem(Fournisseur item, boolean empty) {
@@ -66,9 +78,54 @@ public class GestionCommande {
                 }
             }
         });
-        tfquantite.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) { // Accepte uniquement les chiffres
-                tfquantite.setText(oldValue);
+
+
+        nomProduit.setCellFactory(param -> new ListCell<Produit>() {
+            @Override
+            protected void updateItem(Produit item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getProduitName());
+                }
+            }
+        });
+
+        nomProduit.setButtonCell(new ListCell<Produit>() {
+            @Override
+            protected void updateItem(Produit item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getProduitName());
+                }
+            }
+        });
+
+        // Add listener to Fournisseur ComboBox
+        nomFournissuer.valueProperty().addListener(new ChangeListener<Fournisseur>() {
+            @Override
+            public void changed(ObservableValue<? extends Fournisseur> observable, Fournisseur oldValue, Fournisseur newValue) {
+                if (newValue != null) {
+                    // Show the produit ComboBox and filter the produits for the selected fournisseur
+                    nomProduit.setVisible(true);
+                    List<Produit> produitsForFournisseur = produitRepository.getProduitsByFournisseur(newValue.getId());
+                    nomProduit.getItems().setAll(produitsForFournisseur);
+                } else {
+                    // Hide the produit ComboBox if no fournisseur is selected
+                    nomProduit.setVisible(false);
+                    nomProduit.getItems().clear();
+                }
+            }
+        });
+
+        nomFournissuer.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                produitLabel.setVisible(true);  // Show the "Produit" label when a Fournisseur is selected
+            } else {
+                produitLabel.setVisible(false); // Hide the "Produit" label when no Fournisseur is selected
             }
         });
     }
@@ -93,14 +150,15 @@ public class GestionCommande {
         }
         String description = tfDescription.getText();
         int idFournisseur = nomFournissuer.valueProperty().getValue().getId();
+        int idProduit = nomProduit.valueProperty().getValue().getId();
         Commande commande = new Commande();
         commande.setDateCommande(dateCommande);
         commande.setQuantite(quantite);
         commande.setDescription(description);
         commande.setIdFournisseur(idFournisseur);
         commande.setIdResponsable(1);
-
-        serviceCommande.add(commande);
+        commande.setIdProduit(idProduit);
+        serviceCommande.addDepense(commande);
         System.out.println("Commande ajoutée : " + commande);
 
         showAlert(AlertType.INFORMATION, "Commande ajoutée", "La commande a été ajoutée avec succès.");
@@ -148,5 +206,6 @@ public class GestionCommande {
         dpDateCommande.setValue(null);
         tfquantite.clear();
         tfDescription.clear();
+        nomProduit.setVisible(false);
     }
 }

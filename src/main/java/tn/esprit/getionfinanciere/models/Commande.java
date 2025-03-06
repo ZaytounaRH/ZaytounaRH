@@ -4,105 +4,114 @@ import tn.esprit.getionfinanciere.models.enums.Status;
 
 public class Commande {
 
-    private int id;
-    private String dateCommande;
-    private int quantite;
-    private String statutCommande;
-    private int idFournisseur;
-    private int idResponsable;
-    private String description;
+  private int id;
+  private String dateCommande;
+  private int quantite;
+  private String statutCommande;
+  private int idFournisseur;
+  private int idResponsable;
+  private int idProduit;
+  private String description;
+  private Double prixCommande;
+
+  public Commande() {
+  }
+
+  public Commande(String dateCommande, int quantite, int idFournisseur, int idResponsable, String description) {
+    this.dateCommande = dateCommande;
+    this.quantite = quantite;
+    this.statutCommande = Status.PENDING.getLabel();
+    this.idFournisseur = idFournisseur;
+    this.idResponsable = idResponsable;
+    this.description = description;
+  }
 
 
-    // Constructeurs
-    public Commande() {
-    }
+  public int getId() {
+    return id;
+  }
 
-    public Commande(String dateCommande, int quantite, int idFournisseur, int idResponsable, String description ) {
-        this.dateCommande = dateCommande;
-        this.quantite = quantite;
-        this.statutCommande = Status.PENDING.getLabel();
-        this.idFournisseur = idFournisseur;
-        this.idResponsable = idResponsable;
-        this.description = description;
-    }
+  public void setId(int id) {
+    this.id = id;
+  }
 
+  public String getDateCommande() {
+    return dateCommande;
+  }
 
+  public void setDateCommande(String dateCommande) {
+    this.dateCommande = dateCommande;
+  }
 
+  public int getQuantite() {
+    return quantite;
+  }
 
-    public int getId() {
-        return id;
-    }
+  public void setQuantite(int quantite) {
+    this.quantite = quantite;
+  }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  public String getStatutCommande() {
+    return statutCommande;
+  }
 
-    public String getDateCommande() {
-        return dateCommande;
-    }
+  public void setStatutCommande(String statutCommande) {
+    this.statutCommande = statutCommande;
+  }
 
-    public void setDateCommande(String dateCommande) {
-        this.dateCommande = dateCommande;
-    }
+  public int getIdFournisseur() {
+    return idFournisseur;
+  }
 
-    public int getQuantite() {
-        return quantite;
-    }
+  public void setIdFournisseur(int idFournisseur) {
+    this.idFournisseur = idFournisseur;
+  }
 
-    public void setQuantite(int quantite) {
-        this.quantite = quantite;
-    }
+  public int getIdResponsable() {
+    return idResponsable;
+  }
 
-    public String getStatutCommande() {
-        return statutCommande;
-    }
+  public void setIdResponsable(int idResponsable) {
+    this.idResponsable = idResponsable;
+  }
 
-    public void setStatutCommande(String statutCommande) {
-        this.statutCommande = statutCommande;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public int getIdFournisseur() {
-        return idFournisseur;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public void setIdFournisseur(int idFournisseur) {
-        this.idFournisseur = idFournisseur;
-    }
+  public int getIdProduit() {
+    return idProduit;
+  }
 
-    public int getIdResponsable() {
-        return idResponsable;
-    }
+  public void setIdProduit(int idProduit) {
+    this.idProduit = idProduit;
+  }
 
-    public void setIdResponsable(int idResponsable) {
-        this.idResponsable = idResponsable;
-    }
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public Double getPrixCommande() {
+    return prixCommande;
+  }
 
+  public void setPrixCommande(Double prixCommande) {
+    this.prixCommande = prixCommande;
+  }
 
+  @Override
+  public String toString() {
+    return "Commande{" +
+        "idCommande=" + id +
+        ", dateCommande='" + dateCommande + '\'' +
+        ", quantite=" + quantite +
+        ", statutCommande='" + statutCommande + '\'' +
+        ", idFournisseur=" + idFournisseur +
+        ", idResponsable=" + idResponsable +
+        ", description='" + description + '\'' +
+        "}\n";
+  }
 
-    @Override
-    public String toString() {
-        return "Commande{" +
-                "idCommande=" + id +
-                ", dateCommande='" + dateCommande + '\'' +
-                ", quantite=" + quantite +
-                ", statutCommande='" + statutCommande + '\'' +
-                ", idFournisseur=" + idFournisseur +
-                ", idResponsable=" + idResponsable +
-                ", description='" + description + '\'' +
-                "}\n";
-    }
-
-    public void setStatusCommande(String value) {
-    }
-
-    public void setMontant(double v) {
-    }
 
 
 }

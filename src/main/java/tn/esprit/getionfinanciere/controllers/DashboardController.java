@@ -12,12 +12,6 @@ import tn.esprit.getionfinanciere.repository.DepenseRepository;
 import javafx.event.ActionEvent;
 import tn.esprit.getionfinanciere.utils.Utils;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.util.Duration;
-
-
-
 import java.util.Map;
 
 public class DashboardController {
@@ -35,14 +29,9 @@ public class DashboardController {
         Utils.actionButton("home_view.fxml", backhome );
     }
 
-
-
     public void initialize() {
         afficherGraphique();
-
-
     }
-
 
     private void afficherGraphique() {
         Map<String, Double> budgets = budgetRepository.getBudgetParMois();

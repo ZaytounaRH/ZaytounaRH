@@ -44,8 +44,8 @@ public class CommandeListController {
 
       Label dateCommande = new Label("Date: " + commande.getDateCommande());
       Label quantite = new Label("Quantité: " + commande.getQuantite() );
-      Label description = new Label("Description: " + commande.getDescription() );
       Label statutCommande = new Label("Statut: " + commande.getStatutCommande());
+      Label prixCommande = new Label("Prix: " + commande.getPrixCommande());
 
       Button btnSupprimer = new Button("Supprimer");
       btnSupprimer.getStyleClass().add("delete-button");
@@ -53,7 +53,7 @@ public class CommandeListController {
 
 
 
-      card.getChildren().addAll(dateCommande, quantite, description , statutCommande, btnSupprimer);
+      card.getChildren().addAll(dateCommande, quantite, statutCommande, prixCommande, btnSupprimer);
       flowPaneCommande.getChildren().add(card);
     }
   }

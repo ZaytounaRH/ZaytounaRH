@@ -19,7 +19,7 @@ public class CommandeRepository implements IService<Commande> {
 
     @Override
     public void add(Commande commande) {
-        String qry = "INSERT INTO `Commande`(`dateCommande`, `quantite`, `statutCommande`, `idFournisseur`, `idResponsable` , `description`) VALUES (?,?,?,?,?,?)";
+        String qry = "INSERT INTO `Commande`(`dateCommande`, `quantite`, `statutCommande`, `idFournisseur`, `idResponsable`, `description`, `prixCommande`) VALUES (?,?,?,?,?,?,?)";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setString(1, commande.getDateCommande());
@@ -28,6 +28,7 @@ public class CommandeRepository implements IService<Commande> {
             pstm.setInt(4, commande.getIdFournisseur());
             pstm.setInt(5, commande.getIdResponsable());
             pstm.setString(6, commande.getDescription());
+            pstm.setDouble(7, commande.getPrixCommande());
 
             pstm.executeUpdate();
         } catch (SQLException e) {
@@ -53,7 +54,7 @@ public class CommandeRepository implements IService<Commande> {
                 c.setIdFournisseur(rs.getInt("idFournisseur"));
                 c.setIdResponsable(rs.getInt("idResponsable"));
                 c.setDescription(rs.getString("description"));
-
+                c.setPrixCommande(rs.getDouble("prixCommande"));
                 commandes.add(c);
             }
         } catch (SQLException e) {

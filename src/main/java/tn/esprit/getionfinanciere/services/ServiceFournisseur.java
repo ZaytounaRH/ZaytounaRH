@@ -31,9 +31,4 @@ public class ServiceFournisseur {
         fournisseurRepository.delete(selectedFournisseur);
         showAlert(Alert.AlertType.INFORMATION, "Suppression réussie", "Le fournisseur a été supprimé.");
     }
-
-    public void update(Fournisseur fournisseur) {
-        fournisseurRepository.update(fournisseur);
-        showAlert(Alert.AlertType.INFORMATION, "Mise à jour réussie", "Le fournisseur a été modifié.");
-    }
 }

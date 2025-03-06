@@ -22,6 +22,8 @@ public class HomeController {
     @FXML
     private Button hoDepence;
     @FXML
+    private Button hoProduit;
+    @FXML
     private BarChart<String, Number> budgetDepenseChart;
 
     @FXML
@@ -47,5 +49,8 @@ public class HomeController {
     @FXML
     private void ouvrirDashboard(ActionEvent event) {
         Utils.actionButton("Dashboard.fxml", hoDepence);
+    }
+
+    public void openGP(ActionEvent actionEvent) { Utils.actionButton("gestion_produit.fxml", hoProduit);
     }
 }

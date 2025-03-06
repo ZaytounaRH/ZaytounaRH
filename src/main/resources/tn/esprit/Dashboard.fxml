@@ -23,6 +23,5 @@
         </yAxis>
     </BarChart>
 
-
     <Button fx:id="backhome" layoutX="350.0" layoutY="520.0" text="Retour" onAction="#goBack"/>
 </AnchorPane>
