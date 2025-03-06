@@ -1,16 +1,28 @@
 package tn.esprit.controllers;
 
+import com.google.code.kaptcha.impl.DefaultKaptcha;
+import com.google.code.kaptcha.util.Config;
+
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import tn.esprit.models.User;
 import tn.esprit.services.ServiceUser;
 import tn.esprit.utils.SessionManager;
+import javafx.event.ActionEvent;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Properties;
 
 public class Login {
 
@@ -19,7 +31,7 @@ public class Login {
     @FXML
     private PasswordField passwordField;
     @FXML
-    private TextField passwordTextField; // New TextField to display the password as plain text
+    private TextField passwordTextField;
     @FXML
     private Button loginButton;
     @FXML
@@ -27,19 +39,31 @@ public class Login {
     @FXML
     private CheckBox showPasswordCheckbox;
     @FXML
-    public Hyperlink forgotPasswordLink;
+    private Hyperlink forgotPasswordLink;
+    @FXML
+    private ImageView captchaImageView;
+    @FXML
+    private TextField captchaField;
+    @FXML
+    private Button refreshCaptchaButton;
 
     private ServiceUser userService = new ServiceUser();
+    private DefaultKaptcha captchaProducer;
+    private String generatedCaptcha;
 
     @FXML
     private void initialize() {
         loginButton.setOnAction(event -> login());
 
-        // Initialize passwordTextField to be invisible
+        // Initialize password visibility toggle
         passwordTextField.setManaged(false);
         passwordTextField.setVisible(false);
-
         showPasswordCheckbox.setOnAction(event -> togglePasswordVisibility());
+
+        // Initialize CAPTCHA
+        setupCaptcha();
+        generateCaptcha();
+        refreshCaptchaButton.setOnAction(event -> generateCaptcha());
     }
 
     private void togglePasswordVisibility() {
@@ -58,12 +82,53 @@ public class Login {
         }
     }
 
+    private void setupCaptcha() {
+        Properties properties = new Properties();
+        properties.setProperty("kaptcha.textproducer.char.string", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789");
+        properties.setProperty("kaptcha.textproducer.char.length", "6");
+        properties.setProperty("kaptcha.textproducer.font.size", "40");
+        properties.setProperty("kaptcha.border", "no");
+        properties.setProperty("kaptcha.image.width", "150");
+        properties.setProperty("kaptcha.image.height", "50");
+
+        Config config = new Config(properties);
+        captchaProducer = new DefaultKaptcha();
+        captchaProducer.setConfig(config);
+    }
+
+    private void generateCaptcha() {
+        generatedCaptcha = captchaProducer.createText();
+        BufferedImage bufferedImage = captchaProducer.createImage(generatedCaptcha);
+
+        // Convert BufferedImage to JavaFX Image
+        Image captchaImage = convertBufferedImageToFXImage(bufferedImage);
+        captchaImageView.setImage(captchaImage);
+    }
+
+    private Image convertBufferedImageToFXImage(BufferedImage bufferedImage) {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "png", outputStream);
+            return new Image(new ByteArrayInputStream(outputStream.toByteArray()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private void login() {
         String email = emailField.getText();
         String password = showPasswordCheckbox.isSelected() ? passwordTextField.getText() : passwordField.getText();
+        String enteredCaptcha = captchaField.getText();
 
-        if (email.isEmpty() || password.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty() || enteredCaptcha.isEmpty()) {
             showError("Tous les champs sont obligatoires.");
+            return;
+        }
+
+        if (!enteredCaptcha.equalsIgnoreCase(generatedCaptcha)) {
+            showError("CAPTCHA incorrect !");
+            generateCaptcha();
             return;
         }
 
@@ -74,14 +139,7 @@ public class Login {
 
             switch (user.getUserType()) {
                 case "RH":
-                    System.out.println("Bienvenue RH !");
-                    try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherEmployee.fxml"));
-                        Stage stage = (Stage) loginButton.getScene().getWindow();
-                        stage.setScene(new Scene(loader.load()));
-                    } catch (IOException e) {
-                        showError("Erreur lors du chargement de la page AfficherEmployee.");
-                    }
+                    loadScene("/AfficherEmployee.fxml", "Bienvenue RH !");
                     break;
                 case "Employee":
                     System.out.println("Bienvenue Employee !");
@@ -89,11 +147,20 @@ public class Login {
                 case "Candidat":
                     System.out.println("Bienvenue Candidat !");
                     break;
-                default:
-                    break;
             }
         } else {
             showError("Email ou mot de passe incorrect.");
+        }
+    }
+
+    private void loadScene(String fxmlPath, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle(title);
+        } catch (IOException e) {
+            showError("Erreur lors du chargement de la page.");
         }
     }
 
@@ -107,35 +174,17 @@ public class Login {
 
     @FXML
     private void goToSignUp() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/SignUp.fxml"));
-            AnchorPane signUpPage = loader.load();
-
-            Stage stage = (Stage) signUpLink.getScene().getWindow();
-            Scene scene = new Scene(signUpPage);
-            stage.setScene(scene);
-            stage.setTitle("Inscription RH");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Impossible d'ouvrir la page d'inscription.");
-        }
+        loadScene("/SignUp.fxml", "Inscription RH");
     }
 
     @FXML
     private void handleForgotPassword() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ForgotPassword.fxml"));
-            AnchorPane forgotPasswordPage = loader.load();
-
-            // Use emailField to get the stage in case forgotPasswordLink has issues
-            Stage stage = (Stage) emailField.getScene().getWindow();
-            Scene scene = new Scene(forgotPasswordPage);
-            stage.setScene(scene);
-            stage.setTitle("Réinitialisation du mot de passe");
-        } catch (IOException e) {
-            e.printStackTrace();
-            showError("Impossible d'ouvrir la page de réinitialisation du mot de passe.");
-        }
+        loadScene("/ForgotPassword.fxml", "Réinitialisation du mot de passe");
     }
+    @FXML
+    private void refreshCaptcha(ActionEvent event) {
+        generateCaptcha();
+        System.out.println("Captcha refreshed!");  // Debugging
 
+    }
 }
