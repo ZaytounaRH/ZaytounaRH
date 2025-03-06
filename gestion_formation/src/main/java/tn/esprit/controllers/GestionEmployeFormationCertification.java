@@ -15,11 +15,8 @@ import tn.esprit.models.Certification;
 import tn.esprit.models.Employee;
 import tn.esprit.models.Formation;
 import tn.esprit.models.User;
-import tn.esprit.services.ServiceEmployeCertification;
-import tn.esprit.services.ServiceEmployeFormation;
-import tn.esprit.services.ServiceFormation;
+import tn.esprit.services.*;
 import tn.esprit.utils.SessionManager;
-import tn.esprit.services.ServiceCertification;
 import tn.esprit.utils.MyDatabase;
 
 import javafx.fxml.FXML;
@@ -110,7 +107,16 @@ public class GestionEmployeFormationCertification {
         detailsButton.setStyle("-fx-background-color: #007bff; -fx-text-fill: white;");
         detailsButton.setOnAction(e -> afficherDetails(certif));
 
-        card.getChildren().addAll(titre, organisme,dateText,detailsButton);
+        // Bouton pour générer le PDF
+        Button pdfButton = new Button("Générer PDF");
+        pdfButton.setStyle("-fx-background-color: #28a745; -fx-text-fill: white;");
+        pdfButton.setOnAction(e -> {
+            // Appeler la méthode de génération de PDF
+            PdfService pdfService = new PdfService();
+            pdfService.genererCertificatPdf(certif, dateObtention);
+        });
+
+        card.getChildren().addAll(titre, organisme,dateText,detailsButton,pdfButton);
         return card;
     }
     private void afficherDetails(Certification certif) {
