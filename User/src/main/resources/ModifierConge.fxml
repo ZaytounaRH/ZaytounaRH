@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.ModifierConge"
+            prefHeight="400.0" prefWidth="600.0"
+            style="-fx-background-color: white; -fx-padding: 20px;">
+
+    <VBox spacing="15" alignment="CENTER">
+
+        <Label text="Modifier un Congé"
+               style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+        <Label text="Motif:"/>
+        <TextField fx:id="motifField" promptText="Saisir le motif"/>
+
+        <Label text="Date Début:"/>
+        <DatePicker fx:id="dateDebutPicker"/>
+
+        <Label text="Date Fin:"/>
+        <DatePicker fx:id="dateFinPicker"/>
+
+        <Label text="Statut:"/>
+        <ComboBox fx:id="statutComboBox"/>
+
+        <HBox spacing="10">
+            <Button fx:id="btnModifier"
+                    text="Modifier"
+                    style="-fx-background-color: #28a745; -fx-text-fill: white;"/>
+
+            <Button fx:id="btnAnnuler"
+                    text="Annuler"
+                    style="-fx-background-color: #dc3545; -fx-text-fill: white;"/>
+        </HBox>
+
+    </VBox>
+</AnchorPane>
