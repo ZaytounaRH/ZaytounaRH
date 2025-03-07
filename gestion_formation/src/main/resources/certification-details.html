@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails Certification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            margin: 20px auto;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .info {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="certificationDetails">
+    <h2 class="title">Détails de la Certification</h2>
+    <p class="info" id="certificationTitle">Titre: N/A</p>
+    <p class="info" id="certificationOrg">Organisme: N/A</p>
+    <p class="info" id="certificationDate">Date d'obtention: N/A</p>
+</div>
+
+<script>
+    // Récupérer l'ID de la certification dans l'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const certifId = urlParams.get('id');
+
+    // Logique pour afficher les informations de la certification
+    if (certifId) {
+        // Remplacer par les données réelles de la certification, ici des données fictives
+        // Dans une vraie application, tu pourrais récupérer ces informations via AJAX ou une API
+        document.getElementById('certificationTitle').innerText = "Titre: Certification #" + certifId;
+        document.getElementById('certificationOrg').innerText = "Organisme: Organisme " + certifId;
+        document.getElementById('certificationDate').innerText = "Date d'obtention: " + (new Date()).toLocaleDateString();
+    }
+</script>
+</body>
+</html>

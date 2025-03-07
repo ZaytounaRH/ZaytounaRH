@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!--
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.GestionEmployeFormationCertification"
+            prefHeight="400.0" prefWidth="600.0">
+    <TextField fx:id="emailField" layoutX="150" layoutY="100" promptText="Email"/>
+</AnchorPane>
+
+
+<FlowPane fx:id="certificationFlowPane" hgap="20" vgap="20" alignment="CENTER" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"  fx:controller="tn.esprit.controllers.GestionEmployeFormationCertification"  prefHeight="720.0" prefWidth="1080.0" stylesheets="style.css" >
+<children>
+    <VBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 10px;">
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+
+            <Button text="afficher certif d'employe" onAction="#afficherCertifsParEmploye"/>
+        </HBox>
+    </VBox>
+</children>
+
+</FlowPane>
+-->
+<?import javafx.geometry.Insets?>
+<ScrollPane fx:id="scrollPane" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.GestionEmployeFormationCertification" prefHeight="720" prefWidth="1080" stylesheets="style.css">
+    <VBox fx:id="cardContainer" spacing="10">
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+        <Button fx:id="btnAfficherCertifs" text="Afficher les certifications" onAction="#afficherCertifications"/>
+        <Button fx:id="btnAfficherFormations" text="Afficher les formations" onAction="#afficherFormations"/>
+    </VBox>
+
+</ScrollPane>
