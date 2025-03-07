@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/22.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.getionfinanciere.controllers.GestionCommande">
+
+   <stylesheets>
+      <URL value="@Style.css" />
+   </stylesheets>
+   <children>
+      <!-- Champ pour la date -->
+      <Label layoutX="67.0" layoutY="132.0" text="Date de commande :" />
+      <DatePicker fx:id="dpDateCommande" layoutX="240.0" layoutY="119.0" prefWidth="200.0" />
+
+      <Label layoutX="66.0" layoutY="200.0" text="Quantité :" />
+      <TextField fx:id="tfquantite" layoutX="240.0" layoutY="194.0" prefWidth="200.0" promptText="Saisir la quantité" />
+
+      <!-- Champ pour la description -->
+      <Label layoutX="67.0" layoutY="270.0" text="Description :" />
+      <TextField fx:id="tfDescription" layoutX="240.0" layoutY="264.0" prefWidth="200.0" promptText="Saisir une description" />
+
+      <!-- Champ pour le fournisseur -->
+      <Label layoutX="67.0" layoutY="329.0" text="Fournisseur" />
+      <ComboBox fx:id="nomFournissuer" layoutX="240.0" layoutY="318.0" prefWidth="200.0" promptText="Choisir un fournisseur" />
+
+      <Label fx:id="produitLabel" layoutX="74.0" layoutY="402.0" text="Produit" visible="false" />
+      <ComboBox fx:id="nomProduit" layoutX="240.0" layoutY="389.0" prefWidth="200.0" promptText="Choisir un produit" visible="false" />
+
+      <!-- Boutons -->
+      <Button fx:id="ajouterButton" layoutX="278.0" layoutY="511.0" onAction="#ajouterCommande" prefHeight="20.0" prefWidth="100.0" text="Ajouter" />
+      <Button fx:id="afficherButton" layoutX="469.0" layoutY="580.0" onAction="#afficherCommandes" prefHeight="41.0" prefWidth="183.0" text="Afficher Commandes" />
+      <Button fx:id="retourButton" layoutX="38.0" layoutY="581.0" onAction="#retour" text="Retour" />
+
+      <Label layoutX="271.0" layoutY="45.0" text="Saisir Commande">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

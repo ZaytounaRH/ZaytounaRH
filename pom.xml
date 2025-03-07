@@ -1,12 +1,20 @@
+<<<<<<< HEAD
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://www.apache.org/xsd/maven-4.0.0.xsd">
 
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+>>>>>>> 9acf55b7f50e512f22511d89dcdae226a46ba2f7
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>tn.esprit</groupId>
     <artifactId>ZaytounaRH</artifactId>
     <version>1.0-SNAPSHOT</version>
+<<<<<<< HEAD
     <packaging>jar</packaging>
 
     <repositories>
@@ -33,11 +41,23 @@
             <artifactId>javafx-fxml</artifactId>
             <version>22.0.2</version>
         </dependency>
+=======
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <!-- MySQL Connector -->
+>>>>>>> 9acf55b7f50e512f22511d89dcdae226a46ba2f7
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
         </dependency>
+<<<<<<< HEAD
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itext7-core</artifactId>
@@ -76,11 +96,58 @@
             <artifactId>jna-platform</artifactId>
             <version>5.7.0</version>
         </dependency>
+=======
+
+        <!-- JavaFX Controls -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>22.0.2</version>
+        </dependency>
+
+        <!-- JavaFX FXML -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>22.0.2</version>
+        </dependency>
+
+        <!-- ValidatorFX -->
+        <dependency>
+            <groupId>net.synedra</groupId>
+            <artifactId>validatorfx</artifactId>
+            <version>0.4.0</version>
+        </dependency>
+
+        <!-- Firebase Admin SDK -->
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>9.2.0</version>
+        </dependency>
+
+        <!-- JSON Parsing -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+
+        <!-- Google Auth for Firebase -->
+        <dependency>
+            <groupId>com.google.auth</groupId>
+            <artifactId>google-auth-library-oauth2-http</artifactId>
+            <version>1.17.0</version>
+        </dependency>
+
+
+>>>>>>> 9acf55b7f50e512f22511d89dcdae226a46ba2f7
 
     </dependencies>
 
     <build>
         <plugins>
+<<<<<<< HEAD
             <!-- JavaFX Plugin -->
             <plugin>
                 <groupId>org.openjfx</groupId>
@@ -104,6 +171,18 @@
                         <classpath/>
                         <argument>tn.esprit.test.MainFX</argument>
                     </arguments>
+=======
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>tn.esprit.getionfinanciere.MainFX</mainClass>
+                    <options>
+                        <option>--add-modules</option>
+                        <option>javafx.controls,javafx.fxml</option>
+                    </options>
+>>>>>>> 9acf55b7f50e512f22511d89dcdae226a46ba2f7
                 </configuration>
             </plugin>
         </plugins>
