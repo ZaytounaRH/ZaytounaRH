@@ -1,5 +1,6 @@
 package tn.esprit.utils;
 
+import tn.esprit.models.Candidat;
 import tn.esprit.models.Employee;
 import tn.esprit.models.RH;
 import tn.esprit.utils.MyDatabase;
@@ -68,6 +69,13 @@ private Connection connection;
         }
         return false;
     }
+    // Méthode pour vérifier si l'utilisateur connecté est un RH
+    public boolean isCandidat() {
+        if (currentUser != null && currentUser.getUserType().equals("Candidat")) {
+            return true;
+        }
+        return false;
+    }
 
     // Méthode pour vérifier si un utilisateur est connecté
     public boolean isUserLoggedIn() {
@@ -110,6 +118,19 @@ public int getCurrentEmployeeId() {
     System.out.println("L'utilisateur connecté n'est pas un employee");
         return -1;
 }
+    public int getCurrentCandidatId() {
+        Candidat candidatuser = (Candidat) currentUser;
+        int candidat_id = candidatuser.getCandidat_id();
+        if (candidat_id != 0) {
+            return candidat_id;
+        } else {
+            System.out.println("L'ID candidat est invalide.");
+        }
+
+        System.out.println("L'utilisateur connecté n'est pas un candidat.");
+        return -1;
+
+    }
 
 
 

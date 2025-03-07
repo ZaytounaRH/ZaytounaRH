@@ -185,7 +185,74 @@ public class ServiceCertification implements IService<Certification> {
     }
 
 
+    public Certification getCertificationById(int idCertif) {
+        System.out.println("🔎 getCertificationById() appelé avec idCertif = " + idCertif);
 
+        Certification certification = null;
+        String qry = "SELECT c.idCertif, c.titreCertif, c.organismeCertif, f.nomFormation " +
+                "FROM certification c " +
+                "LEFT JOIN formation f ON c.idFormation = f.idFormation " +
+                "WHERE c.idCertif = ?";
+
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                System.out.println("Connexion fermée ! Réouverture...");
+                cnx = MyDatabase.getInstance().getCnx();
+            }
+
+            PreparedStatement pst = cnx.prepareStatement(qry);
+            pst.setInt(1, idCertif);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                certification = new Certification();
+                certification.setIdCertif(rs.getInt("idCertif"));
+                certification.setTitreCertif(rs.getString("titreCertif"));
+                certification.setOrganismeCertif(rs.getString("organismeCertif"));
+
+                // Récupérer uniquement le nom de la formation
+                String nomFormation = rs.getString("nomFormation");
+                if (nomFormation != null) {
+                    certification.setFormation(new Formation());
+                    certification.getFormation().setNomFormation(nomFormation);
+                }
+            }
+
+            rs.close();
+            pst.close();
+
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération de la certification par ID : " + e.getMessage());
+        }
+
+        return certification;
+    }
+
+    public Date getDateObtention(int certifId) {
+        Date dateObtention = null;
+        String query = "SELECT ec.dateObtention " +
+                "FROM employe_certification ec " +
+                "WHERE ec.idCertif = ?";
+
+        try (PreparedStatement statement = cnx.prepareStatement(query)) {
+            // Paramétrer la requête avec l'idCertif
+            statement.setInt(1, certifId);
+
+            // Exécuter la requête et récupérer le résultat
+            ResultSet resultSet = statement.executeQuery();
+
+            // Si une date d'obtention est trouvée, la récupérer
+            if (resultSet.next()) {
+                dateObtention = resultSet.getDate("dateObtention");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération de la date d'obtention : " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return dateObtention;
+    }
 
 
 
