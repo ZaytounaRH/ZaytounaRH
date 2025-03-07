@@ -1,0 +1,23 @@
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Menu?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.MainController"
+            prefHeight="720.0" prefWidth="1080.0">
+
+ <top>
+  <MenuBar>
+   <Menu text="Menu">
+    <MenuItem text="Formations" onAction="#showFormations" />
+    <MenuItem text="Certifications" onAction="#showCertifications" />
+    <MenuItem text="Employe" onAction="#showEmployers"/>
+   </Menu>
+  </MenuBar>
+ </top>
+ <center>
+  <!-- La vue des Formations ou Certifications sera chargée ici dynamiquement -->
+ </center>
+</BorderPane>
+

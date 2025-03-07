@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Pos?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<ScrollPane fx:id="scrollPane" prefWidth="900" prefHeight="600" style="-fx-background-color: white; -fx-border-color: #ccc;" fx:controller="tn.esprit.controllers.GestionFormation" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17" stylesheets="style.css">
+<content>
+<FlowPane fx:id="formationFlowPane" hgap="10" vgap="10" alignment="TOP_CENTER" prefWidth="2200" prefHeight="600" >
+
+    <children>
+
+
+        <!-- Section for Adding/Updating a Formation -->
+        <VBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 10px;">
+            <Label text="Nom de la Formation" />
+            <TextField fx:id="tfNomFormation" promptText="Nom de la Formation" />
+
+            <Label text="Description" />
+            <TextField fx:id="tfDescriptionFormation" promptText="Description de la Formation" />
+
+            <Label text="Date Début" />
+            <DatePicker fx:id="dateDebutPicker" />
+
+            <Label text="Date Fin" />
+            <DatePicker fx:id="dateFinPicker" />
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="Ajouter Formation" onAction="#ajouterFormation" />
+                <Button text="Afficher Formations" onAction="#afficherFormations" />
+            </HBox>
+
+            <Label text="Sélectionnez une formation :"/>
+            <ComboBox fx:id="formationsComboBox" promptText="Choisir une formation"/>
+
+            <!-- Sélection des employés -->
+            <Label text="Sélectionnez les employés :"/>
+            <ListView fx:id="employesListView" prefHeight="150" prefWidth="250"/>
+
+
+
+            <!-- Bouton d'affectation -->
+            <Button fx:id="affecterButton" text="Affecter Formation" onAction="#affecterFormation"/>
+            <VBox fx:id="cardsContainer" spacing="10" alignment="TOP_CENTER">
+                <!-- Les cartes des employés seront ajoutées ici dynamiquement -->
+            </VBox>
+
+            <Button text="Afficher Employés" onAction="#afficherEmployesParFormation" />
+            <Button text="Modifier les employés" onAction="#modifierEmployesFormation" />
+            <Button text="Supprimer l'employé de la formation" onAction="#supprimerEmployeFormation" />
+
+
+        </VBox>
+
+
+
+
+        <!-- Label for displaying messages -->
+        <Label fx:id="lbFormations" layoutX="50.0" layoutY="640.0" prefWidth="980.0" style="-fx-text-fill: red;" />
+    </children>
+</FlowPane>
+</content>
+</ScrollPane>

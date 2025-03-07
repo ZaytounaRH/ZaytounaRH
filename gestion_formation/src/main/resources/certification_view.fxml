@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<FlowPane fx:id="certificationFlowPane" hgap="20" vgap="20" alignment="CENTER" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"  fx:controller="tn.esprit.controllers.GestionCertification"  prefHeight="720.0" prefWidth="1080.0" stylesheets="style.css" >
+    <children>
+        <VBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 10px;">
+            <Label text="Titre certification" />
+            <TextField fx:id="tfTitreCertification" promptText="Titre de la certification" />
+            <Label text="Organisme " />
+            <TextField fx:id="tfOrganismeCertification" promptText="Organisme de la certification" />
+            <Label text="Date Obtention" />
+            <DatePicker fx:id="dateObtention" />
+
+            <Label text="formation"/>
+            <ComboBox fx:id="cbFormation" promptText="Sélectionner une formation" />
+            <ComboBox fx:id="comboBoxEmploye" promptText="Sélectionner un employe" layoutX="50" layoutY="50" />
+            <ComboBox fx:id="comboBoxCertification" promptText="Sélectionner une certification" layoutX="50" layoutY="100" />
+            <Button text="Affecter Certification" onAction="#affecterCertification" layoutX="50" layoutY="150" />
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="Ajouter Certification" onAction="#ajouterCertification" />
+                <Button text="Afficher Certification" onAction="#afficherCertification" />
+                <Button text="afficher certif d'employe" onAction="#afficherCertifsParEmploye"/>
+            </HBox>
+        </VBox>
+    </children>
+
+</FlowPane>
+
+
+<!--
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.GestionCertification"
+            stylesheets="@/style.css"
+            prefHeight="720.0" prefWidth="1080.0">
+    <children>
+        <Label text="Certification View" />
+
+       
+
+
+        <VBox fx:id="cardContainerCertification" layoutX="150.0" layoutY="80.0" spacing="15"
+              prefWidth="700" prefHeight="650" styleClass="card" alignment="CENTER">
+
+
+            <Label text="Ajouter une Certification" styleClass="card-title"/>
+
+
+            <GridPane vgap="10" hgap="15">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints vgrow="NEVER"/>
+                </rowConstraints>
+
+
+                <Label text="Titre :" styleClass="form-label" GridPane.rowIndex="0"/>
+                <TextField fx:id="tfTitreCertification" promptText="Titre de la certification" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+
+                <Label text="Organisme :" styleClass="form-label" GridPane.rowIndex="1"/>
+                <TextField fx:id="tfOrganismeCertification" promptText="Organisme" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+
+            </GridPane>
+
+
+            <HBox spacing="20" alignment="CENTER">
+                <Button fx:id="btnSubmitCertification" text="Ajouter" onAction="#ajouterCertification" styleClass="submit-button"/>
+                <Button fx:id="btnShowCertification" text="Afficher" onAction="#afficherCertification" styleClass="show-button"/>
+                <Button text="Modifier"  />
+                <Button text="Supprimer "  />
+                <Button text="Retour" onAction="#retourFormation" />
+
+
+            </HBox>
+
+
+            <ScrollPane fx:id="certificationsScrollPane" prefHeight="150" prefWidth="700" styleClass="formations-scroll">
+                <Label fx:id="lbCertifications" styleClass="formations-list"/>
+            </ScrollPane>
+        </VBox>
+    </children>
+</AnchorPane>
+-->
