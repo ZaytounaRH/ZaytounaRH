@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class MainFX extends Application {
@@ -17,7 +16,7 @@ public class MainFX extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionAssurance.fxml")); // Correction du chemin
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionAssurance.fxml"));
             Parent root = loader.load();
 
             Scene scene = new Scene(root);
@@ -26,7 +25,7 @@ public class MainFX extends Application {
             primaryStage.show();
 
         } catch (IOException e) {
-            e.printStackTrace(); // Meilleur affichage des erreurs
+            e.printStackTrace();
         }
     }
 }

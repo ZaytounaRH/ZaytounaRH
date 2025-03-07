@@ -7,7 +7,7 @@
 
 <?import java.net.URL?>
 <ScrollPane prefHeight="720.0" prefWidth="1080.0"
-            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns="http://javafx.com/javafx/22.0.2"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="tn.esprit.controllers.GestionAssurance">
     <stylesheets>
@@ -16,7 +16,6 @@
 
     <content>
         <VBox spacing="20" style="-fx-padding: 20;">
-
             <!-- Section supérieure : Recherche, filtres, tri et statistiques -->
             <VBox spacing="10" style="-fx-border-color: gray; -fx-padding: 10;">
                 <Label text="Recherche et filtres" style="-fx-font-weight: bold;" />
@@ -51,6 +50,13 @@
                 <FlowPane fx:id="flowPaneAssurances" hgap="20" vgap="20" prefWidth="950.0" prefHeight="200.0" />
                 <Label text="Liste des réclamations" style="-fx-font-weight: bold;" />
                 <FlowPane fx:id="flowPaneReclamations" hgap="20" vgap="20" prefWidth="950.0" prefHeight="200.0" />
+            </VBox>
+
+            <!-- Section OCR -->
+            <VBox>
+                <Button fx:id="importButton" text="Importer un document" onAction="#handleSelectImage"/>
+                <TextArea fx:id="textArea" promptText="Texte extrait affiché ici..." wrapText="true"/>
+                <Button text="Exporter en PDF" onAction="#exporterEnPDF"/>
             </VBox>
 
         </VBox>

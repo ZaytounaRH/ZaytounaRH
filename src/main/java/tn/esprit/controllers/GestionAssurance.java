@@ -32,6 +32,32 @@ import javafx.scene.control.Button;
 import java.time.LocalDate;
 import javafx.scene.chart.PieChart;
 import java.util.Map;
+import tn.esprit.services.OCRService;
+import javafx.stage.FileChooser;
+import java.io.File;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.stage.FileChooser;
+import java.io.File;
+import java.io.FileNotFoundException;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import java.util.Comparator;
+import java.util.stream.Collectors;
+import java.util.Collections;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import java.util.Optional;
+
+
+
+
+
 
 public class GestionAssurance {
 
@@ -77,12 +103,17 @@ public class GestionAssurance {
         cbTypeAssurance.getItems().setAll(TypeAssurance.values()); // Remplit la ComboBox avec les types d'assurance
         cbFiltreType.getItems().setAll(Assurance.TypeAssurance.values()); // Remplit la ComboBox de filtre avec les types d'assurance
         afficherAssurances();
+
         // Remplir la ComboBox avec les options pour le tri par date
         cbTriDate.setItems(FXCollections.observableArrayList(
                 "Date d'expiration croissante",
                 "Date d'expiration décroissante"
         ));
 
+        // 🎯 Ajouter les écouteurs pour déclencher la recherche et le tri dynamiquement
+        tfSearch.textProperty().addListener((observable, oldValue, newValue) -> rechercherAssurances());
+        cbFiltreType.valueProperty().addListener((observable, oldValue, newValue) -> rechercherAssurances());
+        cbTriDate.valueProperty().addListener((observable, oldValue, newValue) -> rechercherAssurances());
     }
 
     private void clearFields() {
@@ -97,37 +128,59 @@ public class GestionAssurance {
         Assurance.TypeAssurance selectedType = cbFiltreType.getValue();
         String selectedSort = cbTriDate.getValue();
 
-        // Récupérer toutes les assurances d'abord
-        List<Assurance> assurances = sp.getAll();
+        List<Assurance> assurances = sp.getAll(); // Récupérer toutes les assurances
 
-        // 🔍 Filtrer par nom si un mot-clé est saisi
+        // 🔍 Appliquer les filtres successivement
         if (!searchKeyword.isEmpty()) {
-            assurances = ((ServiceAssurance) sp).searchByName(searchKeyword);
+            assurances = assurances.stream()
+                    .filter(a -> a.getNom().toLowerCase().contains(searchKeyword.toLowerCase()))
+                    .collect(Collectors.toList());
         }
 
-        // 🔎 Filtrer par type si un type est sélectionné
         if (selectedType != null) {
-            assurances = ((ServiceAssurance) sp).searchByType(selectedType);
+            assurances = assurances.stream()
+                    .filter(a -> a.getType().equals(selectedType))
+                    .collect(Collectors.toList());
         }
 
-        // 📅 Trier par date d'expiration
         if (selectedSort != null) {
             boolean ascending = selectedSort.equals("Date d'expiration croissante");
-            assurances = ((ServiceAssurance) sp).sortByDateExpiration(ascending);
+            assurances.sort(Comparator.comparing(Assurance::getDateExpiration));
+            if (!ascending) {
+                Collections.reverse(assurances);
+            }
         }
 
-        // 🖼️ Afficher les assurances mises à jour
-        afficherAssurances(assurances);
+        afficherAssurances(assurances); // Met à jour l'affichage avec les nouvelles données filtrées
     }
 
-
     private void afficherAssurances(List<Assurance> assurances) {
-        flowPaneAssurances.getChildren().clear();
+        flowPaneAssurances.getChildren().clear(); // Nettoyer avant d'afficher les nouvelles cartes
 
-        for (Assurance a : assurances) {
-            Label label = new Label(a.toString());
-            label.setStyle("-fx-border-color: black; -fx-padding: 10px; -fx-background-color: lightgray;");
-            flowPaneAssurances.getChildren().add(label);
+        for (Assurance assurance : assurances) {
+            VBox card = new VBox(10);
+            card.setPadding(new Insets(10));
+            card.setStyle("-fx-background-color: #E8F5E9; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 15; -fx-border-color: #2E7D32;");
+
+            Label lblNom = new Label("Nom: " + assurance.getNom());
+            lblNom.setStyle("-fx-font-weight: bold; -fx-text-fill: #1B5E20;");
+
+            Label lblType = new Label("Type: " + assurance.getType());
+            Label lblDate = new Label("Expiration: " + assurance.getDateExpiration());
+
+            Button btnModifier = new Button("Modifier");
+            btnModifier.setOnAction(e -> remplirFormulaire(assurance));
+
+            Button btnSupprimer = new Button("Supprimer");
+            btnSupprimer.setStyle("-fx-background-color: #E53935; -fx-text-fill: white;");
+            btnSupprimer.setOnAction(e -> supprimerAssurance(assurance));
+
+            Button btnReclamer = new Button("Réclamer");
+            btnReclamer.setStyle("-fx-background-color: #FFC107; -fx-text-fill: white;");
+            btnReclamer.setOnAction(e -> lancerReclamation(assurance));
+
+            card.getChildren().addAll(lblNom, lblType, lblDate, btnModifier, btnSupprimer, btnReclamer);
+            flowPaneAssurances.getChildren().add(card);
         }
     }
 
@@ -315,84 +368,8 @@ public class GestionAssurance {
 
     @FXML
     public void afficherAssurances() {
-        flowPaneAssurances.getChildren().clear(); // Nettoyer avant de ré-afficher
-
-        for (Assurance assurance : sp.getAll()) {
-            // Création du conteneur de la carte
-            VBox card = new VBox(10);
-            card.setPadding(new Insets(10));
-            card.setStyle("-fx-background-color: #E8F5E9; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 15; -fx-border-color: #2E7D32;");
-
-            // Ajout des labels
-            Label lblNom = new Label("Nom: " + assurance.getNom());
-            lblNom.setStyle("-fx-font-weight: bold; -fx-text-fill: #1B5E20;");
-
-            Label lblType = new Label("Type: " + assurance.getType());
-            Label lblDate = new Label("Expiration: " + assurance.getDateExpiration());
-
-            // Bouton Modifier
-            Button btnModifier = new Button("Modifier");
-            btnModifier.setOnAction(e -> remplirFormulaire(assurance));
-
-            // Bouton Supprimer
-            Button btnSupprimer = new Button("Supprimer");
-            btnSupprimer.setStyle("-fx-background-color: #E53935; -fx-text-fill: white;");
-            btnSupprimer.setOnAction(e -> supprimerAssurance(assurance));
-
-            // Bouton Réclamer
-            Button btnReclamer = new Button("Réclamer");
-            btnReclamer.setStyle("-fx-background-color: #FFC107; -fx-text-fill: white;");
-            btnReclamer.setOnAction(e -> lancerReclamation(assurance));
-
-            // Ajouter les éléments à la carte
-            card.getChildren().addAll(lblNom, lblType, lblDate, btnModifier, btnSupprimer, btnReclamer);
-
-            // Ajouter la carte au FlowPane
-            flowPaneAssurances.getChildren().add(card);
-        }
-    }
-
-    private void remplirFormulaireReclamation(Reclamation reclamation) {
-        Stage modificationStage = new Stage();
-        modificationStage.setTitle("Modifier la Réclamation");
-
-        VBox vbox = new VBox(10);
-        vbox.setPadding(new Insets(15));
-
-        Label lblTitre = new Label("Titre:");
-        TextField tfTitre = new TextField(reclamation.getTitre());
-
-        Label lblDescription = new Label("Description:");
-        TextArea taDescription = new TextArea(reclamation.getDescription());
-
-        Label lblIncidentType = new Label("Type d'incident:");
-        ComboBox<String> cbIncidentType = new ComboBox<>();
-        cbIncidentType.getItems().addAll("ACCIDENT_TRAVAIL", "MALADIE_PROFESSIONNELLE", "DÉFAUT_COUVERTURE", "LITIGE_CONTRAT");
-        cbIncidentType.setValue(reclamation.getIncidentType().toString());
-
-        Label lblPriorite = new Label("Priorité:");
-        ComboBox<String> cbPriorite = new ComboBox<>();
-        cbPriorite.getItems().addAll("FAIBLE", "MOYENNE", "ELEVEE");
-        cbPriorite.setValue(reclamation.getPriorite().toString());
-
-        Button btnModifier = new Button("Modifier");
-        btnModifier.setOnAction(e -> {
-            reclamation.setTitre(tfTitre.getText());
-            reclamation.setDescription(taDescription.getText());
-            reclamation.setIncidentType(IncidentType.valueOf(cbIncidentType.getValue()));
-            reclamation.setPriorite(PrioriteReclamation.valueOf(cbPriorite.getValue()));
-
-            ServiceReclamation sr = new ServiceReclamation();
-            sr.update(reclamation);
-
-            modificationStage.close();
-            afficherReclamations();
-        });
-
-        vbox.getChildren().addAll(lblTitre, tfTitre, lblDescription, taDescription, lblIncidentType, cbIncidentType, lblPriorite, cbPriorite, btnModifier);
-        Scene scene = new Scene(vbox, 400, 400);
-        modificationStage.setScene(scene);
-        modificationStage.show();
+        List<Assurance> assurances = sp.getAll(); // Récupère toutes les assurances
+        afficherAssurances(assurances); // Affiche avec la méthode qui gère la mise en page
     }
 
     @FXML
@@ -463,6 +440,49 @@ public class GestionAssurance {
         // Ajouter le FlowPane des réponses à la carte de la réclamation
         card.getChildren().add(flowPaneReponses);
     }
+    private void remplirFormulaireReclamation(Reclamation reclamation) {
+        Stage modificationStage = new Stage();
+        modificationStage.setTitle("Modifier la Réclamation");
+
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(15));
+
+        Label lblTitre = new Label("Titre:");
+        TextField tfTitre = new TextField(reclamation.getTitre());
+
+        Label lblDescription = new Label("Description:");
+        TextArea taDescription = new TextArea(reclamation.getDescription());
+
+        Label lblIncidentType = new Label("Type d'incident:");
+        ComboBox<String> cbIncidentType = new ComboBox<>();
+        cbIncidentType.getItems().addAll("ACCIDENT_TRAVAIL", "MALADIE_PROFESSIONNELLE", "DÉFAUT_COUVERTURE", "LITIGE_CONTRAT");
+        cbIncidentType.setValue(reclamation.getIncidentType().toString());
+
+        Label lblPriorite = new Label("Priorité:");
+        ComboBox<String> cbPriorite = new ComboBox<>();
+        cbPriorite.getItems().addAll("FAIBLE", "MOYENNE", "ELEVEE");
+        cbPriorite.setValue(reclamation.getPriorite().toString());
+
+        Button btnModifier = new Button("Modifier");
+        btnModifier.setOnAction(e -> {
+            reclamation.setTitre(tfTitre.getText());
+            reclamation.setDescription(taDescription.getText());
+            reclamation.setIncidentType(IncidentType.valueOf(cbIncidentType.getValue()));
+            reclamation.setPriorite(PrioriteReclamation.valueOf(cbPriorite.getValue()));
+
+            ServiceReclamation sr = new ServiceReclamation();
+            sr.update(reclamation);
+
+            modificationStage.close();
+            afficherReclamations();
+        });
+
+        vbox.getChildren().addAll(lblTitre, tfTitre, lblDescription, taDescription, lblIncidentType, cbIncidentType, lblPriorite, cbPriorite, btnModifier);
+        Scene scene = new Scene(vbox, 400, 400);
+        modificationStage.setScene(scene);
+        modificationStage.show();
+    }
+
 
 
     @FXML
@@ -522,25 +542,129 @@ public class GestionAssurance {
 
     @FXML
     private void supprimerAssurance(Assurance assurance) {
-        // Supprimer l'assurance
-        sp.delete(assurance);
+        if (assurance == null) {
+            lbMessage.setText("Aucune assurance sélectionnée !");
+            return;
+        }
 
-        // Vérifier si l'assurance a bien été supprimée
-        boolean exists = false;
-        for (Assurance a : sp.getAll()) {
-            if (a.getIdA() == assurance.getIdA()) {
-                exists = true;
-                break;
+        // Confirmation de suppression
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation de suppression");
+        alert.setHeaderText("Supprimer l'assurance ?");
+        alert.setContentText("Voulez-vous vraiment supprimer cette assurance ?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                // Supprimer l'assurance
+                sp.delete(assurance);
+
+                // Vérifier si l'assurance existe toujours en parcourant la liste
+                boolean exists = false;
+                for (Assurance a : sp.getAll()) {
+                    if (a.getIdA() == assurance.getIdA()) {
+                        exists = true;
+                        break;
+                    }
+                }
+
+                if (!exists) {
+                    lbMessage.setText("Assurance supprimée avec succès !");
+                } else {
+                    lbMessage.setText("Erreur lors de la suppression de l'assurance.");
+                }
+
+                // Rafraîchir la liste affichée
+                afficherAssurances();
+            } catch (Exception e) {
+                lbMessage.setText("Une erreur est survenue : " + e.getMessage());
+                e.printStackTrace();
             }
         }
+    }
 
-        if (!exists) {
-            lbMessage.setText("Assurance supprimée avec succès !");
-        } else {
-            lbMessage.setText("Erreur lors de la suppression de l'assurance.");
+    //////////////////////////////APIIIIIIIIIIIIIIII_OCR///////////////////////////////////////
+    // Déclaration du service OCR
+    private final OCRService ocrService = new OCRService();
+
+    // Déclaration du TextArea du FXML
+    @FXML
+    private TextArea textArea; // Cette zone de texte est déjà définie dans ton fichier FXML
+
+    // Déclaration du bouton d'importation du fichier
+    @FXML
+    private Button importButton;
+
+    // Méthode pour gérer la sélection de l'image
+    @FXML
+    public void handleSelectImage() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg"));
+        // Ouvrir le sélecteur de fichier avec la bonne fenêtre
+        File file = fileChooser.showOpenDialog(importButton.getScene().getWindow());
+        if (file != null) {
+            // Extraction du texte depuis l'image choisie
+            String extractedText = ocrService.extractTextFromImage(file);
+            // Afficher le texte extrait dans le TextArea
+            textArea.setText(extractedText);
+        }
+    }
+    @FXML
+    public void exporterEnPDF() {
+        // Récupérer le texte du TextArea
+        String texte = textArea.getText();
+
+        if (texte.isEmpty()) {
+            // Si le texte est vide, afficher un message d'erreur
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Avertissement");
+            alert.setHeaderText("Aucun texte à exporter");
+            alert.setContentText("Veuillez d'abord extraire le texte de l'image ou saisir du texte.");
+            alert.showAndWait();
+            return;
         }
 
-        afficherAssurances();
+        // Créer un document PDF avec iText 7
+        try {
+            // Demander un emplacement et un nom de fichier pour sauvegarder le PDF
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichier PDF", "*.pdf"));
+            File file = fileChooser.showSaveDialog(importButton.getScene().getWindow());
+
+            if (file != null) {
+                // Créer un PdfWriter pour écrire le PDF
+                PdfWriter writer = new PdfWriter(file);
+
+                // Créer un PdfDocument en utilisant le PdfWriter
+                PdfDocument pdfDoc = new PdfDocument(writer);
+
+                // Créer un Document pour ajouter du contenu
+                Document document = new Document(pdfDoc);
+
+                // Ajouter le texte du TextArea au document PDF
+                document.add(new Paragraph(texte));
+
+                // Fermer le document PDF
+                document.close();
+
+                // Afficher un message de confirmation
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Succès");
+                alert.setHeaderText("PDF exporté");
+                alert.setContentText("Le texte a été exporté avec succès en PDF.");
+                alert.showAndWait();
+            }
+        } catch (Exception e) {
+            // Gérer les erreurs potentielles lors de la création du PDF
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Erreur lors de l'exportation en PDF");
+            alert.setContentText("Une erreur s'est produite lors de la génération du fichier PDF.");
+            alert.showAndWait();
+        }
     }
+
+
 
 }
