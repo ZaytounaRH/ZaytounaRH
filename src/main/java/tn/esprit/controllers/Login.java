@@ -140,7 +140,7 @@ public class Login {
             // Check user type and navigate to respective dashboard
             switch (user.getUserType()) {
                 case "RH":
-                    loadScene("/AfficherEmployee.fxml", "Bienvenue RH !");
+                    loadScene("/RHDashboard.fxml", "Bienvenue RH !");
                     break;
                 case "Employee":
                     loadScene("/EmployeeDashboard.fxml", "Bienvenue Employee !");
