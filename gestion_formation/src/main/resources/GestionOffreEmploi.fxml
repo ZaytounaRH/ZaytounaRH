@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Alert?>
+<?import javafx.scene.control.Alert.AlertType?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.GestionOffreEmploi" prefHeight="720" prefWidth="1080" stylesheets="style.css">
+    <children>
+        <!-- Formulaire d'ajout d'offre -->
+        <VBox alignment="TOP_CENTER" spacing="20" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <VBox spacing="10">
+                <TextField fx:id="tfTitre" promptText="Titre de l'offre" />
+                <TextField fx:id="tfDescription" promptText="Description de l'offre" />
+                <TextField fx:id="tfSalaire" promptText="Salaire" />
+                <DatePicker fx:id="dpDatePublication" promptText="Date de publication" />
+
+                <!-- ComboBox pour sélectionner le statut -->
+                <ComboBox fx:id="cbStatut">
+                    <!-- Les valeurs seront ajoutées dans le contrôleur -->
+                </ComboBox>
+
+                <Button text="Ajouter l'Offre" onAction="#ajouterOffre" />
+            </VBox>
+
+
+
+        </VBox>
+
+    </children>
+</AnchorPane>

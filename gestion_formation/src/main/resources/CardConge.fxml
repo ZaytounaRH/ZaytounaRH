@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.CardConge"
+      spacing="15" style="-fx-background-color: #f8f9fa; -fx-padding: 10; -fx-border-color: #ccc; -fx-border-radius: 10; -fx-background-radius: 10;">
+
+    <VBox spacing="5">
+        <Label fx:id="lblMotif" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+        <Label fx:id="lblDateDebut" />
+        <Label fx:id="lblDateFin" />
+        <Label fx:id="lblStatut" />
+    </VBox>
+</HBox>

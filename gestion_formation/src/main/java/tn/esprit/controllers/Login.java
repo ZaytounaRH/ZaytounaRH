@@ -3,11 +3,13 @@ package tn.esprit.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import tn.esprit.models.User;
@@ -64,13 +66,57 @@ public class Login {
             if (SessionManager.getInstance().isEmployee()){
                 openEmployerFormationCertification();
             } else if (SessionManager.getInstance().isRH()) {
-                onLoginSuccess.run();
+                //onLoginSuccess.run();
+                openMenuController();
+            } else if (SessionManager.getInstance().isCandidat()) {  // Vérifie si l'utilisateur est un candidat
+                openGestionEntretienForCandidat();
             }
 
         } else {
             showError("Email ou mot de passe incorrect.");
         }
     }
+    private void openMenuController(){
+        try {
+            // Charger le fichier FXML de la page GestionOffreEmploi
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("MenuController.fxml"));
+            Parent root = loader.load();  // Utilisation de Parent au lieu de AnchorPane
+            Stage stage = new Stage();
+            stage.setTitle("Dashboard RH");
+            stage.setScene(new Scene(root, 600, 400));
+            stage.show();
+            // Fermer la fenêtre de connexion
+            Stage loginStage = (Stage) emailField.getScene().getWindow();
+            loginStage.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void openGestionEntretienForCandidat() {
+        try {
+            if (emailField.getScene() == null) {
+                showError("Erreur : La scène actuelle est introuvable.");
+                return;
+            }
+
+            Stage stage = (Stage) emailField.getScene().getWindow();  // Récupère la fenêtre actuelle
+
+            // Charge le fichier FXML de la gestion des entretiens
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionEntretien.fxml"));
+            Scene scene = new Scene(loader.load());
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Entretiens (Candidat)");  // Change le titre de la fenêtre
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Impossible d'ouvrir la page GestionEntretien.");
+        }
+    }
+
+
     private void openEmployerFormationCertification() {
         try{
 

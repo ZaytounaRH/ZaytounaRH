@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.AjoutPresence"
+            prefHeight="400.0" prefWidth="500.0"
+            style="-fx-background-color: white; -fx-padding: 20px;">
+
+    <VBox spacing="15" alignment="CENTER">
+
+        <Label text="Ajouter une Présence"
+               style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+        <!-- 📅 Sélection de la date -->
+        <Label text="Date:"/>
+        <DatePicker fx:id="dateField"/>
+
+        <!-- ⏰ Entrée manuelle pour l'heure d'arrivée -->
+        <Label text="Heure Arrivée (HH:mm):"/>
+        <TextField fx:id="heureArriveField" promptText="Ex: 08:30"/>
+
+        <!-- ⏰ Entrée manuelle pour l'heure de départ -->
+        <Label text="Heure Départ (HH:mm):"/>
+        <TextField fx:id="heureDepartField" promptText="Ex: 17:00"/>
+
+        <!-- Boutons -->
+        <HBox spacing="10">
+            <Button fx:id="btnAjouter" text="Ajouter"
+                    style="-fx-background-color: #28a745; -fx-text-fill: white;"/>
+            <Button fx:id="btnAnnuler" text="Annuler"
+                    style="-fx-background-color: #dc3545; -fx-text-fill: white;"/>
+        </HBox>
+
+    </VBox>
+</AnchorPane>

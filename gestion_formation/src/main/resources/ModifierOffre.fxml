@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.layout.HBox?>
+<VBox xmlns:fx="http://javafx.com/fxml" spacing="20" alignment="CENTER" fx:controller="tn.esprit.controllers.ModifierOffreController" stylesheets="style.css">
+    <Label text="Modifier l'Offre d'Emploi" style="-fx-font-size: 20px;" prefWidth="1080" prefHeight="720"/>
+
+    <TextField fx:id="tfTitre" promptText="Titre" />
+    <TextField fx:id="tfDescription" promptText="Description" />
+    <TextField fx:id="tfSalaire" promptText="Salaire" />
+    <DatePicker fx:id="dpDatePublication" />
+    <ComboBox fx:id="cbStatut"/>
+    <ComboBox fx:id="cbResponsableRH"/>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Sauvegarder" fx:id="btnSauvegarder" onAction="#sauvegarderModifications" />
+        <Button text="Annuler" fx:id="btnAnnuler" onAction="#annulerModifications" />
+    </HBox>
+</VBox>

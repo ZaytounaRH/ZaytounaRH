@@ -2,7 +2,7 @@
 /* Couleurs de base */
 .root {
     -fx-base: #4CAF50; /* Vert principal */
-    -fx-background-color: #1E3A8A; /* Fond clair */
+    -fx-background-color: #ccefcb; /* Fond clair */
     -fx-text-fill: #2E7D32; /* Texte foncé */
     -fx-accent: #388E3C; /* Accent vert foncé */
     -fx-default-button: #66BB6A; /* Bouton par défaut */

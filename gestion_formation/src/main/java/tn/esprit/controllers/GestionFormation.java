@@ -297,9 +297,8 @@ private ComboBox<Employee> employeesComboBox;
         } else {
             System.out.println("✅ formationFlowPane détecté !");
         }
-        Label testLabel = new Label("Test Manuel !");
-        testLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: green;");
-        formationFlowPane.getChildren().add(testLabel);
+
+
 
 
         // Charger toutes les formations

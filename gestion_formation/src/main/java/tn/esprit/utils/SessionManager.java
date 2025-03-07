@@ -132,6 +132,11 @@ public int getCurrentEmployeeId() {
 
     }
 
-
+    public boolean isUserType(String userType) {
+        if (currentUser != null && currentUser.getUserType() != null) {
+            return currentUser.getUserType().equals(userType);
+        }
+        return false;
+    }
 
 }

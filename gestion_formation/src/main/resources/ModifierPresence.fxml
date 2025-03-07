@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.ModifierPresence"
+            prefHeight="350.0" prefWidth="500.0"
+            style="-fx-background-color: white; -fx-padding: 20px;">
+
+    <VBox spacing="15" alignment="CENTER">
+
+        <Label text="Modifier une Présence"
+               style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+        <Label text="Date:"/>
+        <DatePicker fx:id="dateField"/>
+
+        <Label text="Heure Arrivée (HH:mm):"/>
+        <TextField fx:id="heureArriveField" promptText="Ex: 08:30"/>
+
+        <Label text="Heure Départ (HH:mm):"/>
+        <TextField fx:id="heureDepartField" promptText="Ex: 17:00"/>
+
+        <HBox spacing="10">
+            <Button fx:id="btnModifier" text="Modifier"
+                    style="-fx-background-color: #ffc107; -fx-text-fill: black;"/>
+            <Button fx:id="btnAnnuler" text="Annuler"
+                    style="-fx-background-color: #dc3545; -fx-text-fill: white;"/>
+        </HBox>
+
+    </VBox>
+</AnchorPane>
