@@ -3,61 +3,68 @@ package tn.esprit.getionfinanciere.controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.*;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
+import tn.esprit.getionfinanciere.models.Commande;
 import tn.esprit.getionfinanciere.models.Produit;
 import tn.esprit.getionfinanciere.repository.ProduitRepository;
 import tn.esprit.getionfinanciere.utils.Utils;
 
+import static tn.esprit.getionfinanciere.utils.Utils.showAlert;
+
 
 public class ProduitListController {
   @FXML
-  public TableView<Produit> tableProduit;
+  public FlowPane flowPaneProduit;
   @FXML
-  public TableColumn<Produit, String> colNomProduit;
-  @FXML
-  public TableColumn<Produit, Double> colPrix;
-  @FXML
-  public TableColumn<Produit, String> colNomFournisseur;
+  private ObservableList<Produit> produitsList;
   @FXML
   private TextField searchField;
 
   private final ProduitRepository produitRepository = new ProduitRepository();
-  private ObservableList<Produit> produitList;
 
   public void initialize() {
-    colNomProduit.setCellValueFactory(new PropertyValueFactory<>("produitName"));
-    colPrix.setCellValueFactory(new PropertyValueFactory<>("prix"));
-    colNomFournisseur.setCellValueFactory(new PropertyValueFactory<>("nomFournisseur"));
-    produitList = FXCollections.observableArrayList(produitRepository.getAll());
-    tableProduit.getItems().setAll(produitList);
+    produitsList = FXCollections.observableArrayList(produitRepository.getAll());
+    afficherProduits(produitsList);
     searchField.textProperty().addListener((observable, oldValue, newValue) -> searchProduit(newValue));
   }
 
-  /*public void deleteCommande() {
-    Commande selectedCommande = tableProduit.getSelectionModel().getSelectedItem();
-    if (selectedCommande != null) {
-      commandeRepository.delete(selectedCommande);
-      tableProduit.getItems().remove(selectedCommande);
-      showAlert(Alert.AlertType.INFORMATION, "Suppression réussie", "Le fournisseur a été supprimé.");
-    } else {
-      showAlert(Alert.AlertType.ERROR, "Erreur", "Veuillez sélectionner un fournisseur à supprimer.");
+
+  private void afficherProduits(ObservableList<Produit> produits) {
+    flowPaneProduit.getChildren().clear();
+    for (Produit produit : produits) {
+      VBox card = new VBox();
+      card.getStyleClass().add("card");
+      Label nomProduit = new Label("Nom de Produit: " + produit.getProduitName());
+      Label nomFournisseur = new Label("Nom de Fournissuer: " + produit.getNomFournisseur() );
+      Label prixProduit = new Label("Prix: " + produit.getPrix());
+      Button btnSupprimer = new Button("Supprimer");
+      btnSupprimer.getStyleClass().add("delete-button");
+      btnSupprimer.setOnAction(e -> deleteProduit(produit));
+      card.getChildren().addAll(nomProduit, nomFournisseur, prixProduit, btnSupprimer);
+      flowPaneProduit.getChildren().add(card);
     }
-  }*/
+  }
+
+  private void deleteProduit(Produit produit) {
+    produitRepository.delete(produit);
+    produitsList.remove(produit);
+    afficherProduits(produitsList);
+    showAlert(Alert.AlertType.INFORMATION, "Suppression réussie", "La commande a été supprimée.");
+  }
 
   public void goBack() {
-    Utils.actionButton("gestion_produit.fxml", tableProduit);
+    Utils.actionButton("gestion_produit.fxml", flowPaneProduit);
   }
 
   private void searchProduit(String searchText) {
     ObservableList<Produit> filteredList = FXCollections.observableArrayList();
-    for (Produit produit : produitList) {
+    for (Produit produit : produitsList) {
       if (produit.getNomFournisseur().toLowerCase().contains(searchText.toLowerCase())) {
         filteredList.add(produit);
       }
     }
-    tableProduit.setItems(filteredList);
+    afficherProduits(filteredList);
   }
 }

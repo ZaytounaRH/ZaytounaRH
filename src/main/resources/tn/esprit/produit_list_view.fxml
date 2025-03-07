@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/22.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.getionfinanciere.controllers.FournisseurListController">
+<AnchorPane prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/22.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.getionfinanciere.controllers.ProduitListController">
 
     <stylesheets>
         <URL value="@Style.css" />
@@ -15,11 +15,11 @@
 
     <children>
         <!-- Search Bar and Label at the Top -->
-        <Label layoutX="67.0" layoutY="30.0" text="Rechercher Nom :" />
-        <TextField fx:id="searchField" layoutX="199.0" layoutY="25.0" prefHeight="36.0" prefWidth="302.0" promptText="Rechercher par Nom du Fournisseur" />
+        <Label layoutX="67.0" layoutY="30.0" text="Rechercher Produit :" />
+        <TextField fx:id="searchField" layoutX="199.0" layoutY="25.0" prefHeight="36.0" prefWidth="302.0" promptText="Rechercher par Nom du Produit" />
 
         <!-- FlowPane (Card Container) Under the Search Bar -->
-        <FlowPane fx:id="flowPaneFournisseur" hgap="20" layoutX="50.0" layoutY="80.0" prefWidth="980.0" vgap="20" prefHeight="500.0"/>
+        <FlowPane fx:id="flowPaneProduit" hgap="20" layoutX="50.0" layoutY="80.0" prefWidth="980.0" vgap="20" prefHeight="500.0"/>
 
         <!-- Button at the Bottom -->
         <Button layoutX="460.0" layoutY="650.0" onAction="#goBack" text="Retour" />
