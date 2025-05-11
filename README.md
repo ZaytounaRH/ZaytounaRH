@@ -69,7 +69,7 @@ ZaytounaRH/
 1. **Cloner le dépôt**
 
 ```bash
-git clone https://github.com/ton-org/zaytouna-rh.git
+git clone https://github.com/ZaytounaRH/ZaytounaRH.git
 cd zaytouna-rh
 ```
 
